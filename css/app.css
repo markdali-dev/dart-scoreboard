@@ -32,7 +32,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   gap: var(--gap);
   padding: 14px var(--gutter) 10px;
 }
-.topbar h1 { margin: 0; font-size: 1.55rem; white-space: nowrap; font-weight: 800; letter-spacing: -0.01em; }
+.topbar h1 { margin: 0; font-size: 1.55rem; white-space: nowrap; font-weight: 700; letter-spacing: -0.01em; }
 
 .segmented {
   display: inline-flex;
@@ -54,7 +54,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- sections ---------- */
 .section { padding: 6px var(--gutter) 14px; }
-.section h2 { margin: 8px 0; font-size: 1.2rem; font-weight: 800; }
+.section h2 { margin: 8px 0; font-size: 1.2rem; font-weight: 700; }
 .note { margin: 0; font-size: 1.1rem; color: var(--text-muted); line-height: 1.4; }
 .note a { color: inherit; font-weight: 700; }
 
@@ -62,7 +62,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .game-header {
   display: flex;
   justify-content: space-between;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 1.15rem;
   color: var(--text);
   padding: 0 2px 8px;
@@ -82,8 +82,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   box-shadow: var(--shadow-card);
   padding: 8px 14px;
 }
-.card .name { font-weight: 800; font-size: 1.35rem; }
-.card .score { font-weight: 800; font-size: 2.1rem; font-variant-numeric: tabular-nums; line-height: 1; }
+.card .name { font-weight: 600; letter-spacing: 0.01em; font-size: 1.35rem; }
+.card .score { font-weight: 700; letter-spacing: 0.01em; font-size: 2.1rem; font-variant-numeric: tabular-nums; line-height: 1; }
 
 .card.thrower {
   background: linear-gradient(var(--thrower-top), var(--thrower));
@@ -99,7 +99,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .tag {
   font-size: 0.85rem;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 2px 7px;
@@ -116,7 +116,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   padding: 6px 4px;
   text-align: center;
   font-size: 1.2rem;
-  font-weight: 800;
+  font-weight: 600;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.22);
 }
@@ -132,7 +132,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--hint-bg);
   color: var(--hint-text);
   font-size: 1.35rem;
-  font-weight: 800;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 .hint span { text-align: center; }
 .hint .label { text-align: left; padding-right: 10px; }
@@ -154,12 +155,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: linear-gradient(var(--key-top), var(--key));
   color: var(--key-text);
   font-size: 1.7rem;
-  font-weight: 800;
+  font-weight: 500;
   box-shadow: var(--shadow-key);
 }
 .key:active { transform: translateY(1px); box-shadow: none; }
 .keypad .bottom { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 2fr 2fr 2fr; gap: 7px; }
-.key.double { background: var(--key-double); color: var(--key-mod-text); font-size: 1.25rem; letter-spacing: 0.05em; }
-.key.triple { background: var(--key-triple); color: var(--key-mod-text); font-size: 1.25rem; letter-spacing: 0.05em; }
-.key.undo { font-size: 1.25rem; }
+.key.double { background: var(--key-double); color: var(--key-mod-text); font-size: 1.25rem; font-weight: 600; letter-spacing: 0.05em; }
+.key.triple { background: var(--key-triple); color: var(--key-mod-text); font-size: 1.25rem; font-weight: 600; letter-spacing: 0.05em; }
+.key.undo { font-size: 1.25rem; font-weight: 600; }
 .key[aria-pressed="true"] { outline: 3px solid var(--key-text); outline-offset: -3px; }

@@ -152,7 +152,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
   - On teams, show which teammate is throwing.
 - Visual direction, chosen by Mark from mockups (2026-11-16): dartboard colors — black, greys, red, green, cream — in a dark and a light theme.
   - Theme toggle (Dark / Light) on the setup screen. Remember the choice. All colors are CSS variables; the two themes differ only in variable values.
-  - Rounded cards and keys, sans-serif, heavy weight on names and scores. No monospace. No navy or blue-tinted darks: true black and neutral greys only.
+  - Rounded cards and keys, sans-serif. Medium weights (chosen by Mark 2026-11-17, heavy looked bubbly and cramped): names 600, scores 700, number keys 500, Double/Triple/Undo 600, header line 500, slight extra letter spacing. Text sizes enlarged the same day for readability. No monospace. No navy or blue-tinted darks: true black and neutral greys only.
   - Depth, not flat: cards and keys are raised with shadows; the thrower card sits highest.
   - Header text (game, options, round) at full contrast, never faint.
   - No per-player colors.
@@ -190,6 +190,8 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - 2026-11-17: Engine tests run in the browser at `tests/` (no Node or test library needed).
 - 2026-11-17: Local git repo created, commits use the GitHub noreply address. Not on GitHub yet.
 - 2026-11-17: Reference screenshots moved to `reference/` and git-ignored, so another app's artwork is never pushed.
+- 2026-11-17: Thrower card keeps its score on the right, in one vertical line with every other score; name and dart slots sit on the left.
+- 2026-11-17: Offline status is not shown to players (the app never needs internet after the first load). Developer check lives on the tests page.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 
 ## Open decisions
