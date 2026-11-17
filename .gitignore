@@ -1,0 +1,17 @@
+# Reference screenshots of another app: keep on this PC only
+reference/
+
+# Secrets (this app should need none, but just in case)
+.env
+.env.*
+
+# Local tool settings
+.claude/settings.local.json
+
+# OS and editor clutter
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+__pycache__/
+*.log

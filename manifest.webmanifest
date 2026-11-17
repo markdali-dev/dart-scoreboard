@@ -1,0 +1,14 @@
+{
+  "name": "Dart Scoreboard",
+  "short_name": "Darts",
+  "description": "Offline darts scoring for X01, Cricket and more.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

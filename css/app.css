@@ -1,0 +1,163 @@
+/* Layout and components. Colors come only from css/theme.css variables. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; height: 100%; }
+
+body {
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+
+.app {
+  max-width: 520px;
+  min-height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+}
+
+/* ---------- top bar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: 14px var(--gutter) 10px;
+}
+.topbar h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; }
+
+.segmented {
+  display: inline-flex;
+  background: var(--card);
+  border-radius: 999px;
+  padding: 3px;
+  box-shadow: var(--shadow-card);
+}
+.segmented button {
+  border: 0;
+  background: transparent;
+  color: var(--card-text);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+.segmented button[aria-pressed="true"] { background: var(--thrower); color: var(--thrower-text); }
+
+/* ---------- sections ---------- */
+.section { padding: 6px var(--gutter) 14px; }
+.section h2 { margin: 8px 0; font-size: 1rem; font-weight: 800; }
+.note { margin: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.4; }
+.note a { color: inherit; font-weight: 700; }
+
+/* ---------- playing screen pieces (used by the step-1 preview) ---------- */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  padding: 0 2px 8px;
+}
+
+.cards { display: flex; flex-direction: column; gap: var(--gap); }
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  background: var(--card);
+  color: var(--card-text);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 8px 14px;
+}
+.card .name { font-weight: 800; font-size: 1.05rem; }
+.card .score { font-weight: 800; font-size: 1.9rem; font-variant-numeric: tabular-nums; line-height: 1; }
+
+.card.thrower {
+  background: linear-gradient(var(--thrower-top), var(--thrower));
+  color: var(--thrower-text);
+  box-shadow: var(--shadow-thrower);
+  padding: 12px 14px;
+  flex-wrap: wrap;
+}
+.card.thrower .score { font-size: 3.8rem; }
+
+.card.next { outline: 2px solid var(--next-outline); outline-offset: -2px; }
+.card.next .score { font-size: 2.3rem; }
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--next-tag-bg);
+  color: var(--next-tag-text);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.slots { display: flex; gap: 6px; }
+.slot {
+  min-width: 52px;
+  padding: 6px 4px;
+  text-align: center;
+  font-weight: 800;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.slot.empty { color: rgba(255, 255, 255, 0.45); }
+
+.hint {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr;
+  align-items: center;
+  margin-top: var(--gap);
+  padding: 8px 14px;
+  border-radius: var(--radius-card);
+  background: var(--hint-bg);
+  color: var(--hint-text);
+  font-weight: 800;
+}
+.hint span { text-align: center; }
+.hint .label { text-align: left; padding-right: 10px; }
+
+/* ---------- keypad band: bottom of the screen, full width, straight top ---------- */
+.keypad {
+  margin-top: auto;
+  background: var(--pad-band);
+  border-top: 1px solid var(--pad-border);
+  padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 7px;
+}
+.key {
+  border: 0;
+  height: 54px;
+  border-radius: var(--radius-key);
+  background: linear-gradient(var(--key-top), var(--key));
+  color: var(--key-text);
+  font-size: 1.35rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-key);
+}
+.key:active { transform: translateY(1px); box-shadow: none; }
+.keypad .bottom { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 2fr 2fr 2fr; gap: 7px; }
+.key.double { background: var(--key-double); color: var(--key-mod-text); font-size: 1rem; letter-spacing: 0.05em; }
+.key.triple { background: var(--key-triple); color: var(--key-mod-text); font-size: 1rem; letter-spacing: 0.05em; }
+.key.undo { font-size: 1rem; }
+.key[aria-pressed="true"] { outline: 3px solid var(--key-text); outline-offset: -3px; }

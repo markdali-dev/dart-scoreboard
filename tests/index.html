@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine Tests</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <style>
+    body { background: var(--page); color: var(--text); font-family: var(--font); margin: 0; padding: 16px; }
+    h1 { font-size: 1.3rem; margin: 0 0 12px; }
+    #summary { font-weight: 800; font-size: 1.1rem; padding: 10px 14px; border-radius: 10px; margin-bottom: 12px; }
+    .pass { background: var(--thrower); color: var(--thrower-text); }
+    .fail { background: var(--danger); color: var(--danger-text); }
+    li { margin: 4px 0; line-height: 1.35; }
+    li.bad { color: var(--danger); font-weight: 700; }
+    pre { white-space: pre-wrap; font-size: 0.85rem; margin: 2px 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Engine tests</h1>
+  <div id="summary">Running…</div>
+  <ul id="results"></ul>
+  <script type="module" src="tests.js"></script>
+</body>
+</html>

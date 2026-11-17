@@ -1,0 +1,97 @@
+/* Colors for both themes. Every screen uses these variables, never raw colors.
+   Dartboard palette: black, neutral greys, red, green, cream. No blue-tinted darks. */
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* page and surfaces */
+  --page: #111111;
+  --page-edge: #0b0b0b;
+  --card: #262626;
+  --card-text: #f3e7c9;
+  --text: #f3e7c9;
+  --text-muted: #c9bfa6;     /* still high contrast; never faint */
+  --hairline: #3a3a3a;
+
+  /* current thrower */
+  --thrower-top: #27a35b;
+  --thrower: #1f8a4c;
+  --thrower-text: #ffffff;
+
+  /* on-deck ("Next") */
+  --next-outline: #f3e7c9;
+  --next-tag-bg: #f3e7c9;
+  --next-tag-text: #111111;
+
+  /* checkout ("Out") bar */
+  --hint-bg: rgba(39, 163, 91, 0.18);
+  --hint-text: #8fe0ad;
+
+  /* keypad band */
+  --pad-band: #1e1e1e;
+  --pad-border: #3a3a3a;
+  --key: #2e2e2e;
+  --key-top: #363636;
+  --key-text: #f3e7c9;
+  --key-double: #1f8a4c;
+  --key-triple: #d7322d;
+  --key-mod-text: #ffffff;
+
+  /* feedback */
+  --danger: #d7322d;
+  --danger-text: #ffffff;
+
+  /* depth */
+  --shadow-card: 0 2px 0 rgba(0, 0, 0, 0.5), 0 6px 14px rgba(0, 0, 0, 0.45);
+  --shadow-thrower: 0 3px 0 rgba(0, 0, 0, 0.55), 0 12px 26px rgba(0, 0, 0, 0.6);
+  --shadow-key: 0 2px 0 rgba(0, 0, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --page: #f3e7c9;
+  --page-edge: #eadcb8;
+  --card: #fffaec;
+  --card-text: #111111;
+  --text: #111111;
+  --text-muted: #3d3a33;
+  --hairline: #d8caa6;
+
+  --thrower-top: #27a35b;
+  --thrower: #1f8a4c;
+  --thrower-text: #ffffff;
+
+  --next-outline: #111111;
+  --next-tag-bg: #111111;
+  --next-tag-text: #f3e7c9;
+
+  --hint-bg: #d4efdc;
+  --hint-text: #145c33;
+
+  --pad-band: #000000;
+  --pad-border: #000000;
+  --key: #2e2e2e;
+  --key-top: #363636;
+  --key-text: #f3e7c9;
+  --key-double: #1f8a4c;
+  --key-triple: #d7322d;
+  --key-mod-text: #ffffff;
+
+  --danger: #d7322d;
+  --danger-text: #ffffff;
+
+  --shadow-card: 0 1px 0 rgba(60, 45, 10, 0.18), 0 4px 12px rgba(60, 45, 10, 0.18);
+  --shadow-thrower: 0 2px 0 rgba(0, 0, 0, 0.25), 0 10px 22px rgba(20, 60, 30, 0.35);
+  --shadow-key: 0 2px 0 rgba(0, 0, 0, 0.7), 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* sizes and type, shared by both themes */
+:root {
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius-card: 14px;
+  --radius-key: 10px;
+  --gap: 8px;
+  --gutter: 12px;
+}
