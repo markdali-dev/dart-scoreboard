@@ -7,7 +7,6 @@ import { gamesByGroup } from './core/registry.js';
 import { getTheme, setTheme, applyTheme } from './core/theme.js';
 
 const app = document.getElementById('app');
-let offlineStatus = 'checking…';
 
 function render() {
   const theme = getTheme();
@@ -29,9 +28,7 @@ function render() {
         ? Object.entries(groups).filter(([, list]) => list.length)
             .map(([group, list]) => `<p class="note"><b>${group}:</b> ${list.map((g) => g.name).join(', ')}</p>`).join('')
         : `<p class="note">No games yet. X01 arrives in build step 3.
-             Engine checks: <a href="tests/">run the tests</a>.</p>`}
-      <p class="note" id="offline-status">Offline mode: ${offlineStatus}</p>
-    </section>
+             Engine checks: <a href="tests/">run the tests</a>.</p>`}    </section>
 
     <section class="section" aria-label="Look preview">
       <h2>Look preview <span class="note">(not playable yet)</span></h2>
@@ -83,20 +80,8 @@ applyTheme(getTheme());
 render();
 
 // Offline support. Service workers only run on http://localhost or https.
-// The line on the home screen shows whether it worked, so no developer tools are needed.
-function showOfflineStatus(text) {
-  offlineStatus = text;
-  render();
-}
-
+// It saves a copy of the app on the phone so it opens with no internet.
+// (Players never see this. Developers can check it on the tests page.)
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-    .then(() => navigator.serviceWorker.ready)
-    .then(() => showOfflineStatus('ready ✓ (works without internet)'))
-    .catch((err) => {
-      console.warn('Service worker not registered:', err);
-      showOfflineStatus('not available in this browser ✗');
-    });
-} else {
-  showOfflineStatus('not supported in this browser ✗');
+  navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('Service worker not registered:', err));
 }

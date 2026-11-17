@@ -222,4 +222,16 @@ summary.className = failed.length ? 'fail' : 'pass';
 document.getElementById('results').innerHTML = results.map((r) => r.ok
   ? `<li>✓ ${r.name}</li>`
   : `<li class="bad">✗ ${r.name}<pre>${String(r.err.message).replace(/</g, '&lt;')}</pre></li>`).join('');
-window.__testResults = { passed: results.length - failed.length, failed: failed.length };
+// Offline copy: the app registers it when the home page is opened.
+const offline = document.getElementById('offline');
+if (!('serviceWorker' in navigator)) {
+  offline.textContent = '✗ This browser does not support offline apps.';
+} else {
+  navigator.serviceWorker.getRegistration('../').then((reg) => {
+    offline.textContent = reg?.active
+      ? '✓ Saved. The app will open with no internet.'
+      : '✗ Not saved yet. Open the home page once, then reload this page.';
+  }).catch(() => { offline.textContent = '✗ This browser blocks offline apps (e.g. the in-app preview).'; });
+}
+
+window.__testResults ={ passed: results.length - failed.length, failed: failed.length };

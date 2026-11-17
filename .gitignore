@@ -15,3 +15,6 @@ Desktop.ini
 .vscode/
 __pycache__/
 *.log
+
+# Temporary design comparisons, never committed
+scratch/
