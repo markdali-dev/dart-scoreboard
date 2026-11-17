@@ -171,7 +171,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 
 ## Build order
 
-1. [x] Project skeleton, PWA shell, game registry, module interface, dart log with replay-based undo. Done 2026-11-17: 23 engine tests pass (`tests/`); Dark/Light theme variables and a static look preview on the home page. Offline service worker still to be confirmed in a normal browser (the in-app preview browser blocks service workers).
+1. [x] Project skeleton, PWA shell, game registry, module interface, dart log with replay-based undo. Done 2026-11-17: 23 engine tests pass (`tests/`); Dark/Light theme variables and a static look preview on the home page. Offline service worker still to be confirmed in a normal browser (the in-app preview browser blocks service workers); see Open decisions.
 2. [x] Roster, player/team selection, throw order, setup screen. Done 2026-11-17: Players tab (add, rename, remove, max 15), setup screen with game picker, option tiles, Random order and Teams switches, drag to reorder, Start opens a placeholder playing screen showing throw order. Bottom navigation in place; Stats, History and Settings are placeholders. 38 tests pass.
 3. [x] Entry pad and scoreboard layout, wired to X01 (all in/out options). Done 2026-11-17: X01 scoring for every In/Out rule, busts (score and any In opened that turn reset), win screen (Play again, New game, Undo last dart), checkout hints after every dart, "Bust" and 100+ score pop-ups, per-card average, darts thrown and last turn. All 5 players fit with the keypad on a 375×667 screen. 59 tests pass.
 4. Cricket and its variants.
@@ -203,8 +203,21 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 ## Open decisions
 
 - Rule details for each Party and Practice game. Mark confirms these one at a time as each is built.
-- GitHub repo and GitHub Pages hosting. Not set up yet. After build step 1 works locally, walk Mark through creating the repo and pushing, one step at a time (he is new to GitHub). Set up Pages when there is something worth opening on a phone.
+- GitHub Pages hosting (to play on a phone). The repo exists and is pushed. Pages on a free account needs the repo to be public; Mark has not decided public vs private yet. Walk him through it step by step when he wants to play on his phone.
+- Offline copy (service worker) not yet confirmed in a normal browser. Check: open the app once in Edge or Chrome, then the tests page, "Offline copy" line should say saved.
 - Final app name, if it's ever sold.
+
+## Where we left off (2026-11-17)
+
+- Steps 1–3 done, committed and pushed. Mark tested X01 himself and it worked well.
+- Next session: build step 4, Cricket and its variants. Before building, confirm with Mark:
+  - Cut-throat: points go to every opponent who hasn't closed that number (standard), lowest score wins?
+  - Wild card: how many numbers are drawn (6 plus bull, like standard?), and can they repeat or include low numbers?
+  - Custom numbers: how they're picked on the setup screen (e.g. a pop-up grid of 1–20 to tick).
+  - Variants as one Cricket game with a "Mode" option tile, or separate games in the Cricket group?
+  - Cricket screen per the Design section: numbers down the side, one column per player, marks / X Ⓧ, keypad shrinks to the numbers in play. Must fit 5 columns without sideways scrolling.
+- The look preview from step 1 is gone; the real playing screen replaced it.
+- Test data: the in-app preview browser has made-up players saved; Mark's own browser has his own.
 
 ## Future modules
 
