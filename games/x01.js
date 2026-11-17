@@ -3,10 +3,10 @@
 // Scoring, busts and checkout hints arrive in build step 3.
 
 const RING_CHOICES = [
-  { value: 'open', label: 'Open' },
-  { value: 'double', label: 'Double' },
-  { value: 'triple', label: 'Triple' },
-  { value: 'master', label: 'Master' },
+  { value: 'open', label: 'Open', description: 'Any dart counts' },
+  { value: 'double', label: 'Double', description: 'Must be a double (bull counts)' },
+  { value: 'triple', label: 'Triple', description: 'Must be a triple' },
+  { value: 'master', label: 'Master', description: 'A double or a triple (bull counts)' },
 ];
 
 function notBuiltYet() {
@@ -22,19 +22,21 @@ export default {
     {
       id: 'start',
       label: 'Start',
+      help: 'The score everyone counts down from',
       type: 'choice',
       choices: [
         { value: 301, label: '301' },
         { value: 501, label: '501' },
         { value: 701, label: '701' },
       ],
+      customLabel: 'Type your own start score',
       custom: { min: 2, max: 9999 },
       default: 501,
     },
-    { id: 'in', label: 'In', type: 'choice', choices: RING_CHOICES, default: 'open' },
-    { id: 'out', label: 'Out', type: 'choice', choices: RING_CHOICES, default: 'double' },
-    { id: 'hints', label: 'Out hints', type: 'toggle', default: true },
+    { id: 'in', label: 'In', help: 'The dart that starts your scoring', type: 'choice', choices: RING_CHOICES, default: 'open' },
+    { id: 'out', label: 'Out', help: 'The dart that finishes the game', type: 'choice', choices: RING_CHOICES, default: 'double' },
   ],
+  // Checkout hints ("Out: T20 D16") are always shown; not a setting.
   minPlayers: 1,
   maxPlayers: 5,
   teams: true,

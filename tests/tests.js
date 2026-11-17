@@ -6,7 +6,7 @@ import { makeDart, dartLabel, dartScore, isValidDart } from '../js/core/dart.js'
 import { registerGame, getGame, validateGame, defaultOptions, _clearRegistry } from '../js/core/registry.js';
 import { createMatch, computeState, throwDart, undo, getOnDeck } from '../js/core/engine.js';
 import { addPlayer, renamePlayer, removePlayer, MAX_ROSTER, MAX_NAME } from '../js/core/roster.js';
-import { nextOptionValue, optionLabel, validateSetup, nextTeam, buildSides, moveItem } from '../js/core/setup.js';
+import { nextOptionValue, optionLabel, validateSetup, teamChoices, buildSides, moveItem } from '../js/core/setup.js';
 import x01 from '../games/x01.js';
 
 // ---------- tiny test runner ----------
@@ -253,7 +253,7 @@ test('remove a player', () => {
 // ---------- setup screen logic ----------
 const x01Like = { name: 'X01', minPlayers: 1, maxPlayers: 5, teams: true, options: x01.options };
 const pick = (...spec) => spec.map(([name, team], i) => ({ playerId: 'p' + i, name, team }));
-const opts = { start: 501, in: 'open', out: 'double', hints: true };
+const opts = { start: 501, in: 'open', out: 'double' };
 
 test('X01 module passes the registry checks', () => {
   validateGame(x01);
@@ -267,7 +267,10 @@ test('option tiles cycle and wrap; custom start comes after 701', () => {
   eq(optionLabel(start, 401), '401');
   const out = x01.options.find((o) => o.id === 'out');
   eq(nextOptionValue(out, 'master'), 'open');
-  eq(nextOptionValue(x01.options.find((o) => o.id === 'hints'), true), false);
+  eq(nextOptionValue({ type: 'toggle' }, true), false, 'toggle flips');
+});
+test('X01 has no Out hints setting (hints are always on)', () => {
+  eq(x01.options.map((o) => o.id), ['start', 'in', 'out']);
 });
 test('start is blocked until a custom number is typed', () => {
   eq(validateSetup(x01Like, pick(['Ann']), { teams: false, options: { ...opts, start: 'custom' } }), 'Enter a custom start');
@@ -285,8 +288,12 @@ test('teams: 2 or 3 per team, uneven 2 + 3 allowed', () => {
   const big = pick(['a', 'A'], ['b', 'A'], ['c', 'A'], ['d', 'A'], ['e', 'B'], ['f', 'B']);
   eq(validateSetup(x01Like, big, { teams: true, options: opts }), 'Team A has more than 3 players');
 });
-test('team badge cycles A to E and back', () => {
-  eq(['A', 'B', 'C', 'D', 'E'].map(nextTeam), ['B', 'C', 'D', 'E', 'A']);
+test('team menu only offers teams the players can fill', () => {
+  eq(teamChoices(3, 5, 'A'), ['A', 'B'], '3 players: 2 teams');
+  eq(teamChoices(4, 5, 'A'), ['A', 'B'], '4 players: 2 teams');
+  eq(teamChoices(6, 5, 'A'), ['A', 'B', 'C'], '6 players: 3 teams');
+  eq(teamChoices(15, 5, 'A'), ['A', 'B', 'C', 'D', 'E'], '15 players: capped at 5');
+  eq(teamChoices(4, 5, 'D'), ['A', 'B', 'D'], 'current letter kept');
 });
 test('sides follow list order; teammates throw in list order', () => {
   const entries = pick(['Ann', 'B'], ['Bob', 'A'], ['Cat', 'B'], ['Dan', 'A']);

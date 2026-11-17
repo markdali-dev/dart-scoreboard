@@ -32,9 +32,14 @@ export function maxEntries(game, teams) {
   return teams ? game.maxPlayers * MAX_TEAM_SIZE : game.maxPlayers;
 }
 
-// Next team letter when a player's team badge is tapped.
-export function nextTeam(team) {
-  return TEAM_LETTERS[(TEAM_LETTERS.indexOf(team) + 1) % TEAM_LETTERS.length];
+// Team letters offered in a player's team menu. Only as many teams as the
+// players can fill (2 per team), capped by the game, and never fewer than 2.
+// The player's current letter is always included so it can't vanish.
+export function teamChoices(playerCount, maxTeams, current) {
+  const count = Math.max(2, Math.min(maxTeams, Math.floor(playerCount / MIN_TEAM_SIZE)));
+  const letters = TEAM_LETTERS.slice(0, count);
+  if (current && !letters.includes(current)) letters.push(current);
+  return letters;
 }
 
 // Default team for a newly added player: alternate A, B, A, B...

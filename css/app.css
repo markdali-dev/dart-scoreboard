@@ -310,3 +310,27 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .match-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px var(--gutter) 0; }
 .members { display: flex; gap: 10px; font-size: 1rem; font-weight: 500; opacity: 0.85; margin-top: 2px; }
 .members .up { font-weight: 700; opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+
+/* pop-up menu (bottom sheet) for option tiles and team letters */
+.sheet-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); z-index: 10; }
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 11;
+  max-width: 520px; margin: 0 auto; max-height: 85vh; overflow-y: auto;
+  background: var(--page); color: var(--text);
+  border-radius: 20px 20px 0 0; box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+  padding: 14px var(--gutter) calc(16px + env(safe-area-inset-bottom));
+  animation: sheet-up 0.16s ease-out;
+}
+@keyframes sheet-up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+.sheet-title { font-size: 1.4rem; font-weight: 700; }
+.sheet-rows { display: flex; flex-direction: column; gap: 8px; }
+.sheet-row {
+  min-height: 60px; width: 100%; text-align: left;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  border: 0; border-radius: var(--radius-card); padding: 10px 16px;
+  background: var(--card); color: var(--card-text); box-shadow: var(--shadow-card);
+}
+.sheet-row[aria-pressed="true"] { background: linear-gradient(var(--thrower-top), var(--thrower)); color: var(--thrower-text); }
+.sheet-label { font-size: 1.35rem; font-weight: 700; }
+.sheet-desc { font-size: 1rem; font-weight: 500; opacity: 0.85; }

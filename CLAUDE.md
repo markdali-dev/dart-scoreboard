@@ -76,7 +76,7 @@ Game picker grouped by Core, Cricket, Party, Practice → game options → playe
 - "In" rule and "Out" rule are two separate options, each: Open (any), Double, Triple, Master (double or triple).
 - Bust (below zero, or a remainder that can't be finished under the Out rule, or finishing on the wrong ring) resets the score to the start of that turn.
 - Inner bull counts as a double.
-- Checkout suggestions: a setup option, on by default. When the remaining score can be finished with the darts left in the turn under the chosen Out rule, show a suggested route (e.g. T20, T20, D20) on the current player's card. Update it after every dart. Built on `getHint`, so other games can offer hints later.
+- Checkout suggestions: always on, not a setup option (Mark, 2026-11-17). When the remaining score can be finished with the darts left in the turn under the chosen Out rule, show a suggested route (e.g. T20, T20, D20) on the current player's card. Update it after every dart. Built on `getHint`, so other games can offer hints later.
 
 **Baseball** — standard rules. 9 innings; in inning N only number N scores. Single 1 run, double 2, triple 3. Highest total wins. Tie → extra innings (10, 11, …) until broken.
 
@@ -195,6 +195,8 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - 2026-11-17: X01's settings list (start 301/501/701/custom, In, Out, Out hints) added in step 2 so the setup screen can be tried; scoring stays in step 3. Defaults: 501, Open in, Double out, hints on.
 - 2026-11-17: Teams are formed by tapping a team badge (A–E) next to each player, so uneven teams like 2 + 3 work. Badges are letters only, no team colors. Teams throw in the order they first appear in the list; teammates in list order. Random order shuffles teams and teammates at Start.
 - 2026-11-17: The last setup (game, options, players, switches) is remembered on the device.
+- 2026-11-17 (after Mark tested step 2): Out hints setting removed, hints always on. Option tiles (Start, In, Out) open a pop-up menu from the bottom with big rows and a one-line explanation each (e.g. Master = a double or a triple), instead of cycling. Team letters also open a pop-up, offering only as many teams as the players can fill (2 per team, max 5) and showing who is already on each team.
+- 2026-11-17: GitHub repo `dart-scoreboard` created by Mark and pushed. Pages not set up yet.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 
 ## Open decisions

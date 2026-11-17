@@ -4,7 +4,7 @@
 import { gamesByGroup, getGame, defaultOptions } from '../core/registry.js';
 import { addPlayer, MAX_NAME } from '../core/roster.js';
 import {
-  nextOptionValue, isCustomValue, optionLabel, maxEntries, nextTeam, defaultTeam,
+  nextOptionValue, isCustomValue, optionLabel, maxEntries, teamChoices, defaultTeam,
   validateSetup, buildSides, moveItem,
 } from '../core/setup.js';
 import { createMatch } from '../core/engine.js';
@@ -46,7 +46,7 @@ export function renderSetup(ctx) {
       <section class="section">
         <div class="tiles">
           ${game.options.map((o) => `
-            <button class="tile ${o.type === 'toggle' && !options[o.id] ? 'off' : ''}" data-act="cycle" data-opt="${o.id}">
+            <button class="tile ${o.type === 'toggle' && !options[o.id] ? 'off' : ''}" data-act="${o.type === 'toggle' ? 'cycle' : 'open-option'}" data-opt="${o.id}" ${o.type === 'toggle' ? '' : 'aria-haspopup="dialog"'}>
               <span class="tile-label">${esc(o.label)}</span>
               <span class="tile-value">${esc(optionLabel(o, options[o.id]))}</span>
             </button>`).join('')}
@@ -54,7 +54,7 @@ export function renderSetup(ctx) {
         ${game.options.filter((o) => isCustomValue(o, options[o.id])).map((o) => `
           <label class="custom-row">Custom ${esc(o.label.toLowerCase())}
             <input type="number" inputmode="numeric" min="${o.custom.min}" max="${o.custom.max}"
-              value="${options[o.id] === 'custom' ? '' : options[o.id]}" placeholder="${o.custom.min}–${o.custom.max}" data-custom="${o.id}">
+              value="${options[o.id] === 'custom' ? '' : options[o.id]}" placeholder="${o.custom.min}–${o.custom.max}" data-custom="${o.id}" ${options[o.id] === 'custom' ? 'data-autofocus' : ''}>
           </label>`).join('')}
       </section>
 
@@ -64,13 +64,13 @@ export function renderSetup(ctx) {
           ${toggle('random', 'Random order', setup.random)}
           ${game.teams ? toggle('teams', 'Teams', teams) : ''}
         </div>
-        ${teams ? '<p class="note small">Tap a team badge to change team. 2 or 3 players per team.</p>' : ''}
+        ${teams ? '<p class="note small">Tap a team letter to change team. 2 or 3 players per team.</p>' : ''}
         ${entries.length ? `<ol class="picked" id="picked">
           ${entries.map((e, i) => `
             <li class="pick-row" data-index="${i}">
               <span class="handle" data-drag aria-label="Drag to reorder">${icon('handle')}</span>
               <span class="row-name">${esc(e.name)}</span>
-              ${teams ? `<button class="team-badge team-${e.team}" data-act="team" data-index="${i}" aria-label="Team ${e.team}, tap to change">${e.team}</button>` : ''}
+              ${teams ? `<button class="team-badge" data-act="open-team" data-index="${i}" aria-haspopup="dialog" aria-label="Team ${e.team}, tap to change">${e.team}</button>` : ''}
               <button class="btn icon-btn" data-act="unpick" data-index="${i}" aria-label="Take ${esc(e.name)} out">✕</button>
             </li>`).join('')}
         </ol>` : '<p class="note">Add players to start.</p>'}
@@ -94,7 +94,56 @@ export function renderSetup(ctx) {
         ${problem ? `<p class="note center">${esc(problem)}</p>` : ''}
         <button class="start" data-act="start" ${problem ? 'disabled' : ''}>Start</button>
       </section>
-    </main>`;
+    </main>
+    ${ui.sheet ? renderSheet(ui.sheet, game, options, entries) : ''}`;
+}
+
+// Pop-up menu that slides up from the bottom, with big rows for fingers.
+function renderSheet(sheet, game, options, entries) {
+  let title, help = '', rows;
+  if (sheet.kind === 'option') {
+    const o = game.options.find((x) => x.id === sheet.optId);
+    const value = options[o.id];
+    title = o.label;
+    help = o.help ?? '';
+    rows = o.choices.map((c) => sheetRow({
+      act: 'set-option', data: `data-opt="${o.id}" data-value="${esc(JSON.stringify(c.value))}"`,
+      label: c.label, description: c.description, selected: c.value === value,
+    }));
+    if (o.custom) {
+      rows.push(sheetRow({
+        act: 'set-option', data: `data-opt="${o.id}" data-value="&quot;custom&quot;"`,
+        label: 'Custom…', description: o.customLabel, selected: isCustomValue(o, value),
+      }));
+    }
+  } else {
+    const entry = entries[sheet.index];
+    title = `${entry.name}'s team`;
+    rows = teamChoices(entries.length, game.maxPlayers, entry.team).map((letter) => {
+      const members = entries.filter((e, j) => e.team === letter && j !== sheet.index).map((e) => e.name);
+      return sheetRow({
+        act: 'set-team', data: `data-index="${sheet.index}" data-team="${letter}"`,
+        label: `Team ${letter}`, description: members.length ? `with ${members.join(', ')}` : 'nobody yet',
+        selected: entry.team === letter,
+      });
+    });
+  }
+  return `
+    <div class="sheet-backdrop" data-act="close-sheet"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+      <div class="sheet-head">
+        <div><div class="sheet-title">${esc(title)}</div>${help ? `<div class="note small">${esc(help)}</div>` : ''}</div>
+        <button class="btn icon-btn" data-act="close-sheet" aria-label="Close">✕</button>
+      </div>
+      <div class="sheet-rows">${rows.join('')}</div>
+    </div>`;
+}
+
+function sheetRow({ act, data, label, description, selected }) {
+  return `<button class="sheet-row" data-act="${act}" ${data} aria-pressed="${selected}">
+    <span class="sheet-label">${esc(label)}</span>
+    ${description ? `<span class="sheet-desc">${esc(description)}</span>` : ''}
+  </button>`;
 }
 
 function toggle(key, label, on) {
@@ -141,9 +190,22 @@ export const setupActions = {
       return next;
     });
   },
-  team: (ctx, el) => {
+  'open-option': (ctx, el) => ctx.setUi({ sheet: { kind: 'option', optId: el.dataset.opt } }),
+  'open-team': (ctx, el) => ctx.setUi({ sheet: { kind: 'team', index: Number(el.dataset.index) } }),
+  'close-sheet': (ctx) => ctx.setUi({ sheet: null }),
+  'set-option': (ctx, el) => {
+    const value = JSON.parse(el.dataset.value);
+    // Picking "Custom…" again keeps a number already typed.
+    const game = getGame(ctx.state.setup.gameId);
+    const option = game.options.find((o) => o.id === el.dataset.opt);
+    const current = currentOptions(ctx.state, game)[option.id];
+    ctx.state.ui.sheet = null;
+    setOption(ctx, option.id, value === 'custom' && isCustomValue(option, current) ? current : value);
+  },
+  'set-team': (ctx, el) => {
     const i = Number(el.dataset.index);
-    ctx.setSetup((s) => ({ ...s, entries: s.entries.map((e, j) => (j === i ? { ...e, team: nextTeam(e.team) } : e)) }));
+    ctx.state.ui.sheet = null;
+    ctx.setSetup((s) => ({ ...s, entries: s.entries.map((e, j) => (j === i ? { ...e, team: el.dataset.team } : e)) }));
   },
   unpick: (ctx, el) => {
     const i = Number(el.dataset.index);
