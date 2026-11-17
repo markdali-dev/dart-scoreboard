@@ -32,7 +32,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   gap: var(--gap);
   padding: 14px var(--gutter) 10px;
 }
-.topbar h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; }
+.topbar h1 { margin: 0; font-size: 1.55rem; white-space: nowrap; font-weight: 800; letter-spacing: -0.01em; }
 
 .segmented {
   display: inline-flex;
@@ -46,16 +46,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: transparent;
   color: var(--card-text);
   font-weight: 700;
-  font-size: 0.9rem;
-  padding: 6px 14px;
+  font-size: 1.05rem;
+  padding: 7px 16px;
   border-radius: 999px;
 }
 .segmented button[aria-pressed="true"] { background: var(--thrower); color: var(--thrower-text); }
 
 /* ---------- sections ---------- */
 .section { padding: 6px var(--gutter) 14px; }
-.section h2 { margin: 8px 0; font-size: 1rem; font-weight: 800; }
-.note { margin: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.4; }
+.section h2 { margin: 8px 0; font-size: 1.2rem; font-weight: 800; }
+.note { margin: 0; font-size: 1.1rem; color: var(--text-muted); line-height: 1.4; }
 .note a { color: inherit; font-weight: 700; }
 
 /* ---------- playing screen pieces (used by the step-1 preview) ---------- */
@@ -63,7 +63,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   display: flex;
   justify-content: space-between;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   color: var(--text);
   padding: 0 2px 8px;
 }
@@ -82,23 +82,23 @@ button { font: inherit; color: inherit; cursor: pointer; }
   box-shadow: var(--shadow-card);
   padding: 8px 14px;
 }
-.card .name { font-weight: 800; font-size: 1.05rem; }
-.card .score { font-weight: 800; font-size: 1.9rem; font-variant-numeric: tabular-nums; line-height: 1; }
+.card .name { font-weight: 800; font-size: 1.35rem; }
+.card .score { font-weight: 800; font-size: 2.1rem; font-variant-numeric: tabular-nums; line-height: 1; }
 
 .card.thrower {
   background: linear-gradient(var(--thrower-top), var(--thrower));
   color: var(--thrower-text);
   box-shadow: var(--shadow-thrower);
   padding: 12px 14px;
-  flex-wrap: wrap;
 }
+.card.thrower .slots { margin-top: 8px; }
 .card.thrower .score { font-size: 3.8rem; }
 
 .card.next { outline: 2px solid var(--next-outline); outline-offset: -2px; }
-.card.next .score { font-size: 2.3rem; }
+.card.next .score { font-size: 2.5rem; }
 
 .tag {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -112,9 +112,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .slots { display: flex; gap: 6px; }
 .slot {
-  min-width: 52px;
+  min-width: 56px;
   padding: 6px 4px;
   text-align: center;
+  font-size: 1.2rem;
   font-weight: 800;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.22);
@@ -130,6 +131,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border-radius: var(--radius-card);
   background: var(--hint-bg);
   color: var(--hint-text);
+  font-size: 1.35rem;
   font-weight: 800;
 }
 .hint span { text-align: center; }
@@ -147,17 +149,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .key {
   border: 0;
-  height: 54px;
+  height: 58px;
   border-radius: var(--radius-key);
   background: linear-gradient(var(--key-top), var(--key));
   color: var(--key-text);
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-size: 1.7rem;
+  font-weight: 800;
   box-shadow: var(--shadow-key);
 }
 .key:active { transform: translateY(1px); box-shadow: none; }
 .keypad .bottom { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 2fr 2fr 2fr; gap: 7px; }
-.key.double { background: var(--key-double); color: var(--key-mod-text); font-size: 1rem; letter-spacing: 0.05em; }
-.key.triple { background: var(--key-triple); color: var(--key-mod-text); font-size: 1rem; letter-spacing: 0.05em; }
-.key.undo { font-size: 1rem; }
+.key.double { background: var(--key-double); color: var(--key-mod-text); font-size: 1.25rem; letter-spacing: 0.05em; }
+.key.triple { background: var(--key-triple); color: var(--key-mod-text); font-size: 1.25rem; letter-spacing: 0.05em; }
+.key.undo { font-size: 1.25rem; }
 .key[aria-pressed="true"] { outline: 3px solid var(--key-text); outline-offset: -3px; }
