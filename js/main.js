@@ -1,86 +1,116 @@
-// App entry point. For build step 1 this shows the shell: theme toggle,
-// the (still empty) game list, and a static preview of the playing-screen
-// look so both themes can be checked. Real screens arrive in steps 2 and 3.
+// App entry point: holds what's on screen, saves it, and redraws.
+// Each screen lives in js/ui/ and only describes what to show and what
+// its buttons do.
 
 import '../games/index.js';
-import { gamesByGroup } from './core/registry.js';
+import { listGames } from './core/registry.js';
+import { load, save } from './core/store.js';
 import { getTheme, setTheme, applyTheme } from './core/theme.js';
+import { tabBar } from './ui/html.js';
+import { renderSetup, setupActions, setupForms, onCustomInput, enableDrag } from './ui/setupScreen.js';
+import { renderPlayers, playersActions, playersForms } from './ui/playersScreen.js';
+import { renderMatch, matchActions } from './ui/matchScreen.js';
 
 const app = document.getElementById('app');
 
-function render() {
-  const theme = getTheme();
-  const groups = gamesByGroup();
-  const gameCount = Object.values(groups).flat().length;
+const state = {
+  tab: 'home',
+  roster: load('roster', []),
+  setup: {
+    gameId: listGames()[0].id,
+    options: {},
+    entries: [],
+    teams: false,
+    random: false,
+    ...load('setup', {}),
+  },
+  match: null, // the game being played (saved and resumable from step 6)
+  ui: {},      // short-lived screen state: open panels, error messages
+};
+// A saved game that no longer exists falls back to the first game.
+if (!listGames().some((g) => g.id === state.setup.gameId)) state.setup.gameId = listGames()[0].id;
 
-  app.innerHTML = `
-    <header class="topbar">
-      <h1>Dart Scoreboard</h1>
-      <div class="segmented" role="group" aria-label="Theme">
-        <button data-theme-choice="dark" aria-pressed="${theme === 'dark'}">Dark</button>
-        <button data-theme-choice="light" aria-pressed="${theme === 'light'}">Light</button>
-      </div>
-    </header>
+const ctx = {
+  state,
+  get theme() { return getTheme(); },
+  setUi(patch) { state.ui = { ...state.ui, ...patch }; render(); },
+  setSetup(change) {
+    state.setup = change(state.setup);
+    save('setup', state.setup);
+    render();
+  },
+  setRoster(roster) {
+    state.roster = roster;
+    save('roster', roster);
+    // Anyone removed from the list is also taken out of the game being set up.
+    const ids = new Set(roster.map((p) => p.id));
+    state.setup = { ...state.setup, entries: state.setup.entries.filter((e) => ids.has(e.playerId)) };
+    save('setup', state.setup);
+    render();
+  },
+  startMatch(match) { state.match = match; state.ui = {}; render(); },
+  leaveMatch() { state.match = null; render(); },
+};
+// Clean up on load too, in case the saved list and setup ever disagree.
+ctx.setRoster(state.roster);
 
-    <section class="section">
-      <h2>Games</h2>
-      ${gameCount
-        ? Object.entries(groups).filter(([, list]) => list.length)
-            .map(([group, list]) => `<p class="note"><b>${group}:</b> ${list.map((g) => g.name).join(', ')}</p>`).join('')
-        : `<p class="note">No games yet. X01 arrives in build step 3.
-             Engine checks: <a href="tests/">run the tests</a>.</p>`}    </section>
+const actions = {
+  ...setupActions,
+  ...playersActions,
+  ...matchActions,
+  tab: (c, el) => { state.tab = el.dataset.tab; state.ui = {}; render(); window.scrollTo(0, 0); },
+  theme: (c, el) => { setTheme(el.dataset.themeChoice); render(); },
+};
+const forms = { ...setupForms, ...playersForms };
 
-    <section class="section" aria-label="Look preview">
-      <h2>Look preview <span class="note">(not playable yet)</span></h2>
-      <div class="game-header"><span>X01 · 501 · Double out</span><span>Round 4</span></div>
-      <div class="cards">
-        <div class="card thrower">
-          <div>
-            <div class="name">Mark</div>
-            <div class="slots">
-              <div class="slot">T20</div><div class="slot empty">–</div><div class="slot empty">–</div>
-            </div>
-          </div>
-          <div class="score">132</div>
-        </div>
-        <div class="card next">
-          <div class="name">Dean <span class="tag">Next</span></div><div class="score">301</div>
-        </div>
-        <div class="card"><div class="name">Ludwig</div><div class="score">245</div></div>
-        <div class="card"><div class="name">Adam</div><div class="score">188</div></div>
-      </div>
-      <div class="hint"><span class="label">Out:</span><span>T20</span><span>D16</span><span></span></div>
-    </section>
-
-    <nav class="keypad" aria-label="Dart entry (preview)">
-      ${[...Array(20)].map((_, i) => `<button class="key">${i + 1}</button>`).join('')}
-      <button class="key">25</button>
-      <div class="bottom">
-        <button class="key">0</button>
-        <button class="key double" data-mod>DOUBLE</button>
-        <button class="key triple" data-mod>TRIPLE</button>
-        <button class="key undo">Undo</button>
-      </div>
-    </nav>
-  `;
-
-  app.querySelectorAll('[data-theme-choice]').forEach((btn) =>
-    btn.addEventListener('click', () => { setTheme(btn.dataset.themeChoice); render(); }));
-
-  // Preview only: show that the modifier keys toggle.
-  app.querySelectorAll('[data-mod]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      const on = btn.getAttribute('aria-pressed') !== 'true';
-      app.querySelectorAll('[data-mod]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
-      btn.setAttribute('aria-pressed', String(on));
-    }));
+function comingSoon(title, step) {
+  return `<header class="topbar"><h1>${title}</h1></header>
+    <main class="screen"><section class="section"><p class="note">Coming in build step ${step}.</p></section></main>`;
 }
+
+function render() {
+  if (state.match) {
+    app.innerHTML = renderMatch(ctx);
+    return;
+  }
+  const screens = {
+    home: () => renderSetup(ctx),
+    players: () => renderPlayers(ctx),
+    stats: () => comingSoon('Stats', 9),
+    history: () => comingSoon('History', 6),
+    settings: () => comingSoon('Settings', 10),
+  };
+  app.innerHTML = screens[state.tab]() + tabBar(state.tab);
+  if (state.tab === 'home') enableDrag(ctx, app);
+  app.querySelector('[data-autofocus]')?.focus();
+}
+
+// One listener for every button on every screen.
+app.addEventListener('click', (ev) => {
+  const el = ev.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  actions[el.dataset.act]?.(ctx, el);
+});
+app.addEventListener('submit', (ev) => {
+  ev.preventDefault();
+  const typed = ev.target.name?.value ?? '';
+  forms[ev.target.dataset.form]?.(ctx, ev.target);
+  // The screen was redrawn: put the cursor back, and if there was a problem
+  // (e.g. a duplicate name) keep what was typed so it can be fixed.
+  const input = app.querySelector(`[data-form="${ev.target.dataset.form}"] input`);
+  if (input) {
+    if (state.ui.setupError || state.ui.playersError) input.value = typed;
+    input.focus();
+  }
+});
+app.addEventListener('change', (ev) => {
+  if (ev.target.dataset.custom) onCustomInput(ctx, ev.target);
+});
 
 applyTheme(getTheme());
 render();
 
-// Offline support. Service workers only run on http://localhost or https.
-// It saves a copy of the app on the phone so it opens with no internet.
+// Offline support: saves a copy of the app on the phone so it opens with no internet.
 // (Players never see this. Developers can check it on the tests page.)
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('Service worker not registered:', err));

@@ -5,6 +5,9 @@
 import { makeDart, dartLabel, dartScore, isValidDart } from '../js/core/dart.js';
 import { registerGame, getGame, validateGame, defaultOptions, _clearRegistry } from '../js/core/registry.js';
 import { createMatch, computeState, throwDart, undo, getOnDeck } from '../js/core/engine.js';
+import { addPlayer, renamePlayer, removePlayer, MAX_ROSTER, MAX_NAME } from '../js/core/roster.js';
+import { nextOptionValue, optionLabel, validateSetup, nextTeam, buildSides, moveItem } from '../js/core/setup.js';
+import x01 from '../games/x01.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -210,6 +213,100 @@ test('a match survives a save/load round trip (plain JSON)', () => {
   m = play(m, [D(20, 3), D(19, 2), D(0), D(25, 2)]);
   const loaded = JSON.parse(JSON.stringify(m));
   eq(computeState(loaded), computeState(m));
+});
+
+// ---------- roster (saved player list) ----------
+let seq = 0;
+const fakeId = () => 'id' + (++seq);
+test('add players, tidy spaces in names', () => {
+  let r = addPlayer([], '  Mark  ', fakeId);
+  r = addPlayer(r, 'Dean   Smith', fakeId);
+  eq(r.map((p) => p.name), ['Mark', 'Dean Smith']);
+});
+test('duplicate names refused, ignoring capitals', () => {
+  const r = addPlayer([], 'Mark', fakeId);
+  throws(() => addPlayer(r, 'mark', fakeId), 'duplicate');
+});
+test('empty or too-long names refused', () => {
+  throws(() => addPlayer([], '   ', fakeId), 'empty');
+  throws(() => addPlayer([], 'x'.repeat(MAX_NAME + 1), fakeId), 'too long');
+});
+test('roster is capped at 15', () => {
+  let r = [];
+  for (let i = 0; i < MAX_ROSTER; i++) r = addPlayer(r, 'P' + i, fakeId);
+  throws(() => addPlayer(r, 'One more', fakeId), '16th player');
+});
+test('rename keeps the id; renaming to own name is fine', () => {
+  let r = addPlayer([], 'Mark', fakeId);
+  const id = r[0].id;
+  r = renamePlayer(r, id, 'Marky');
+  eq(r[0], { id, name: 'Marky' });
+  r = renamePlayer(r, id, 'MARKY');
+  eq(r[0].name, 'MARKY');
+});
+test('remove a player', () => {
+  let r = addPlayer(addPlayer([], 'A', fakeId), 'B', fakeId);
+  r = removePlayer(r, r[0].id);
+  eq(r.map((p) => p.name), ['B']);
+});
+
+// ---------- setup screen logic ----------
+const x01Like = { name: 'X01', minPlayers: 1, maxPlayers: 5, teams: true, options: x01.options };
+const pick = (...spec) => spec.map(([name, team], i) => ({ playerId: 'p' + i, name, team }));
+const opts = { start: 501, in: 'open', out: 'double', hints: true };
+
+test('X01 module passes the registry checks', () => {
+  validateGame(x01);
+});
+test('option tiles cycle and wrap; custom start comes after 701', () => {
+  const start = x01.options.find((o) => o.id === 'start');
+  eq(nextOptionValue(start, 301), 501);
+  eq(nextOptionValue(start, 701), 'custom');
+  eq(nextOptionValue(start, 'custom'), 301);
+  eq(nextOptionValue(start, 401), 301, 'typed custom value moves on to 301');
+  eq(optionLabel(start, 401), '401');
+  const out = x01.options.find((o) => o.id === 'out');
+  eq(nextOptionValue(out, 'master'), 'open');
+  eq(nextOptionValue(x01.options.find((o) => o.id === 'hints'), true), false);
+});
+test('start is blocked until a custom number is typed', () => {
+  eq(validateSetup(x01Like, pick(['Ann']), { teams: false, options: { ...opts, start: 'custom' } }), 'Enter a custom start');
+  eq(validateSetup(x01Like, pick(['Ann']), { teams: false, options: { ...opts, start: 401 } }), null);
+});
+test('players: need at least one, at most five', () => {
+  eq(validateSetup(x01Like, [], { teams: false, options: opts }), 'Add a player');
+  eq(validateSetup(x01Like, pick(['a'], ['b'], ['c'], ['d'], ['e'], ['f']), { teams: false, options: opts }), 'X01 allows at most 5 players');
+});
+test('teams: 2 or 3 per team, uneven 2 + 3 allowed', () => {
+  const ok = pick(['a', 'A'], ['b', 'B'], ['c', 'A'], ['d', 'B'], ['e', 'B']);
+  eq(validateSetup(x01Like, ok, { teams: true, options: opts }), null);
+  const lonely = pick(['a', 'A'], ['b', 'B'], ['c', 'A']);
+  eq(validateSetup(x01Like, lonely, { teams: true, options: opts }), 'Team B needs at least 2 players');
+  const big = pick(['a', 'A'], ['b', 'A'], ['c', 'A'], ['d', 'A'], ['e', 'B'], ['f', 'B']);
+  eq(validateSetup(x01Like, big, { teams: true, options: opts }), 'Team A has more than 3 players');
+});
+test('team badge cycles A to E and back', () => {
+  eq(['A', 'B', 'C', 'D', 'E'].map(nextTeam), ['B', 'C', 'D', 'E', 'A']);
+});
+test('sides follow list order; teammates throw in list order', () => {
+  const entries = pick(['Ann', 'B'], ['Bob', 'A'], ['Cat', 'B'], ['Dan', 'A']);
+  eq(buildSides(entries, { teams: true, random: false }), [
+    { name: 'Team B', members: ['Ann', 'Cat'] },
+    { name: 'Team A', members: ['Bob', 'Dan'] },
+  ]);
+  eq(buildSides(pick(['Ann'], ['Bob']), { teams: false, random: false }), [
+    { name: 'Ann', members: ['Ann'] }, { name: 'Bob', members: ['Bob'] },
+  ]);
+});
+test('random order shuffles but keeps everyone', () => {
+  let n = 0;
+  const rng = () => [0.1, 0.9, 0.5, 0.3][n++ % 4];
+  const sides = buildSides(pick(['a'], ['b'], ['c'], ['d']), { teams: false, random: true }, rng);
+  eq(sides.map((s) => s.name).sort(), ['a', 'b', 'c', 'd']);
+});
+test('drag to reorder moves one player', () => {
+  eq(moveItem(['a', 'b', 'c', 'd'], 0, 2), ['b', 'c', 'a', 'd']);
+  eq(moveItem(['a', 'b', 'c', 'd'], 3, 0), ['d', 'a', 'b', 'c']);
 });
 
 // ---------- report ----------

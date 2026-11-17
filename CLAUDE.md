@@ -2,7 +2,7 @@
 
 Working title: Dart Scoreboard. A phone-first darts scoring app covering many games, built so new games can be added later as self-contained modules.
 
-Status: building. Spec written 2026-11-14, updated 2026-11-16. Build step 1 done 2026-11-17; next is step 2. Items under "Open decisions" are not settled — ask Mark before building them.
+Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1 and 2 done 2026-11-17; next is step 3. Items under "Open decisions" are not settled — ask Mark before building them.
 
 ## Ground rules
 
@@ -172,7 +172,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 ## Build order
 
 1. [x] Project skeleton, PWA shell, game registry, module interface, dart log with replay-based undo. Done 2026-11-17: 23 engine tests pass (`tests/`); Dark/Light theme variables and a static look preview on the home page. Offline service worker still to be confirmed in a normal browser (the in-app preview browser blocks service workers).
-2. Roster, player/team selection, throw order, setup screen.
+2. [x] Roster, player/team selection, throw order, setup screen. Done 2026-11-17: Players tab (add, rename, remove, max 15), setup screen with game picker, option tiles, Random order and Teams switches, drag to reorder, Start opens a placeholder playing screen showing throw order. Bottom navigation in place; Stats, History and Settings are placeholders. 38 tests pass.
 3. Entry pad and scoreboard layout, wired to X01 (all in/out options).
 4. Cricket and its variants.
 5. Baseball and Assassin.
@@ -192,6 +192,9 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - 2026-11-17: Reference screenshots moved to `reference/` and git-ignored, so another app's artwork is never pushed.
 - 2026-11-17: Thrower card keeps its score on the right, in one vertical line with every other score; name and dart slots sit on the left.
 - 2026-11-17: Offline status is not shown to players (the app never needs internet after the first load). Developer check lives on the tests page.
+- 2026-11-17: X01's settings list (start 301/501/701/custom, In, Out, Out hints) added in step 2 so the setup screen can be tried; scoring stays in step 3. Defaults: 501, Open in, Double out, hints on.
+- 2026-11-17: Teams are formed by tapping a team badge (A–E) next to each player, so uneven teams like 2 + 3 work. Badges are letters only, no team colors. Teams throw in the order they first appear in the list; teammates in list order. Random order shuffles teams and teammates at Start.
+- 2026-11-17: The last setup (game, options, players, switches) is remembered on the device.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 
 ## Open decisions

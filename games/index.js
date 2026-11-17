@@ -3,8 +3,11 @@
 //
 // Each game module provides:
 //   id, name, group ('Core' | 'Cricket' | 'Party' | 'Practice'), rules (short text)
-//   options: [{ id, label, type: 'choice' | 'number' | 'toggle', choices?, default }]
-//   minPlayers, maxPlayers (max 5), teams (true/false)
+//   options: settings shown as tiles on the setup screen. Each is one of:
+//     { id, label, type: 'choice', choices: [{ value, label }], default, custom?: { min, max } }
+//     { id, label, type: 'toggle', default: true | false }
+//     (custom lets the player type their own number, e.g. a 401 start)
+//   minPlayers, maxPlayers (max 5 players or teams), teams (true/false)
 //   init(sides, options)               -> starting game state (plain data)
 //   applyDart(state, dart, context)    -> { state, endTurn }   (endTurn: true on bust, win, etc.)
 //       context = { side, thrower, round, dartIndex, dartsThisTurn, sideCount }
@@ -17,9 +20,6 @@
 // The shell handles turn order, teams, the dart log and undo, so games don't.
 
 import { registerGame } from '../js/core/registry.js';
+import x01 from './x01.js';
 
-// Games are added here from build step 3 onward, e.g.:
-// import x01 from './x01.js';
-// registerGame(x01);
-
-export { registerGame };
+registerGame(x01);
