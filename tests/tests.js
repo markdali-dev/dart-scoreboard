@@ -7,7 +7,7 @@ import { registerGame, getGame, validateGame, defaultOptions, _clearRegistry } f
 import { createMatch, computeState, throwDart, undo, getOnDeck } from '../js/core/engine.js';
 import { addPlayer, renamePlayer, removePlayer, MAX_ROSTER, MAX_NAME } from '../js/core/roster.js';
 import { nextOptionValue, optionLabel, validateSetup, teamChoices, buildSides, moveItem } from '../js/core/setup.js';
-import x01 from '../games/x01.js';
+import x01, { findCheckout } from '../games/x01.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -314,6 +314,114 @@ test('random order shuffles but keeps everyone', () => {
 test('drag to reorder moves one player', () => {
   eq(moveItem(['a', 'b', 'c', 'd'], 0, 2), ['b', 'c', 'a', 'd']);
   eq(moveItem(['a', 'b', 'c', 'd'], 3, 0), ['d', 'a', 'b', 'c']);
+});
+
+// ---------- X01 ----------
+function x01Match(options = {}, sides = players('Ann', 'Bob')) {
+  try { getGame('x01'); } catch { registerGame(x01); }
+  return createMatch({ gameId: 'x01', options: { start: 501, in: 'open', out: 'double', ...options }, sides });
+}
+// Plays darts from short labels: 'T20', 'D16', '5', 'B' (inner bull), '25', '0' (miss).
+function darts(match, labels) {
+  return labels.split(' ').reduce((m, t) => {
+    if (t === 'B') return throwDart(m, D(25, 2));
+    const mult = t[0] === 'T' ? 3 : t[0] === 'D' ? 2 : 1;
+    return throwDart(m, D(Number(mult > 1 ? t.slice(1) : t), mult));
+  }, match);
+}
+const scores = (m) => computeState(m).game.scores;
+
+test('X01: three darts count down, then the next player', () => {
+  const m = darts(x01Match(), 'T20 T20 T20');
+  eq(scores(m), [321, 501]); eq(computeState(m).turn.side, 1, 'Bob is up');
+});
+test('X01: going below zero is a bust, score goes back, turn ends', () => {
+  const m = darts(x01Match({ start: 50 }), 'T10 T10'); // 50 -> 20 -> -10
+  const s = computeState(m);
+  eq(s.game.scores, [50, 50]); eq(s.turn.side, 1, 'turn ended early'); eq(s.game.event.kind, 'bust');
+});
+test('X01 double out: D20 from 40 wins', () => {
+  const s = computeState(darts(x01Match({ start: 40 }), 'D20'));
+  eq(s.over, true); eq(s.result.winners, [0]);
+});
+test('X01 double out: reaching zero on a single is a bust', () => {
+  const s = computeState(darts(x01Match({ start: 40 }), '20 20'));
+  eq(s.game.scores[0], 40); eq(s.over, false);
+});
+test('X01 double out: leaving 1 is a bust', () => {
+  eq(scores(darts(x01Match({ start: 41 }), 'D20'))[0], 41);
+});
+test('X01 double out: inner bull counts as a double', () => {
+  eq(computeState(darts(x01Match({ start: 50 }), 'B')).over, true);
+});
+test('X01 open out: any dart can finish', () => {
+  eq(computeState(darts(x01Match({ start: 7, out: 'open' }), '7')).over, true);
+});
+test('X01 triple out: leaving 2 is a bust; a triple finishes', () => {
+  eq(scores(darts(x01Match({ start: 62, out: 'triple' }), 'T20'))[0], 62);
+  eq(computeState(darts(x01Match({ start: 60, out: 'triple' }), 'T20')).over, true);
+  eq(computeState(darts(x01Match({ start: 40, out: 'triple' }), 'D20')).over, false, 'double does not finish');
+});
+test('X01 master out: double or triple finishes', () => {
+  eq(computeState(darts(x01Match({ start: 57, out: 'master' }), 'T19')).over, true);
+  eq(computeState(darts(x01Match({ start: 32, out: 'master' }), 'D16')).over, true);
+});
+test('X01 double in: nothing counts until a double; the double counts', () => {
+  const m = darts(x01Match({ in: 'double' }), 'T20 20 D10');
+  eq(scores(m)[0], 481); eq(computeState(m).game.opened[0], true);
+});
+test('X01 triple in and master in', () => {
+  eq(scores(darts(x01Match({ in: 'triple' }), 'D20 T5 20'))[0], 501 - 15 - 20);
+  eq(scores(darts(x01Match({ in: 'master' }), '20 D5 20'))[0], 501 - 10 - 20);
+});
+test('X01: a bust in the opening turn undoes the double in too', () => {
+  const m = darts(x01Match({ start: 30, in: 'double' }), 'D10 T20');
+  const s = computeState(m);
+  eq(s.game.scores[0], 30); eq(s.game.opened[0], false);
+});
+test('X01: average per 3 darts and last turn', () => {
+  const sb = x01.getScoreboard(computeState(darts(x01Match(), 'T20 T20 T20')).game);
+  eq(sb[0].stats, ['Last 180', 'Avg 180.0', '3 darts']);
+});
+test('X01: 100+ turn gives a big-score event', () => {
+  eq(computeState(darts(x01Match(), 'T20 T20 20')).game.event, { kind: 'big', text: '140' });
+});
+test('X01: teammates share one score', () => {
+  const m = darts(x01Match({}, [{ name: 'Team A', members: ['Ann', 'Ade'] }, { name: 'Team B', members: ['Bob', 'Ben'] }]), 'T20 T20 T20 0 0 0');
+  const s = computeState(m);
+  eq(s.game.scores, [321, 501]); eq(s.turn.thrower, 'Ade');
+});
+test('X01: undo steps back through a bust', () => {
+  let m = darts(x01Match({ start: 50 }), 'T10 T10');
+  m = undo(m);
+  const s = computeState(m);
+  eq(s.game.scores[0], 20); eq(s.turn.side, 0); eq(s.turn.darts.length, 1);
+});
+
+const route = (score, n, rule = 'double') => findCheckout(score, n, rule)?.map(dartLabel).join(' ') ?? null;
+test('checkout: classic routes', () => {
+  eq(route(170, 3), 'T20 T20 BULL');
+  eq(route(100, 3), 'T20 D20');
+  eq(route(141, 3), 'T20 T19 D12');
+  eq(route(60, 3), '20 D20');
+  eq(route(40, 3), 'D20');
+  eq(route(32, 3), 'D16');
+  eq(route(50, 1), 'BULL');
+});
+test('checkout: impossible scores and too few darts give no hint', () => {
+  eq(route(169, 3), null);
+  eq(route(159, 3), null);
+  eq(route(170, 2), null);
+  eq(route(1, 3), null);
+});
+test('checkout: other Out rules', () => {
+  eq(route(60, 1, 'triple'), 'T20');
+  eq(route(57, 1, 'master'), 'T19');
+  eq(route(7, 1, 'open'), '7');
+});
+test('X01 hint: shows the In rule until the player has started', () => {
+  const s = computeState(x01Match({ in: 'double' }));
+  eq(x01.getHint(s.game, { side: 0, dartsLeft: 3 }), { label: 'In:', parts: ['Hit a double to start'] });
 });
 
 // ---------- report ----------

@@ -334,3 +334,53 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .sheet-row[aria-pressed="true"] { background: linear-gradient(var(--thrower-top), var(--thrower)); color: var(--thrower-text); }
 .sheet-label { font-size: 1.35rem; font-weight: 700; }
 .sheet-desc { font-size: 1rem; font-weight: 500; opacity: 0.85; }
+
+/* ================= step 3: live playing screen ================= */
+
+.match { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
+.match-top { padding: 8px var(--gutter) 6px; gap: 10px; }
+.match-top .game-header { flex: 1; padding: 0; gap: 8px; }
+.btn.small-btn { padding: 7px 11px; font-size: 0.95rem; }
+.match .cards { padding: 0 var(--gutter); flex: 1; min-height: 0; overflow-y: auto; }
+.match .hint { margin: var(--gap) var(--gutter) 0; }
+.hint-wide { grid-column: 2 / -1; text-align: left !important; font-size: 1.1rem; }
+
+.card-left { min-width: 0; }
+.stats { font-size: 0.9rem; font-weight: 500; opacity: 0.8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.turn-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.turn-total { font-size: 1.5rem; font-weight: 700; min-width: 2ch; }
+
+.key:disabled { opacity: 0.3; box-shadow: none; }
+.key.undo:disabled { opacity: 0.45; }
+
+/* 4 or 5 players/teams: tighter cards so all fit with the keypad */
+.match.n4 .card, .match.n5 .card { padding-top: 5px; padding-bottom: 5px; }
+.match.n4 .card .score, .match.n5 .card .score { font-size: 1.8rem; }
+.match.n4 .card.next .score, .match.n5 .card.next .score { font-size: 2.1rem; }
+.match.n4 .card.thrower .score, .match.n5 .card.thrower .score { font-size: 3.2rem; }
+.match.n5 .card.thrower { padding-top: 8px; padding-bottom: 8px; }
+.match.n5 .stats { display: none; }
+.match.n5 .card.thrower .stats { display: block; }
+.match.n4 .cards, .match.n5 .cards { gap: 6px; }
+
+/* short feedback pop-ups */
+.toast {
+  position: fixed; left: 50%; top: 30%; transform: translateX(-50%); z-index: 20;
+  padding: 14px 34px; border-radius: 18px; font-size: 2.6rem; font-weight: 700; letter-spacing: 0.04em;
+  box-shadow: var(--shadow-thrower); pointer-events: none;
+  animation: pop 0.18s ease-out;
+}
+.toast.bust { background: var(--danger); color: var(--danger-text); text-transform: uppercase; }
+.toast.big { background: linear-gradient(var(--thrower-top), var(--thrower)); color: var(--thrower-text); }
+@keyframes pop { from { transform: translateX(-50%) scale(0.7); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+
+/* game over */
+.win-title { font-size: 1.8rem; font-weight: 700; text-align: center; margin: 6px 0 14px; color: var(--thrower-top); }
+.sheet-row.danger { background: var(--danger); color: var(--danger-text); }
+.sheet > .note { margin: 6px 0 12px; }
+.match-top .game-header { font-size: 1rem; align-items: center; }
+.match-top .game-header span:last-child { white-space: nowrap; }
+.btn.small-btn { font-size: 1.4rem; line-height: 1; padding: 6px 13px 8px; }
+.card.thrower .slots { margin-top: 6px; }
+.stats b { font-weight: 700; opacity: 1; }
+.card.thrower .stats { opacity: 0.95; margin-top: 6px; }

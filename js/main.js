@@ -49,7 +49,8 @@ const ctx = {
     render();
   },
   startMatch(match) { state.match = match; state.ui = {}; render(); },
-  leaveMatch() { state.match = null; render(); },
+  setMatch(match) { state.match = match; render(); },
+  leaveMatch() { state.match = null; state.ui = {}; render(); },
 };
 // Clean up on load too, in case the saved list and setup ever disagree.
 ctx.setRoster(state.roster);

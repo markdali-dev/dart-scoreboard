@@ -2,7 +2,7 @@
 
 Working title: Dart Scoreboard. A phone-first darts scoring app covering many games, built so new games can be added later as self-contained modules.
 
-Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1 and 2 done 2026-11-17; next is step 3. Items under "Open decisions" are not settled — ask Mark before building them.
+Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17; next is step 4 (Cricket). Items under "Open decisions" are not settled — ask Mark before building them.
 
 ## Ground rules
 
@@ -173,7 +173,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 
 1. [x] Project skeleton, PWA shell, game registry, module interface, dart log with replay-based undo. Done 2026-11-17: 23 engine tests pass (`tests/`); Dark/Light theme variables and a static look preview on the home page. Offline service worker still to be confirmed in a normal browser (the in-app preview browser blocks service workers).
 2. [x] Roster, player/team selection, throw order, setup screen. Done 2026-11-17: Players tab (add, rename, remove, max 15), setup screen with game picker, option tiles, Random order and Teams switches, drag to reorder, Start opens a placeholder playing screen showing throw order. Bottom navigation in place; Stats, History and Settings are placeholders. 38 tests pass.
-3. Entry pad and scoreboard layout, wired to X01 (all in/out options).
+3. [x] Entry pad and scoreboard layout, wired to X01 (all in/out options). Done 2026-11-17: X01 scoring for every In/Out rule, busts (score and any In opened that turn reset), win screen (Play again, New game, Undo last dart), checkout hints after every dart, "Bust" and 100+ score pop-ups, per-card average, darts thrown and last turn. All 5 players fit with the keypad on a 375×667 screen. 59 tests pass.
 4. Cricket and its variants.
 5. Baseball and Assassin.
 6. Persistence: resume, history, dart log.
@@ -196,7 +196,8 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - 2026-11-17: Teams are formed by tapping a team badge (A–E) next to each player, so uneven teams like 2 + 3 work. Badges are letters only, no team colors. Teams throw in the order they first appear in the list; teammates in list order. Random order shuffles teams and teammates at Start.
 - 2026-11-17: The last setup (game, options, players, switches) is remembered on the device.
 - 2026-11-17 (after Mark tested step 2): Out hints setting removed, hints always on. Option tiles (Start, In, Out) open a pop-up menu from the bottom with big rows and a one-line explanation each (e.g. Master = a double or a triple), instead of cycling. Team letters also open a pop-up, offering only as many teams as the players can fill (2 per team, max 5) and showing who is already on each team.
-- 2026-11-17: GitHub repo `dart-scoreboard` created by Mark and pushed. Pages not set up yet.
+- 2026-11-17: GitHub repo `dart-scoreboard` created by Mark and pushed. Pages not set up yet. Claude pushes after each commit.
+- 2026-11-17 (step 3): Player cards stay in a fixed order; the green card moves down the list. The turn total sits in the small line under the dart slots ("Turn 57 · Avg … · … darts") so it never collides with the big score. Average = points scored per 3 darts, busted turns count as 0. Checkout route picks the fewest darts, then the easiest (T20/T19 to set up, D20/D16 preferred to finish). Leaving a game mid-way asks first, because resume comes in step 6.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 
 ## Open decisions
