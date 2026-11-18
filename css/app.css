@@ -469,3 +469,9 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 
 /* word keys like "Bull" */
 .key.word { font-size: 1.15rem; }
+
+/* Cricket board v3 (Mark, 2026-11-18): rows about 35% taller (40 -> 54px) where the
+   screen has room, never shorter than 40px; marks grow with the row. */
+.marks-board { grid-template-rows: auto repeat(var(--rows), minmax(40px, 54px)) auto; }
+.mcell { overflow: hidden; }
+.mark { width: auto; height: min(48px, calc(100% - 6px)); aspect-ratio: 1; stroke-width: 3.4; }
