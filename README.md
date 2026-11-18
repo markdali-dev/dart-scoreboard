@@ -3,8 +3,11 @@
 A phone-first darts scoring app. Plain HTML/CSS/JavaScript, works offline, no accounts, no build step.
 The plan, rules and progress live in `CLAUDE.md`.
 
-**Playable now:** X01 (301 / 501 / 701 / custom, every In and Out rule, checkout hints, teams).
-Cricket and the other games are on the way.
+**Playable now:**
+- X01 (301 / 501 / 701 / custom, every In and Out rule, checkout hints, teams)
+- Cricket (No score / Points / Cut-throat, standard or wild card numbers, teams)
+
+The other games are on the way.
 
 ## Run it on this PC
 

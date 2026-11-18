@@ -8,6 +8,7 @@ import { createMatch, computeState, throwDart, undo, getOnDeck } from '../js/cor
 import { addPlayer, renamePlayer, removePlayer, MAX_ROSTER, MAX_NAME } from '../js/core/roster.js';
 import { nextOptionValue, optionLabel, validateSetup, teamChoices, buildSides, moveItem } from '../js/core/setup.js';
 import x01, { findCheckout } from '../games/x01.js';
+import cricket from '../games/cricket.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -422,6 +423,72 @@ test('checkout: other Out rules', () => {
 test('X01 hint: shows the In rule until the player has started', () => {
   const s = computeState(x01Match({ in: 'double' }));
   eq(x01.getHint(s.game, { side: 0, dartsLeft: 3 }), { label: 'In:', parts: ['Hit a double to start'] });
+});
+
+// ---------- Cricket ----------
+function cricketMatch(options = {}, sides = players('Ann', 'Bob'), rng) {
+  try { getGame('cricket'); } catch { registerGame(cricket); }
+  return createMatch({ gameId: 'cricket', options: { scoring: 'none', numbers: 'standard', ...options }, sides }, rng);
+}
+const cs = (m) => computeState(m);
+const close20s = 'T20 T19 T18 0 0 0 T17 T16 T15 0 0 0 B 25'; // Ann closes everything (Bob misses)
+
+test('Cricket module passes the registry checks', () => validateGame(cricket));
+test('Cricket: single, double, triple give 1, 2, 3 marks; bull 1 or 2', () => {
+  const s = cs(darts(cricketMatch(), '20 D19 T18 0 0 0 25 B'));
+  eq(s.game.marks[0], [1, 2, 3, 0, 0, 0, 3]);
+});
+test('Cricket: numbers not in play count for nothing', () => {
+  const s = cs(darts(cricketMatch(), '14 T5 D1'));
+  eq(s.game.marks[0], [0, 0, 0, 0, 0, 0, 0]); eq(s.turn.side, 1);
+});
+test('Cricket no score: first to close everything wins', () => {
+  const s = cs(darts(cricketMatch(), close20s));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.game.points, [0, 0]);
+});
+test('Cricket points: extra hits score while an opponent is open', () => {
+  const s = cs(darts(cricketMatch({ scoring: 'points' }), 'T20 T20 20'));
+  eq(s.game.points, [80, 0]);
+});
+test('Cricket points: no score once everyone has closed the number', () => {
+  const s = cs(darts(cricketMatch({ scoring: 'points' }), 'T20 0 0 T20 0 0 T20'));
+  eq(s.game.points, [0, 0]); eq(cricket.getRows(s.game)[0].dead, true);
+});
+test('Cricket points: closing everything while behind does not win', () => {
+  // Bob closes 20 and scores 60, Ann then closes everything with 0 points.
+  const m = darts(cricketMatch({ scoring: 'points' }), '0 0 0 T20 T20 0 T20 T19 T18 0 0 0 T17 T16 T15 0 0 0 B 25');
+  const s = cs(m);
+  eq(s.game.points, [0, 60]); eq(s.over, false, 'Ann closed all but trails');
+});
+test('Cricket cut-throat: extra hits go to opponents who have not closed', () => {
+  const sides = players('Ann', 'Bob', 'Cat');
+  const s = cs(darts(cricketMatch({ scoring: 'cutthroat' }, sides), 'T20 0 0 T20 0 0 0 0 0 T20'));
+  eq(s.game.points, [0, 0, 60], 'only Cat, who has not closed 20, gets the points');
+  const s2 = cs(darts(cricketMatch({ scoring: 'cutthroat' }, sides), 'T20 D20'));
+  eq(s2.game.points, [0, 40, 40]);
+});
+test('Cricket cut-throat: closing everything with the fewest points wins', () => {
+  const s = cs(darts(cricketMatch({ scoring: 'cutthroat' }), close20s));
+  eq(s.over, true); eq(s.result.winners, [0]);
+});
+test('Cricket: teammates share marks', () => {
+  const sides = [{ name: 'Team A', members: ['Ann', 'Ade'] }, { name: 'Team B', members: ['Bob', 'Ben'] }];
+  const s = cs(darts(cricketMatch({}, sides), '20 20 0 0 0 0 20'));
+  eq(s.game.marks[0][0], 3); eq(s.turn.thrower, 'Ade');
+});
+test('Cricket wild card: 6 different numbers plus bull, fixed for the whole game', () => {
+  let n = 0;
+  const rng = () => [0.11, 0.73, 0.42, 0.05, 0.91, 0.33, 0.6][n++ % 7];
+  const m = cricketMatch({ numbers: 'wild' }, players('Ann', 'Bob'), rng);
+  const t = m.options.targets;
+  eq(t.length, 7); eq(t[6], 25); eq(new Set(t).size, 7, 'no repeats');
+  eq(t.slice(0, 6).every((x) => x >= 1 && x <= 20), true);
+  eq(cs(throwDart(m, D(t[0], 3))).game.marks[0][0], 3, 'same numbers after a dart (replay)');
+  eq(cricket.getKeys(cs(m).game), t, 'keypad shows only these numbers');
+});
+test('Cricket: marks per round (extra hits count only when they score)', () => {
+  eq(cricket.getScoreboard(cs(darts(cricketMatch(), 'T20 T19 20')).game)[0].stats, ['MPR 6.00']);
+  eq(cricket.getScoreboard(cs(darts(cricketMatch({ scoring: 'points' }), 'T20 T19 20')).game)[0].stats, ['MPR 7.00']);
 });
 
 // ---------- report ----------

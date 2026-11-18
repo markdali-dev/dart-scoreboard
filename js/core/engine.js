@@ -16,7 +16,8 @@ import { isValidDart } from './dart.js';
 
 export const DARTS_PER_TURN = 3;
 
-export function createMatch({ gameId, options, sides }) {
+// rng is only passed by tests; the app uses Math.random for things like wild card numbers.
+export function createMatch({ gameId, options, sides }, rng = Math.random) {
   const game = getGame(gameId);
   if (!Array.isArray(sides) || sides.length < game.minPlayers || sides.length > game.maxPlayers) {
     throw new Error(`${game.name} needs ${game.minPlayers}-${game.maxPlayers} players or teams`);
@@ -28,7 +29,8 @@ export function createMatch({ gameId, options, sides }) {
   }
   return {
     gameId,
-    options: { ...options },
+    // Random choices are made here, once, and saved with the match.
+    options: game.prepareOptions ? game.prepareOptions({ ...options }, rng) : { ...options },
     sides: sides.map((s) => ({ name: s.name, members: [...s.members] })),
     darts: [],
     startedAt: new Date().toISOString(),

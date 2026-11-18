@@ -16,10 +16,19 @@
 //   getScoreboard(state)               -> what to show for each side
 //   getHint(state, context)            -> optional, e.g. a checkout suggestion
 //   isOut(state, side)                 -> optional, true if that side is eliminated
+//   prepareOptions(options, rng)       -> optional, run once at game creation to fix random
+//                                         choices (e.g. wild card numbers) into the saved options
+//   describe(options)                  -> optional, header text like "Cricket · Points"
+//   board: 'marks'                     -> optional, show a marks grid instead of score cards;
+//                                         then also getRows(state) -> [{ label, dead }] and
+//                                         getScoreboard(...)[i].marks -> marks per row
+//   getKeys(state)                     -> optional, the numbers that get keys on the pad
 //
 // The shell handles turn order, teams, the dart log and undo, so games don't.
 
 import { registerGame } from '../js/core/registry.js';
 import x01 from './x01.js';
+import cricket from './cricket.js';
 
 registerGame(x01);
+registerGame(cricket);

@@ -2,7 +2,7 @@
 
 Working title: Dart Scoreboard. A phone-first darts scoring app covering many games, built so new games can be added later as self-contained modules.
 
-Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17; next is step 4 (Cricket). Items under "Open decisions" are not settled — ask Mark before building them.
+Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, step 4 (Cricket) done 2026-11-18; next is step 5 (Baseball and Assassin). Items under "Open decisions" are not settled — ask Mark before building them.
 
 ## Ground rules
 
@@ -97,11 +97,10 @@ Game picker grouped by Core, Cricket, Party, Practice → game options → playe
 
 **Standard Cricket** — numbers 15–20 and bull. Three marks closes a number (single 1, double 2, triple 3 marks; outer bull 1, inner bull 2). Hits on a number you've closed that an opponent hasn't score points. Win: all closed and points equal or ahead.
 
-Variants, each its own entry or an option on the Cricket module:
-- **Cut-throat** — points go to opponents who haven't closed the number; lowest score wins.
-- **No-score** — first to close everything wins, no points.
-- **Wild card** — the numbers in play are chosen at random at game start.
-- **Custom numbers** — players pick which numbers are in play (e.g. extended down to 10).
+Built as one Cricket game with two setup tiles (Mark, 2026-11-18):
+- **Scoring:** No score (default; first to close everything wins), Points (the standard rule above; Mark's group plays with or without points), Cut-throat (extra hits add points to every opponent who hasn't closed that number; close everything with the lowest or equal-lowest score to win).
+- **Numbers:** 15–20 + bull, or Wild card (6 different random numbers from 1–20, plus bull, drawn once at game start and kept for the whole game, including undo).
+- Custom numbers dropped (Mark never plays it; Wild card covers variety).
 
 ### Party
 
@@ -174,7 +173,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 1. [x] Project skeleton, PWA shell, game registry, module interface, dart log with replay-based undo. Done 2026-11-17: 23 engine tests pass (`tests/`); Dark/Light theme variables and a static look preview on the home page. Offline service worker still to be confirmed in a normal browser (the in-app preview browser blocks service workers); see Open decisions.
 2. [x] Roster, player/team selection, throw order, setup screen. Done 2026-11-17: Players tab (add, rename, remove, max 15), setup screen with game picker, option tiles, Random order and Teams switches, drag to reorder, Start opens a placeholder playing screen showing throw order. Bottom navigation in place; Stats, History and Settings are placeholders. 38 tests pass.
 3. [x] Entry pad and scoreboard layout, wired to X01 (all in/out options). Done 2026-11-17: X01 scoring for every In/Out rule, busts (score and any In opened that turn reset), win screen (Play again, New game, Undo last dart), checkout hints after every dart, "Bust" and 100+ score pop-ups, per-card average, darts thrown and last turn. All 5 players fit with the keypad on a 375×667 screen. 59 tests pass.
-4. Cricket and its variants.
+4. [x] Cricket and its variants. Done 2026-11-18: marks grid (numbers down the side, one column per player/team, / X Ⓧ, numbers everyone has closed greyed out), keypad shows only the numbers in play, green turn strip with the thrower's darts and marks per round (MPR). 5 players fit on a 375×667 screen. 71 tests pass.
 5. Baseball and Assassin.
 6. Persistence: resume, history, dart log.
 7. Party games, one at a time.
@@ -198,6 +197,7 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - 2026-11-17 (after Mark tested step 2): Out hints setting removed, hints always on. Option tiles (Start, In, Out) open a pop-up menu from the bottom with big rows and a one-line explanation each (e.g. Master = a double or a triple), instead of cycling. Team letters also open a pop-up, offering only as many teams as the players can fill (2 per team, max 5) and showing who is already on each team.
 - 2026-11-17: GitHub repo `dart-scoreboard` created by Mark and pushed. Pages not set up yet. Claude pushes after each commit.
 - 2026-11-17 (step 3): Player cards stay in a fixed order; the green card moves down the list. The turn total sits in the small line under the dart slots ("Turn 57 · Avg … · … darts") so it never collides with the big score. Average = points scored per 3 darts, busted turns count as 0. Checkout route picks the fewest darts, then the easiest (T20/T19 to set up, D20/D16 preferred to finish). Leaving a game mid-way asks first, because resume comes in step 6.
+- 2026-11-18 (step 4): Games can now fix random choices once at game start (`prepareOptions`), saved with the match so undo/resume replay the same game. Games can also show a marks grid instead of score cards (`board: 'marks'`) and limit the keypad to their numbers (`getKeys`). Cricket marks per round counts marks that close a number plus extra marks that score points.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 
 ## Open decisions
@@ -207,16 +207,13 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - Offline copy (service worker) not yet confirmed in a normal browser. Check: open the app once in Edge or Chrome, then the tests page, "Offline copy" line should say saved.
 - Final app name, if it's ever sold.
 
-## Where we left off (2026-11-17)
+## Where we left off (2026-11-18)
 
-- Steps 1–3 done, committed and pushed. Mark tested X01 himself and it worked well.
-- Next session: build step 4, Cricket and its variants. Before building, confirm with Mark:
-  - Cut-throat: points go to every opponent who hasn't closed that number (standard), lowest score wins?
-  - Wild card: how many numbers are drawn (6 plus bull, like standard?), and can they repeat or include low numbers?
-  - Custom numbers: how they're picked on the setup screen (e.g. a pop-up grid of 1–20 to tick).
-  - Variants as one Cricket game with a "Mode" option tile, or separate games in the Cricket group?
-  - Cricket screen per the Design section: numbers down the side, one column per player, marks / X Ⓧ, keypad shrinks to the numbers in play. Must fit 5 columns without sideways scrolling.
-- The look preview from step 1 is gone; the real playing screen replaced it.
+- Steps 1–4 done, committed and pushed. Mark tested X01 and it worked well; Cricket not yet tested by Mark.
+- Next: step 5, Baseball and Assassin. Assassin rules are fully written above (Mark's house rules). Before building, confirm with Mark:
+  - Baseball: tie-break extra innings, and whether teams are allowed (plan says individual unless Mark says otherwise).
+  - Assassin "Throw" number assignment: how the off-hand throw is entered on screen (likely: each player in turn taps the number they hit; duplicates and bull refused).
+  - Assassin playing screen: cards showing each player's number, lives (0–6) and Assassin status.
 - Test data: the in-app preview browser has made-up players saved; Mark's own browser has his own.
 
 ## Future modules

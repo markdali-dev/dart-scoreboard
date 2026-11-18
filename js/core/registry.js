@@ -24,9 +24,10 @@ export function validateGame(game) {
   for (const fn of REQUIRED_FUNCTIONS) {
     if (typeof game[fn] !== 'function') problems.push(`${fn}()`);
   }
-  for (const fn of ['getHint', 'isOut']) {
+  for (const fn of ['getHint', 'isOut', 'prepareOptions', 'describe', 'getRows', 'getKeys']) {
     if (fn in game && typeof game[fn] !== 'function') problems.push(`${fn}() must be a function if given`);
   }
+  if (game.board === 'marks' && typeof game.getRows !== 'function') problems.push('getRows() (needed for a marks board)');
   if (problems.length) {
     throw new Error(`Game "${game.id ?? '?'}" is missing or has invalid: ${problems.join('; ')}`);
   }

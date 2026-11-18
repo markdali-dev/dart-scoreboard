@@ -384,3 +384,61 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .card.thrower .slots { margin-top: 6px; }
 .stats b { font-weight: 700; opacity: 1; }
 .card.thrower .stats { opacity: 0.95; margin-top: 6px; }
+
+/* ================= step 4: Cricket marks board ================= */
+
+.marks-board {
+  flex: 1; min-height: 0;
+  margin: 0 var(--gutter);
+  display: grid;
+  grid-template-columns: 58px repeat(var(--cols), minmax(0, 1fr));
+  grid-template-rows: auto repeat(var(--rows), minmax(34px, 1fr));
+  gap: 4px;
+}
+.mcorner { }
+.mhead {
+  position: relative;
+  min-width: 0;
+  background: var(--card); color: var(--card-text);
+  border-radius: 12px 12px 6px 6px; box-shadow: var(--shadow-card);
+  padding: 8px 4px 6px; text-align: center;
+}
+.mhead.thrower { background: linear-gradient(var(--thrower-top), var(--thrower)); color: var(--thrower-text); box-shadow: var(--shadow-thrower); }
+.mhead.next { outline: 2px solid var(--next-outline); outline-offset: -2px; }
+.mhead .tag { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); margin: 0; font-size: 0.7rem; padding: 1px 6px; }
+.mname { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mmembers { font-size: 0.78rem; font-weight: 500; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mmembers .up { font-weight: 700; opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+.mpoints { font-size: 1.6rem; font-weight: 700; line-height: 1.1; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+.mlabel {
+  display: grid; place-items: center;
+  border-radius: 10px;
+  background: var(--key); color: var(--key-text);
+  font-size: 1.35rem; font-weight: 700;
+}
+.mlabel.dead { opacity: 0.35; text-decoration: line-through; }
+.mcell {
+  display: grid; place-items: center; min-height: 0;
+  background: var(--card); color: var(--card-text); border-radius: 8px;
+}
+.mcell.thrower { box-shadow: inset 0 0 0 2px var(--thrower-top); }
+.mcell.dead { opacity: 0.45; }
+.mark { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
+
+.turn-strip {
+  display: flex; align-items: center; gap: 10px;
+  margin: var(--gap) var(--gutter) 0; padding: 8px 12px;
+  border-radius: var(--radius-card);
+  background: linear-gradient(var(--thrower-top), var(--thrower)); color: var(--thrower-text);
+  box-shadow: var(--shadow-thrower);
+}
+.strip-name { font-weight: 700; font-size: 1.15rem; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.strip-stat { font-size: 0.95rem; font-weight: 600; white-space: nowrap; }
+.turn-strip .slot { min-width: 48px; font-size: 1.05rem; }
+.match.n5 .marks-board { grid-template-columns: 50px repeat(5, minmax(0, 1fr)); gap: 3px; }
+.match.n5 .mname { font-size: 0.95rem; }
+.match.n5 .mpoints { font-size: 1.35rem; }
+.match.n4 .mname { font-size: 0.95rem; }
+.match.n5 .mname { font-size: 0.85rem; letter-spacing: 0; }
+.match.n4 .mhead, .match.n5 .mhead { padding-left: 2px; padding-right: 2px; }

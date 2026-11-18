@@ -16,20 +16,23 @@ export function renderMatch(ctx) {
   const current = state.over ? -1 : state.turn.side;
   const hint = state.over ? null : game.getHint?.(state.game, { side: current, dartsLeft: DARTS_PER_TURN - state.turn.darts.length });
   const mod = ui.mod ?? 1;
+  const keys = game.getKeys?.(state.game) ?? [...[...Array(20)].map((_, i) => i + 1), 25];
 
   return `
     <div class="match n${match.sides.length}">
       <div class="match-top">
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
-          <span>${esc(summary(game, match.options))}</span>
+          <span>${esc(game.describe ? game.describe(match.options) : summary(game, match.options))}</span>
           <span>Round ${state.turn.round}</span>
         </div>
       </div>
 
-      <section class="cards" aria-live="polite">
-        ${match.sides.map((side, i) => card(side, i, board[i], state, current, onDeck)).join('')}
-      </section>
+      ${game.board === 'marks'
+        ? marksBoard(game, match, state, board, current, onDeck)
+        : `<section class="cards" aria-live="polite">
+            ${match.sides.map((side, i) => card(side, i, board[i], state, current, onDeck)).join('')}
+          </section>`}
 
       ${hint ? `<div class="hint">
         <span class="label">${esc(hint.label)}</span>
@@ -39,8 +42,7 @@ export function renderMatch(ctx) {
       </div>` : ''}
 
       <nav class="keypad" aria-label="Dart entry">
-        ${[...Array(20)].map((_, i) => `<button class="key" data-act="dart" data-n="${i + 1}">${i + 1}</button>`).join('')}
-        <button class="key" data-act="dart" data-n="25" ${mod === 3 ? 'disabled' : ''}>25</button>
+        ${keys.map((n) => `<button class="key" data-act="dart" data-n="${n}" ${n === 25 && mod === 3 ? 'disabled' : ''}>${n}</button>`).join('')}
         <div class="bottom">
           <button class="key" data-act="dart" data-n="0" aria-label="Miss">0</button>
           <button class="key double" data-act="mod" data-m="2" aria-pressed="${mod === 2}">DOUBLE</button>
@@ -55,6 +57,57 @@ export function renderMatch(ctx) {
     </div>`;
 }
 
+// Who in a side throws now (current side) or next time (other sides).
+function upNextFor(side, i, state, current) {
+  return i === current ? state.turn.thrower : side.members[state.sideTurns[i] % side.members.length];
+}
+
+// Cricket-style board: numbers down the left, one column per player or team.
+function marksBoard(game, match, state, board, current, onDeck) {
+  const rows = game.getRows(state.game);
+  const showPoints = board.some((b) => b.main !== null);
+  const heads = match.sides.map((side, i) => {
+    const team = side.members.length > 1;
+    const up = upNextFor(side, i, state, current);
+    const cls = i === current ? 'thrower' : i === onDeck ? 'next' : '';
+    return `<div class="mhead ${cls}">
+      ${i === onDeck ? '<span class="tag">Next</span>' : ''}
+      <div class="mname">${esc(team ? side.name : side.members[0])}</div>
+      ${team ? `<div class="mmembers">${side.members.map((m) => `<span class="${m === up ? 'up' : ''}">${esc(m)}</span>`).join(' ')}</div>` : ''}
+      ${showPoints ? `<div class="mpoints">${board[i].main}</div>` : ''}
+    </div>`;
+  }).join('');
+  const body = rows.map((row, r) => `
+    <div class="mlabel ${row.dead ? 'dead' : ''}">${esc(row.label)}</div>
+    ${match.sides.map((_, i) => `<div class="mcell ${i === current ? 'thrower' : ''} ${row.dead ? 'dead' : ''}">${markIcon(board[i].marks[r])}</div>`).join('')}
+  `).join('');
+
+  const thrower = current >= 0 ? match.sides[current] : null;
+  const darts = state.turn.darts;
+  const strip = thrower ? `
+    <div class="turn-strip">
+      <div class="strip-name">${esc(state.turn.thrower)}</div>
+      <div class="slots">${[0, 1, 2].map((k) => darts[k]
+        ? `<div class="slot">${esc(dartLabel(darts[k]))}</div>`
+        : '<div class="slot empty">–</div>').join('')}</div>
+      <div class="strip-stat">${esc(board[current].stats.join(' · '))}</div>
+    </div>` : '';
+
+  return `
+    <section class="marks-board" style="--cols:${match.sides.length};--rows:${rows.length}" aria-live="polite">
+      <div class="mcorner"></div>${heads}${body}
+    </section>
+    ${strip}`;
+}
+
+// Cricket marks: / for 1, X for 2, circled X for 3 (closed).
+function markIcon(n) {
+  if (!n) return '';
+  const lines = n >= 2 ? '<path d="M8 8l16 16M24 8L8 24"/>' : '<path d="M24 8L8 24"/>';
+  const ring = n >= 3 ? '<circle cx="16" cy="16" r="13"/>' : '';
+  return `<svg class="mark" viewBox="0 0 32 32" aria-label="${n} mark${n > 1 ? 's' : ''}">${lines}${ring}</svg>`;
+}
+
 function summary(game, options) {
   return [game.name, ...game.options.filter((o) => o.type !== 'toggle').map((o) =>
     (o.id === 'start' ? optionLabel(o, options[o.id]) : `${optionLabel(o, options[o.id])} ${o.label.toLowerCase()}`))].join(' · ');
@@ -66,7 +119,7 @@ function card(side, i, sb, state, current, onDeck) {
   const cls = isThrower ? 'thrower' : isNext ? 'next' : '';
   const team = side.members.length > 1;
   // Whose turn it is within a team: the current thrower, or who throws next for that team.
-  const upNext = isThrower ? state.turn.thrower : side.members[state.sideTurns[i] % side.members.length];
+  const upNext = upNextFor(side, i, state, current);
   const members = team
     ? `<div class="members">${side.members.map((m) => `<span class="${m === upNext ? 'up' : ''}">${esc(m)}</span>`).join('')}</div>`
     : '';
