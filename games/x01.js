@@ -59,6 +59,7 @@ export default {
   minPlayers: 1,
   maxPlayers: 5,
   teams: true,
+  keyLabels: { 25: 'Bull' }, // the bull key says "Bull" but still counts as 25
 
   init(sides, options) {
     return {
