@@ -484,7 +484,7 @@ test('Cricket wild card: 6 different numbers plus bull, fixed for the whole game
   eq(t.length, 7); eq(t[6], 25); eq(new Set(t).size, 7, 'no repeats');
   eq(t.slice(0, 6).every((x) => x >= 1 && x <= 20), true);
   eq(cs(throwDart(m, D(t[0], 3))).game.marks[0][0], 3, 'same numbers after a dart (replay)');
-  eq(cricket.getKeys(cs(m).game), t, 'keypad shows only these numbers');
+  eq(cricket.getKeys(cs(m).game), [...t].sort((a, b) => a - b), 'keypad shows only these numbers, lowest first, bull last');
 });
 test('Cricket: marks per round (extra hits count only when they score)', () => {
   eq(cricket.getScoreboard(cs(darts(cricketMatch(), 'T20 T19 20')).game)[0].stats, ['MPR 6.00']);

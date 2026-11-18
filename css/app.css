@@ -442,3 +442,30 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .match.n4 .mname { font-size: 0.95rem; }
 .match.n5 .mname { font-size: 0.85rem; letter-spacing: 0; }
 .match.n4 .mhead, .match.n5 .mhead { padding-left: 2px; padding-right: 2px; }
+
+/* Cricket board v2 (Mark's feedback 2026-11-18): shorter rows, bigger marks,
+   a "Darts" row under every column, no separate turn strip. */
+.marks-board {
+  flex: 1;
+  align-content: start;
+  grid-template-rows: auto repeat(var(--rows), 40px) auto;
+}
+.mcell { padding: 1px; }
+.mark { width: 36px; height: 36px; stroke-width: 3.2; }
+.mpoints { font-size: 1.45rem; }
+.mstat { font-size: 0.72rem; font-weight: 600; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mlabel.throws-label { font-size: 0.8rem; font-weight: 600; background: none; color: var(--text-muted); }
+
+.mthrows {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px;
+  background: var(--chip-bg); color: var(--chip-text);
+  border-radius: 8px; padding: 4px 2px;
+  font-size: 0.82rem; font-weight: 600; text-align: center;
+  font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+}
+.mthrows span { white-space: nowrap; overflow: hidden; }
+.mthrows.now { background: linear-gradient(var(--thrower-top), var(--thrower)); color: var(--thrower-text); box-shadow: var(--shadow-card); }
+.match.n4 .mthrows, .match.n5 .mthrows { font-size: 0.7rem; padding: 4px 1px; gap: 1px; letter-spacing: -0.03em; }
+
+/* word keys like "Bull" */
+.key.word { font-size: 1.15rem; }

@@ -38,6 +38,10 @@
   --key-triple: #d7322d;
   --key-mod-text: #ffffff;
 
+  /* small grey boxes, e.g. last turn's darts */
+  --chip-bg: #3a3a3a;
+  --chip-text: #f3e7c9;
+
   /* feedback */
   --danger: #d7322d;
   --danger-text: #ffffff;
@@ -78,6 +82,9 @@
   --key-double: #1f8a4c;
   --key-triple: #d7322d;
   --key-mod-text: #ffffff;
+
+  --chip-bg: #dcd5c4;
+  --chip-text: #111111;
 
   --danger: #d7322d;
   --danger-text: #ffffff;

@@ -42,7 +42,10 @@ export function renderMatch(ctx) {
       </div>` : ''}
 
       <nav class="keypad" aria-label="Dart entry">
-        ${keys.map((n) => `<button class="key" data-act="dart" data-n="${n}" ${n === 25 && mod === 3 ? 'disabled' : ''}>${n}</button>`).join('')}
+        ${keys.map((n) => {
+          const label = game.keyLabels?.[n] ?? n;
+          return `<button class="key ${typeof label === 'string' ? 'word' : ''}" data-act="dart" data-n="${n}" ${n === 25 && mod === 3 ? 'disabled' : ''}>${esc(label)}</button>`;
+        }).join('')}
         <div class="bottom">
           <button class="key" data-act="dart" data-n="0" aria-label="Miss">0</button>
           <button class="key double" data-act="mod" data-m="2" aria-pressed="${mod === 2}">DOUBLE</button>
@@ -75,6 +78,7 @@ function marksBoard(game, match, state, board, current, onDeck) {
       <div class="mname">${esc(team ? side.name : side.members[0])}</div>
       ${team ? `<div class="mmembers">${side.members.map((m) => `<span class="${m === up ? 'up' : ''}">${esc(m)}</span>`).join(' ')}</div>` : ''}
       ${showPoints ? `<div class="mpoints">${board[i].main}</div>` : ''}
+      <div class="mstat">${esc(board[i].stats.join(' · '))}</div>
     </div>`;
   }).join('');
   const body = rows.map((row, r) => `
@@ -82,22 +86,34 @@ function marksBoard(game, match, state, board, current, onDeck) {
     ${match.sides.map((_, i) => `<div class="mcell ${i === current ? 'thrower' : ''} ${row.dead ? 'dead' : ''}">${markIcon(board[i].marks[r])}</div>`).join('')}
   `).join('');
 
-  const thrower = current >= 0 ? match.sides[current] : null;
-  const darts = state.turn.darts;
-  const strip = thrower ? `
-    <div class="turn-strip">
-      <div class="strip-name">${esc(state.turn.thrower)}</div>
-      <div class="slots">${[0, 1, 2].map((k) => darts[k]
-        ? `<div class="slot">${esc(dartLabel(darts[k]))}</div>`
-        : '<div class="slot empty">–</div>').join('')}</div>
-      <div class="strip-stat">${esc(board[current].stats.join(' · '))}</div>
-    </div>` : '';
+  // Under each column: the current player's darts this turn (green),
+  // everyone else's darts from their last turn (grey).
+  const throws = match.sides.map((_, i) => {
+    const isNow = i === current;
+    const darts = isNow ? state.turn.darts : lastTurnDarts(state, i);
+    return `<div class="mthrows ${isNow ? 'now' : ''}" aria-label="${isNow ? 'This turn' : 'Last turn'}">
+      ${[0, 1, 2].map((k) => `<span>${darts[k] ? esc(shortLabel(darts[k])) : '–'}</span>`).join('')}
+    </div>`;
+  }).join('');
 
   return `
     <section class="marks-board" style="--cols:${match.sides.length};--rows:${rows.length}" aria-live="polite">
       <div class="mcorner"></div>${heads}${body}
-    </section>
-    ${strip}`;
+      <div class="mlabel throws-label">Darts</div>${throws}
+    </section>`;
+}
+
+// Darts from a side's most recent finished turn (empty before their first turn).
+function lastTurnDarts(state, side) {
+  for (let t = state.turns.length - 1; t >= 0; t--) if (state.turns[t].side === side) return state.turns[t].darts;
+  return [];
+}
+
+// Compact labels for the narrow throws row: a miss shows as 0, outer bull 25, inner bull DB.
+function shortLabel(dart) {
+  if (dart.number === 0) return '0';
+  if (dart.number === 25) return dart.multiplier === 2 ? 'DB' : '25';
+  return dartLabel(dart);
 }
 
 // Cricket marks: / for 1, X for 2, circled X for 3 (closed).

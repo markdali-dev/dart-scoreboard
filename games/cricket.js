@@ -129,10 +129,12 @@ export default {
     return state.targets.map((n, t) => ({ label: n === 25 ? 'Bull' : String(n), dead: state.marks.every((m) => m[t] >= 3) }));
   },
 
-  // Only the numbers in play get keys; anything else is entered as 0 (miss).
+  // Only the numbers in play get keys, lowest first and Bull last;
+  // anything else is entered as 0 (miss).
   getKeys(state) {
-    return state.targets;
+    return [...state.targets].sort((a, b) => a - b);
   },
+  keyLabels: { 25: 'Bull' }, // the bull key says "Bull" but still counts as 25
 };
 
 function hasWon(state, i) {

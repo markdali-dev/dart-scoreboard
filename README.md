@@ -17,6 +17,16 @@ python serve.py
 
 Then open http://localhost:8000 in Edge or Chrome. Stop the server with Ctrl+C.
 
+## Try it on a phone (same Wi-Fi)
+
+```powershell
+python serve.py --lan
+```
+
+It prints an address like `http://192.168.1.23:8000`. Type that into the phone's browser.
+If Windows asks about the firewall, allow Python on **Private networks** only.
+Offline mode and "Add to Home Screen" need https, so those only work once the app is on GitHub Pages.
+
 ## Run the tests
 
 With the server running, open http://localhost:8000/tests/ — the top bar turns green when every test passes.
