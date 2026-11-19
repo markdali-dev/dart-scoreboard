@@ -221,13 +221,15 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - Offline copy (service worker) not yet confirmed in a normal browser. Check: open the app once in Edge or Chrome, then the tests page, "Offline copy" line should say saved.
 - Final app name, if it's ever sold.
 
-## Where we left off (2026-11-18, late)
+## Where we left off (end of 2026-11-18)
 
-- Steps 1–6 done, committed and pushed. Playable: Cricket, X01, Baseball, Assassin (Core) and Knockout (Party); games resume after closing the app; finished games are in History.
-- Mark has not yet tried step 6 himself.
-- Step 7 in progress: Knockout is built (Mark has not played it yet). Next Party game: ask Mark which one (Shanghai, Halve-It, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse, Follow the Leader) and confirm its rules before building.
-- Stats (step 9) will read the dart logs saved in History; nothing extra needs storing.
-- How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (106 passing).
+- Steps 1–6 done; step 7 (Party games) in progress. All committed and pushed to GitHub `dart-scoreboard` (main).
+- Playable: Cricket, X01, Baseball, Assassin (Core); Knockout (Party). Games resume after closing the app; finished games are in History.
+- Knockout: built, tested by Mark, then reworked to his chosen mockup (Option 2): a red "Score to beat" bar sized to its text, the thrower's running turn total, last-round dart boxes on other cards, life dots beside the score. Mark is happy with it.
+- Next session: the next Party game. Ask Mark which (Shanghai, Halve-It, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse, Follow the Leader) and confirm its rules before building.
+- Design system is recorded: PRODUCT.md (product truth), DESIGN.md + `.impeccable/design.json` ("The Board After Dark"). Keep DESIGN.md in step when a screen pattern changes.
+- Mark likes visual options shown as side-by-side mockups (a throwaway page in the git-ignored `scratch/` folder) before choosing.
+- How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (107 passing).
 - Still open: GitHub Pages (needs a public repo on the free plan); confirming the offline copy in a normal browser; a better Assassin graphic some day.
 - Test data: the in-app preview browser has made-up players and games saved; Mark's own browser has his own.
 
