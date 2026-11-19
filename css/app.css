@@ -673,3 +673,11 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .match.plain-next.n4 .mini-darts, .match.plain-next.n5 .mini-darts { gap: 3px; margin-left: 6px; }
 .match.plain-next.n4 .mini-darts span, .match.plain-next.n5 .mini-darts span { min-width: 22px; padding: 1px 3px; font-size: 0.72rem; }
 .match.plain-next.n4 .card .tag, .match.plain-next.n5 .card .tag { font-size: 0.7rem; padding: 1px 5px; margin-left: 6px; }
+
+/* Knockout red bar, round 2 (Mark, 2026-11-18): only as tall as its three lines of text,
+   and its number the same size as the current thrower's score. It no longer fills spare space. */
+.beat-panel { flex: 0 0 auto; min-height: 0; max-height: none; padding: 8px 16px; }
+.bp-num { font-size: 3.8rem; }
+.match.n4 .bp-num { font-size: 3.2rem; }
+.match.n5 .bp-num { font-size: 3.2rem; }
+.match.n5 .beat-panel { padding: 4px 14px; }

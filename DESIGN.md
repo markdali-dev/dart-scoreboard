@@ -263,7 +263,7 @@ A five-tab bar (Home, Players, Stats, History, Settings) pinned to the bottom on
 - **Hint bar:** a tinted green strip above the keypad: "Out:" then the suggested darts spaced evenly, or a one-line instruction.
 - **Cricket marks grid:** number labels down the left, one column per player, marks as slash / X / circled X; a number everyone has closed is dimmed and struck through.
 - **Life dots (Assassin, Knockout):** one circle per life beside the name, 16px with 8px gaps (14px / 6px with 4–5 players). When a player is down to the game's danger count (Assassin 3, Knockout 1), those dots turn red.
-- **Target panel (Knockout):** a big red panel under the players: "SCORE TO BEAT", who set it and "Need N more" on the left, the target in large type on the right. It fills the space left over (64–190px) and collapses to one compact row with 5 players.
+- **Target panel (Knockout):** a big red panel under the players: "SCORE TO BEAT", who set it and "Need N more" on the left, the target in large type on the right. It is only as tall as its three lines of text (no stretching to fill space), its number matches the current thrower's score size (3.8rem; 3.2rem with 4–5 players), and it collapses to one compact row with 5 players.
 - **Feedback pop-ups:** short centred toasts for about 1.4s: red for BUST and knock-outs, green for 100+ scores and new Assassins.
 
 ## Do's and Don'ts
