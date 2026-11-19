@@ -684,10 +684,20 @@ test('Knockout: knocked-out players are skipped', () => {
 test('Knockout: 5 lives setting', () => {
   eq(koLives(knockoutMatch(5)), [5, 5, 5]);
 });
-test('Knockout: hint shows the score to beat', () => {
-  const s = cs(darts(knockoutMatch(), '20 20 5'));
-  eq(knockout.getHint(s.game, { dartsLeft: 3 }), { label: 'Beat:', parts: ['45 (score 46+)'] });
-  eq(knockout.getHint(cs(knockoutMatch()).game, { dartsLeft: 3 }).label, 'First:');
+test('Knockout: the red panel shows the score to beat, who set it and what is still needed', () => {
+  let s = cs(darts(knockoutMatch(), '20 20 5'));
+  eq(knockout.getHint(s.game, { side: 1 }), { panel: true, title: 'Score to beat', value: 45, from: 'Set by Ann', need: 'Need 46 more' });
+  s = cs(darts(knockoutMatch(), '20 20 5 20 3'));
+  eq(knockout.getHint(s.game, { side: 1 }).need, 'Need 23 more');
+  s = cs(darts(knockoutMatch(), '20 20 5 T20'));
+  eq(knockout.getHint(s.game, { side: 1 }).need, 'Beaten!');
+  eq(knockout.getHint(cs(knockoutMatch()).game, { side: 0 }).label, 'First:', 'plain hint before anyone has thrown');
+});
+test('Knockout: the thrower shows their running total, everyone else their last total', () => {
+  const s = cs(darts(knockoutMatch(), '20 20 5 20 3'));
+  const sb = knockout.getScoreboard(s.game, { current: 1 });
+  eq([sb[0].main, sb[1].main, sb[1].mainLabel, sb[2].main], [45, 23, 'Turn', '–']);
+  eq(knockout.getScoreboard(cs(darts(knockoutMatch(), '20 20 5')).game, { current: 1 })[1].main, 0, 'thrower before their first dart');
 });
 
 // ---------- report ----------

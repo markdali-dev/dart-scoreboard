@@ -31,8 +31,12 @@ export default {
   minPlayers: 2,
   maxPlayers: 5,
   teams: false,
-  // No last-darts chips: the big "Last" total already shows each player's score,
-  // and chips next to the life dots made 5 players overflow a small phone.
+  // Screen layout (Mark's choice, 2026-11-18): every other card shows its last 3 darts
+  // beside the name with the life dots beside the score (one line per card), the
+  // on-deck card keeps normal size, and the score to beat is a big red panel.
+  showLastDarts: true,
+  livesBesideScore: true,
+  plainNext: true,
 
   init(sides, options) {
     return {
@@ -40,6 +44,7 @@ export default {
       maxLives: options.lives,
       lives: sides.map(() => options.lives),
       target: null,       // the total to beat; null until the first turn is done
+      setBy: null,        // who threw that total
       last: sides.map(() => null), // each player's most recent turn total
       turnSide: null,
       turnTotal: 0,
@@ -72,6 +77,7 @@ export default {
     }
     state.last[s] = total;
     state.target = total; // the next player must beat this, pass or fail
+    state.setBy = s;
     return { state, endTurn: true };
   },
 
@@ -83,23 +89,33 @@ export default {
     return { winners: [state.winner], standings: [state.winner, ...order.filter((i) => i !== state.winner)] };
   },
 
-  // Big number on each card: that player's last three-dart total.
-  getScoreboard(state) {
-    return state.lives.map((lives, i) => ({
-      main: state.last[i] ?? '–',
-      mainLabel: state.last[i] === null ? null : 'Last',
-      turnPoints: state.turnSide === i ? state.turnTotal : undefined,
-      lives: { have: lives, max: state.maxLives, risk: 1 }, // the last life shows red
-      badge: lives === 0 ? 'Out' : null,
-      out: lives === 0,
-      stats: [],
-    }));
+  // Big number on each card: the thrower's running total this turn;
+  // everyone else's last three-dart total.
+  getScoreboard(state, { current } = {}) {
+    return state.lives.map((lives, i) => {
+      const throwing = i === current;
+      return {
+        main: throwing ? (state.turnSide === i ? state.turnTotal : 0) : state.last[i] ?? '–',
+        mainLabel: throwing ? 'Turn' : null,
+        lives: { have: lives, max: state.maxLives, risk: 1 }, // the last life shows red
+        badge: lives === 0 ? 'Out' : null,
+        out: lives === 0,
+        stats: [],
+      };
+    });
   },
 
-  getHint(state, { dartsLeft }) {
+  // Before anyone has thrown: a normal hint. After that: the big red "score to beat" panel.
+  getHint(state, { side }) {
     if (state.target === null) return { label: 'First:', parts: ['Your total sets the score to beat'] };
-    const need = state.target + 1;
-    const sofar = dartsLeft < 3 && state.turnTotal ? ` · so far ${state.turnTotal}` : '';
-    return { label: 'Beat:', parts: [`${state.target} (score ${need}+)${sofar}`] };
+    const sofar = state.turnSide === side ? state.turnTotal : 0;
+    const need = state.target + 1 - sofar;
+    return {
+      panel: true,
+      title: 'Score to beat',
+      value: state.target,
+      from: state.setBy !== null ? `Set by ${state.names[state.setBy]}` : '',
+      need: need > 0 ? `Need ${need} more` : 'Beaten!',
+    };
   },
 };

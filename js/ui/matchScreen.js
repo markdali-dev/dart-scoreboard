@@ -29,19 +29,28 @@ export function renderMatch(ctx, opts = {}) {
   const ui = readonly ? {} : ctx.state.ui;
   const game = getGame(match.gameId);
   const state = computeState(match);
-  const board = game.getScoreboard(state.game);
   const onDeck = getOnDeck(match, state);
   const current = state.over ? -1 : state.turn.side;
+  const board = game.getScoreboard(state.game, { current });
   const hint = state.over ? null : game.getHint?.(state.game, { side: current, dartsLeft: DARTS_PER_TURN - state.turn.darts.length });
   const mod = ui.mod ?? 1;
   const keys = game.getKeys?.(state.game) ?? [...[...Array(20)].map((_, i) => i + 1), 25];
   const art = game.art ? `<div class="match-art art-${game.art.name}">${ART[game.art.name]()}</div>` : '';
-  const hintHtml = hint ? `<div class="hint">
+  // A hint is either the slim bar ("Out: T20 D16") or, with hint.panel, a big red
+  // target panel that fills the space under the players (Knockout's score to beat).
+  const hintHtml = !hint ? '' : hint.panel
+    ? `<div class="beat-panel" role="status">
+        <span class="bp-label">${esc(hint.title)}</span>
+        <span class="bp-num">${esc(hint.value)}</span>
+        <span class="bp-who">${esc(hint.from ?? '')}</span>
+        <span class="bp-need">${esc(hint.need ?? '')}</span>
+      </div>`
+    : `<div class="hint">
         <span class="label">${esc(hint.label)}</span>
         ${hint.parts.length > 1
           ? [0, 1, 2].map((k) => `<span>${esc(hint.parts[k] ?? '')}</span>`).join('')
           : `<span class="hint-wide">${esc(hint.parts[0])}</span>`}
-      </div>` : '';
+      </div>`;
   const modKeys = `
           <button class="key double" data-act="mod" data-m="2" aria-pressed="${mod === 2}">DOUBLE</button>
           <button class="key triple" data-act="mod" data-m="3" aria-pressed="${mod === 3}">TRIPLE</button>
@@ -85,7 +94,7 @@ export function renderMatch(ctx, opts = {}) {
   }
 
   return `
-    <div class="match n${match.sides.length} ${art ? 'has-art' : ''}">
+    <div class="match n${match.sides.length} ${art ? 'has-art' : ''} ${hint?.panel ? 'has-panel' : ''} ${game.plainNext ? 'plain-next' : ''}">
       <div class="match-top">
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
@@ -206,6 +215,9 @@ function card(side, i, sb, state, current, onDeck, game) {
         `<span class="pip ${k < sb.lives.have ? 'on' : ''} ${atRisk && k < risk ? 'risk' : ''}"></span>`).join('')}</div>`
     : '';
   const badge = sb.badge ? `<span class="badge ${sb.badge === 'Out' ? 'badge-out' : ''}">${esc(sb.badge)}</span>` : '';
+  // Games can put the life dots beside the score (keeps each card to one line);
+  // the thrower's card always keeps them by the name.
+  const livesBySide = game.livesBesideScore && !isThrower;
   // Games like Baseball keep each player's last 3 darts on their card until their next turn.
   const last = game.showLastDarts && !isThrower ? lastTurnDarts(state, i) : [];
   const lastDarts = last.length
@@ -214,12 +226,12 @@ function card(side, i, sb, state, current, onDeck, game) {
   return `
     <div class="card ${cls} ${sb.out ? 'is-out' : ''}">
       <div class="card-left">
-        <div class="name">${esc(team ? side.name : side.members[0])}${lives}${isNext ? ' <span class="tag">Next</span>' : ''}${badge}${lastDarts}</div>
+        <div class="name">${esc(team ? side.name : side.members[0])}${livesBySide ? '' : lives}${isNext ? ' <span class="tag">Next</span>' : ''}${badge}${lastDarts}</div>
         ${members}
         ${slots}
         ${stats.length ? `<div class="stats">${stats.join(' · ')}</div>` : ''}
       </div>
-      <div class="score">${sb.mainLabel ? `<span class="main-label">${esc(sb.mainLabel)}</span>` : ''}${esc(sb.main)}</div>
+      <div class="score-side">${livesBySide ? lives : ''}<div class="score">${sb.mainLabel ? `<span class="main-label">${esc(sb.mainLabel)}</span>` : ''}${esc(sb.main)}</div></div>
     </div>`;
 }
 

@@ -1,9 +1,9 @@
-// Service worker: makes the app work offline.
+﻿// Service worker: makes the app work offline.
 // Strategy: try the network first (so new versions show up straight away),
 // fall back to the saved copy when offline.
 // When you add a new file the app needs, add it to FILES and bump VERSION.
 
-const VERSION = 'v12';
+const VERSION = 'v13';
 const CACHE = `dartscoreboard-${VERSION}`;
 const FILES = [
   './',

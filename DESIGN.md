@@ -156,7 +156,7 @@ A dartboard in low light: near-black and neutral greys, warm cream for text, and
 - **Out Green** (`out-green-text` on a 18% tint of the ring green in Dark; `out-green-ink` on `out-green-pale` in Light): the checkout / hint bar ("Out: T20 D16", "Inning 4: Hit 4s").
 
 ### Secondary
-- **Treble-Ring Red** (`treble-ring-red`): the Triple key, the BUST and "is out!" pop-ups, error text, the ASSASSIN and OUT badges, and Assassin life dots when a player is at 3 lives or fewer. White text on it.
+- **Treble-Ring Red** (`treble-ring-red`): the Triple key, Knockout's "score to beat" panel, the BUST and "is out!" pop-ups, error text, the ASSASSIN and OUT badges, and Assassin life dots when a player is at 3 lives or fewer. White text on it.
 
 ### Neutral
 - **Board Black** (`board-black`, deep edge `board-black-deep`): Dark theme page.
@@ -263,6 +263,7 @@ A five-tab bar (Home, Players, Stats, History, Settings) pinned to the bottom on
 - **Hint bar:** a tinted green strip above the keypad: "Out:" then the suggested darts spaced evenly, or a one-line instruction.
 - **Cricket marks grid:** number labels down the left, one column per player, marks as slash / X / circled X; a number everyone has closed is dimmed and struck through.
 - **Life dots (Assassin, Knockout):** one circle per life beside the name, 16px with 8px gaps (14px / 6px with 4–5 players). When a player is down to the game's danger count (Assassin 3, Knockout 1), those dots turn red.
+- **Target panel (Knockout):** a big red panel under the players: "SCORE TO BEAT", who set it and "Need N more" on the left, the target in large type on the right. It fills the space left over (64–190px) and collapses to one compact row with 5 players.
 - **Feedback pop-ups:** short centred toasts for about 1.4s: red for BUST and knock-outs, green for 100+ scores and new Assassins.
 
 ## Do's and Don'ts

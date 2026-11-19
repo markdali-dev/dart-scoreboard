@@ -632,3 +632,44 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .match.n5 .card.thrower .slots { margin-top: 4px; }
 .match.n5 .card.thrower .slot { padding: 3px 4px; font-size: 1.05rem; }
 .match.n5 .card.thrower .stats { margin-top: 3px; }
+
+/* ================= Knockout layout (Mark chose mockup Option 2, 2026-11-18) ================= */
+
+/* score area: optional life dots, then the big number */
+.score-side { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.score-side .lives { display: inline-flex; gap: 5px; margin: 0; }
+.score-side .pip { width: 13px; height: 13px; }
+
+/* on-deck card keeps its outline and NEXT tag but not the bigger score */
+.match.plain-next .card.next .score { font-size: 2.1rem; }
+.match.plain-next.n4 .card.next .score, .match.plain-next.n5 .card.next .score { font-size: 1.8rem; }
+.match.plain-next .mini-darts span { min-width: 26px; font-size: 0.8rem; }
+
+/* the big red "score to beat" panel fills the space under the players */
+.match.has-panel .cards { flex: 0 1 auto; }
+.beat-panel {
+  flex: 1; min-height: 64px; max-height: 190px;
+  margin: 8px var(--gutter) 10px; padding: 10px 18px;
+  border-radius: 16px;
+  background: linear-gradient(#e0413b, var(--danger));
+  color: var(--danger-text);
+  box-shadow: var(--shadow-thrower);
+  display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto auto;
+  align-content: center; align-items: center; gap: 2px 12px;
+}
+.bp-label { font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.92; }
+.bp-num { grid-column: 2; grid-row: 1 / span 3; font-size: 4.2rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.bp-who { font-size: 1rem; font-weight: 600; opacity: 0.92; }
+.bp-need { font-size: 1.3rem; font-weight: 700; }
+/* when the panel is squeezed (5 players, small phone) it becomes one compact row */
+.match.n5 .beat-panel { grid-template-rows: auto; grid-template-columns: auto 1fr auto; padding: 6px 14px; }
+.match.n5 .bp-who { display: none; }
+.match.n5 .bp-num { grid-column: 3; grid-row: 1; font-size: 2.6rem; }
+.match.n5 .bp-need { grid-column: 2; text-align: right; }
+/* 4-5 players: slimmer dots, dart boxes and NEXT tag so each card stays on one line, even with 5 lives */
+.match.plain-next.n4 .score-side .pip, .match.plain-next.n5 .score-side .pip { width: 10px; height: 10px; }
+.match.plain-next.n4 .score-side .lives, .match.plain-next.n5 .score-side .lives { gap: 3px; }
+.match.plain-next.n4 .score-side, .match.plain-next.n5 .score-side { gap: 8px; }
+.match.plain-next.n4 .mini-darts, .match.plain-next.n5 .mini-darts { gap: 3px; margin-left: 6px; }
+.match.plain-next.n4 .mini-darts span, .match.plain-next.n5 .mini-darts span { min-width: 22px; padding: 1px 3px; font-size: 0.72rem; }
+.match.plain-next.n4 .card .tag, .match.plain-next.n5 .card .tag { font-size: 0.7rem; padding: 1px 5px; margin-left: 6px; }
