@@ -1,0 +1,578 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-19T03:06:06.940358+00:00",
+  "title": "Design System: Dart Scoreboard",
+  "extensions": {
+    "colorMeta": {
+      "board-black": {
+        "role": "neutral",
+        "displayName": "Board Black",
+        "canonical": "#111111",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "board-black-deep": {
+        "role": "neutral",
+        "displayName": "Board Black (edge)",
+        "canonical": "#0b0b0b",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "wire-grey": {
+        "role": "neutral",
+        "displayName": "Wire Grey",
+        "canonical": "#262626",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "keypad-band": {
+        "role": "neutral",
+        "displayName": "Keypad Band",
+        "canonical": "#1e1e1e",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "key-grey": {
+        "role": "neutral",
+        "displayName": "Key Grey",
+        "canonical": "#2e2e2e",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "key-grey-top": {
+        "role": "neutral",
+        "displayName": "Key Grey (top)",
+        "canonical": "#363636",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "hairline-grey": {
+        "role": "neutral",
+        "displayName": "Hairline Grey",
+        "canonical": "#3a3a3a",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "sisal-cream": {
+        "role": "neutral",
+        "displayName": "Sisal Cream",
+        "canonical": "#f3e7c9",
+        "tonalRamp": [
+          "#2b2412",
+          "#5a4a1f",
+          "#8e7129",
+          "#c59a2e",
+          "#d4b15b",
+          "#dbc690",
+          "#e7dcc1",
+          "#f7f4ed"
+        ]
+      },
+      "sisal-cream-muted": {
+        "role": "neutral",
+        "displayName": "Sisal Cream (muted)",
+        "canonical": "#c9bfa6",
+        "tonalRamp": [
+          "#24211a",
+          "#484231",
+          "#6e6348",
+          "#96865c",
+          "#afa180",
+          "#c4bca7",
+          "#dbd7cd",
+          "#f4f3f0"
+        ]
+      },
+      "double-ring-green": {
+        "role": "primary",
+        "displayName": "Double-Ring Green",
+        "canonical": "#1f8a4c",
+        "tonalRamp": [
+          "#122b1d",
+          "#1f5a38",
+          "#298d53",
+          "#2ec46d",
+          "#5cd38e",
+          "#90dbb0",
+          "#c1e7d1",
+          "#edf7f1"
+        ]
+      },
+      "double-ring-green-top": {
+        "role": "primary",
+        "displayName": "Double-Ring Green (top)",
+        "canonical": "#27a35b",
+        "tonalRamp": [
+          "#122b1d",
+          "#205938",
+          "#2a8c53",
+          "#30c26e",
+          "#5dd28e",
+          "#91dab0",
+          "#c1e7d1",
+          "#eef7f1"
+        ]
+      },
+      "double-ring-green-shade": {
+        "role": "primary",
+        "displayName": "Shaded Ring Green",
+        "canonical": "#165834",
+        "tonalRamp": [
+          "#132b1e",
+          "#21593a",
+          "#2b8b57",
+          "#32c173",
+          "#5fd092",
+          "#92d9b3",
+          "#c2e6d2",
+          "#eef7f2"
+        ]
+      },
+      "double-ring-green-shade-top": {
+        "role": "primary",
+        "displayName": "Shaded Ring Green (top)",
+        "canonical": "#1d6a40",
+        "tonalRamp": [
+          "#132a1e",
+          "#22573a",
+          "#2e8857",
+          "#36bd73",
+          "#62ce93",
+          "#94d8b3",
+          "#c3e5d2",
+          "#eef7f2"
+        ]
+      },
+      "out-green-text": {
+        "role": "primary",
+        "displayName": "Out Green",
+        "canonical": "#8fe0ad",
+        "tonalRamp": [
+          "#132a1c",
+          "#225736",
+          "#2e884f",
+          "#36bd68",
+          "#62cd8a",
+          "#94d7ad",
+          "#c3e5d0",
+          "#eef7f1"
+        ]
+      },
+      "treble-ring-red": {
+        "role": "secondary",
+        "displayName": "Treble-Ring Red",
+        "canonical": "#d7322d",
+        "tonalRamp": [
+          "#2c1211",
+          "#5c1f1d",
+          "#912825",
+          "#ca2d29",
+          "#d85b57",
+          "#de908e",
+          "#e9c1c0",
+          "#f7eded"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "paper-cream": {
+        "role": "neutral",
+        "displayName": "Paper Cream",
+        "canonical": "#fffaec",
+        "tonalRamp": [
+          "#33280a",
+          "#6b530e",
+          "#aa810c",
+          "#f0b203",
+          "#f6c439",
+          "#f1d27b",
+          "#f2e2b6",
+          "#faf6eb"
+        ]
+      },
+      "ink-black": {
+        "role": "neutral",
+        "displayName": "Ink Black",
+        "canonical": "#111111",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#3d3d3d",
+          "#5b5b5b",
+          "#797979",
+          "#989898",
+          "#b6b6b6",
+          "#d4d4d4",
+          "#f2f2f2"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Black (muted)",
+        "canonical": "#3d3a33",
+        "tonalRamp": [
+          "#201f1d",
+          "#413e39",
+          "#625e54",
+          "#847e6f",
+          "#a09b8f",
+          "#bbb8b0",
+          "#d7d5d1",
+          "#f3f3f2"
+        ]
+      },
+      "hairline-cream": {
+        "role": "neutral",
+        "displayName": "Hairline Cream",
+        "canonical": "#d8caa6",
+        "tonalRamp": [
+          "#262217",
+          "#4f452b",
+          "#7a693c",
+          "#a88e4b",
+          "#bda873",
+          "#cdc09f",
+          "#e0d9c8",
+          "#f5f4ef"
+        ]
+      },
+      "chip-cream": {
+        "role": "neutral",
+        "displayName": "Chip Cream",
+        "canonical": "#dcd5c4",
+        "tonalRamp": [
+          "#242119",
+          "#494231",
+          "#6f6447",
+          "#98865b",
+          "#b0a27f",
+          "#c5bca7",
+          "#dcd7cc",
+          "#f4f3f0"
+        ]
+      },
+      "out-green-pale": {
+        "role": "primary",
+        "displayName": "Out Green (pale, Light theme)",
+        "canonical": "#d4efdc",
+        "tonalRamp": [
+          "#15281b",
+          "#285234",
+          "#377f4c",
+          "#43b063",
+          "#6cc386",
+          "#9bd1ab",
+          "#c6e2ce",
+          "#eff6f1"
+        ]
+      },
+      "out-green-ink": {
+        "role": "primary",
+        "displayName": "Out Green (ink, Light theme)",
+        "canonical": "#145c33",
+        "tonalRamp": [
+          "#122c1d",
+          "#1f5b39",
+          "#288e54",
+          "#2dc66f",
+          "#5bd48f",
+          "#90dcb0",
+          "#c1e7d1",
+          "#edf7f2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Current thrower's score only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Other players' scores; on-deck one step larger."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Player names, menu labels, Cricket points."
+      },
+      "key": {
+        "displayName": "Key",
+        "purpose": "Number keys on the keypad."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Rules text, notes, menu explanations."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "NEXT tag, ASSASSIN/OUT badges, group headings (uppercase)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 2px 0 rgba(0,0,0,0.5), 0 6px 14px rgba(0,0,0,0.45)",
+        "purpose": "Cards, list rows, secondary buttons, tiles (Dark). Light: 0 1px 0 rgba(60,45,10,0.18), 0 4px 12px rgba(60,45,10,0.18)."
+      },
+      {
+        "name": "thrower",
+        "value": "0 3px 0 rgba(0,0,0,0.55), 0 12px 26px rgba(0,0,0,0.6)",
+        "purpose": "Current thrower card, Start, Resume, Game bar (Dark). Light: 0 2px 0 rgba(0,0,0,0.25), 0 10px 22px rgba(20,60,30,0.35)."
+      },
+      {
+        "name": "key",
+        "value": "0 2px 0 rgba(0,0,0,0.6), 0 3px 6px rgba(0,0,0,0.35)",
+        "purpose": "Keypad keys (Dark). Light: 0 2px 0 rgba(0,0,0,0.7), 0 3px 6px rgba(0,0,0,0.4)."
+      },
+      {
+        "name": "sheet",
+        "value": "0 16px 40px rgba(0,0,0,0.55)",
+        "purpose": "Centred pop-up menus."
+      }
+    ],
+    "motion": [
+      {
+        "name": "key-press",
+        "value": "translateY(1px), shadow removed",
+        "purpose": "Active state for keys and buttons."
+      },
+      {
+        "name": "sheet-pop",
+        "value": "0.16s ease-out; scale 0.94 to 1 with fade",
+        "purpose": "Pop-up menus opening."
+      },
+      {
+        "name": "toast-pop",
+        "value": "0.18s ease-out; scale 0.7 to 1 with fade; visible about 1.4s",
+        "purpose": "BUST, 100+, Assassin and knock-out pop-ups."
+      },
+      {
+        "name": "switch",
+        "value": "0.15s",
+        "purpose": "Toggle switch knob and track."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "max-content",
+        "value": "520px"
+      },
+      {
+        "name": "small-phone",
+        "value": "375x667 (design floor: 5 players + keypad, no scroll)"
+      },
+      {
+        "name": "compact-players",
+        "value": "4-5 players or teams switch to compact sizes"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Start Button",
+      "kind": "button",
+      "refersTo": "button-start",
+      "description": "Primary action: Start, Resume, Game bar. Ring-green gradient, raised.",
+      "html": "<button class=\"ds-btn-start\">Start</button>",
+      "css": ".ds-btn-start{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;width:100%;border:0;border-radius:14px;padding:16px;background:linear-gradient(var(--thrower-top,#27a35b),var(--thrower,#1f8a4c));color:var(--thrower-text,#fff);font-size:1.5rem;font-weight:700;letter-spacing:.04em;box-shadow:var(--shadow-thrower,0 3px 0 rgba(0,0,0,.55),0 12px 26px rgba(0,0,0,.6));cursor:pointer}.ds-btn-start:active{transform:translateY(1px)}.ds-btn-start:focus-visible{outline:3px solid var(--card-text,#f3e7c9);outline-offset:2px}.ds-btn-start:disabled{background:var(--card,#262626);color:var(--text-muted,#c9bfa6);box-shadow:none}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Everyday buttons: Rename, Add players, Done.",
+      "html": "<button class=\"ds-btn\">+ Add players</button>",
+      "css": ".ds-btn{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;border:0;border-radius:10px;padding:10px 14px;background:var(--card,#262626);color:var(--card-text,#f3e7c9);font-size:1.05rem;font-weight:600;box-shadow:var(--shadow-card,0 2px 0 rgba(0,0,0,.5),0 6px 14px rgba(0,0,0,.45));cursor:pointer}.ds-btn:active{transform:translateY(1px);box-shadow:none}.ds-btn:focus-visible{outline:2px solid var(--thrower-top,#27a35b);outline-offset:2px}"
+    },
+    {
+      "name": "Keypad",
+      "kind": "custom",
+      "refersTo": "key",
+      "description": "Dart entry band: number keys, Double (green) and Triple (red) modifiers, Undo.",
+      "html": "<div class=\"ds-pad\"><button class=\"ds-key\">19</button><button class=\"ds-key\">20</button><button class=\"ds-key ds-word\">Bull</button><button class=\"ds-key ds-dbl\">DOUBLE</button><button class=\"ds-key ds-tpl\">TRIPLE</button><button class=\"ds-key ds-word\">Undo</button></div>",
+      "css": ".ds-pad{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px 8px;background:var(--pad-band,#1e1e1e);border-top:1px solid var(--pad-border,#3a3a3a)}.ds-key{border:0;height:58px;border-radius:10px;background:linear-gradient(var(--key-top,#363636),var(--key,#2e2e2e));color:var(--key-text,#f3e7c9);font-size:1.7rem;font-weight:500;box-shadow:var(--shadow-key,0 2px 0 rgba(0,0,0,.6),0 3px 6px rgba(0,0,0,.35));cursor:pointer}.ds-key:active{transform:translateY(1px);box-shadow:none}.ds-key:focus-visible{outline:3px solid var(--key-text,#f3e7c9);outline-offset:-3px}.ds-word{font-size:1.15rem;font-weight:600}.ds-dbl{background:var(--key-double,#1f8a4c);color:#fff;font-size:1.1rem;font-weight:600;letter-spacing:.05em}.ds-tpl{background:var(--key-triple,#d7322d);color:#fff;font-size:1.1rem;font-weight:600;letter-spacing:.05em}"
+    },
+    {
+      "name": "Player Cards",
+      "kind": "card",
+      "refersTo": "card-thrower",
+      "description": "Current thrower (green, darts, largest score), on-deck (outline + NEXT), and a waiting player.",
+      "html": "<div class=\"ds-cards\"><div class=\"ds-card ds-thrower\"><div><div class=\"ds-name\">Mark</div><div class=\"ds-slots\"><span>T20</span><span>D16</span><span class=\"ds-empty\">&ndash;</span></div></div><div class=\"ds-score ds-big\">132</div></div><div class=\"ds-card ds-next\"><div class=\"ds-name\">Dean <span class=\"ds-tag\">Next</span></div><div class=\"ds-score\">301</div></div><div class=\"ds-card\"><div class=\"ds-name\">Ludwig</div><div class=\"ds-score\">245</div></div></div>",
+      "css": ".ds-cards{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:flex;flex-direction:column;gap:8px}.ds-card{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 14px;border-radius:14px;background:var(--card,#262626);color:var(--card-text,#f3e7c9);box-shadow:var(--shadow-card,0 2px 0 rgba(0,0,0,.5),0 6px 14px rgba(0,0,0,.45))}.ds-thrower{padding:12px 14px;background:linear-gradient(var(--thrower-top,#27a35b),var(--thrower,#1f8a4c));color:#fff;box-shadow:var(--shadow-thrower,0 3px 0 rgba(0,0,0,.55),0 12px 26px rgba(0,0,0,.6))}.ds-next{outline:2px solid var(--next-outline,#f3e7c9);outline-offset:-2px}.ds-name{font-size:1.35rem;font-weight:600;letter-spacing:.01em}.ds-score{font-size:2.1rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}.ds-big{font-size:3.8rem}.ds-slots{display:flex;gap:6px;margin-top:6px}.ds-slots span{min-width:52px;padding:6px 4px;text-align:center;border-radius:8px;background:rgba(0,0,0,.22);font-size:1.2rem;font-weight:600}.ds-slots .ds-empty{color:rgba(255,255,255,.45)}.ds-tag{font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:var(--next-tag-bg,#f3e7c9);color:var(--next-tag-text,#111);vertical-align:middle;margin-left:8px}"
+    },
+    {
+      "name": "Option Tile",
+      "kind": "chip",
+      "refersTo": "option-tile",
+      "description": "Setup setting tile (Start, In, Out...): shaded ring green, opens a centred menu.",
+      "html": "<button class=\"ds-tile\"><span class=\"ds-tile-l\">Out</span><span class=\"ds-tile-v\">Double</span></button>",
+      "css": ".ds-tile{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;border:0;border-radius:14px;padding:10px 18px 12px;display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:linear-gradient(var(--accent-soft-top,#1d6a40),var(--accent-soft,#165834));color:var(--accent-soft-text,#f3efe6);box-shadow:var(--shadow-card,0 2px 0 rgba(0,0,0,.5),0 6px 14px rgba(0,0,0,.45));cursor:pointer}.ds-tile:active{transform:translateY(1px)}.ds-tile:focus-visible{outline:2px solid var(--thrower-top,#27a35b);outline-offset:2px}.ds-tile-l{font-size:.9rem;font-weight:500;opacity:.9}.ds-tile-v{font-size:1.35rem;font-weight:700}"
+    },
+    {
+      "name": "Hint Bar",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Checkout / instruction strip above the keypad.",
+      "html": "<div class=\"ds-hint\"><span>Out:</span><span>T20</span><span>D16</span><span></span></div>",
+      "css": ".ds-hint{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:grid;grid-template-columns:auto 1fr 1fr 1fr;align-items:center;padding:8px 14px;border-radius:14px;background:var(--hint-bg,rgba(39,163,91,.18));color:var(--hint-text,#8fe0ad);font-size:1.35rem;font-weight:600;letter-spacing:.02em}.ds-hint span{text-align:center}.ds-hint span:first-child{text-align:left;padding-right:10px}"
+    },
+    {
+      "name": "Danger Badge and Life Dots",
+      "kind": "custom",
+      "refersTo": "badge-danger",
+      "description": "Assassin badge and life dots; the first three dots turn red at 3 lives or fewer.",
+      "html": "<div class=\"ds-lives-row\"><span>Adam</span><span class=\"ds-dots\"><i class=\"on risk\"></i><i class=\"on risk\"></i><i class=\"risk\"></i><i></i><i></i><i></i></span><span class=\"ds-badge\">Assassin</span></div>",
+      "css": ".ds-lives-row{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:flex;align-items:center;gap:12px;color:var(--card-text,#f3e7c9);font-size:1.35rem;font-weight:600}.ds-dots{display:inline-flex;gap:8px}.ds-dots i{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;opacity:.5;box-sizing:border-box}.ds-dots i.on{background:currentColor;opacity:1}.ds-dots i.risk{border-color:var(--danger,#d7322d);opacity:1}.ds-dots i.risk.on{background:var(--danger,#d7322d)}.ds-badge{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:var(--danger,#d7322d);color:var(--danger-text,#fff)}"
+    },
+    {
+      "name": "Bottom Navigation",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Tab bar on non-game screens; current tab in ring green.",
+      "html": "<nav class=\"ds-tabs\"><button aria-current=\"page\"><svg viewBox=\"0 0 24 24\"><path d=\"M4 11l8-7 8 7v9h-5v-6H9v6H4z\"/></svg>Home</button><button><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.5\"/><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"/></svg>Players</button><button><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"8\"/><path d=\"M12 8v4.5l3 2\"/></svg>History</button></nav>",
+      "css": ".ds-tabs{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:grid;grid-template-columns:repeat(3,1fr);background:var(--pad-band,#1e1e1e);border-top:1px solid var(--pad-border,#3a3a3a);padding:6px 4px}.ds-tabs button{border:0;background:none;color:var(--key-text,#f3e7c9);opacity:.7;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.85rem;font-weight:600;padding:4px 0;cursor:pointer}.ds-tabs button[aria-current=page]{opacity:1;color:var(--thrower-top,#27a35b)}.ds-tabs button:hover{opacity:1}.ds-tabs button:focus-visible{outline:2px solid var(--thrower-top,#27a35b)}.ds-tabs svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Board After Dark",
+    "overview": "The app borrows its whole palette from the dartboard itself: board black, the cream of the sisal, the green and red of the double and treble rings. It is used in a dim room by people standing a few feet from the phone, so everything is built to be read at a glance from the throw line: big tabular numbers, strong contrast, and colour that always means something. Green means \"you're up\" or \"go\"; red means danger or a triple.\n\nDensity is high but calm. Up to five players or teams share one portrait screen with the keypad, so the system relies on size and position for hierarchy rather than ornament. The current thrower's card is the loudest thing on screen; everything else steps down in size, weight and saturation. Surfaces are raised, not flat: cards and keys sit on hard bottom shadows like physical buttons.\n\nTwo themes share one structure. Dark (board black page, wire-grey cards, cream text) is the default for the bar; Light (cream page, paper-cream cards, black text) is the same layout with only the colour variables swapped. The keypad stays dark in both.",
+    "keyCharacteristics": [
+      "Bold and legible: the score is always the biggest thing on screen.",
+      "Dartboard palette only: black, neutral greys, cream, ring green, ring red. No blues.",
+      "Colour carries meaning, never decoration.",
+      "Raised cards and keys with hard bottom shadows.",
+      "One screen: every player and the keypad visible together, no scrolling."
+    ],
+    "rules": [
+      {
+        "name": "The Green Means You're Up Rule",
+        "body": "Bright ring green marks only the current thrower, the primary action (Game bar, Start, Resume) and the Double key. If something is green, a player should be able to say why.",
+        "section": "colors"
+      },
+      {
+        "name": "The Red Is Danger Rule",
+        "body": "Treble red is for the Triple key and for danger: busts, knock-outs, errors, at-risk lives, the Assassin badge. Never use red for the current thrower.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Blue Rule",
+        "body": "Darks are true black and neutral greys. No navy, no blue-tinted greys, no per-player colours.",
+        "section": "colors"
+      },
+      {
+        "name": "The Variables Only Rule",
+        "body": "Every colour comes from a theme variable. Dark and Light differ only in variable values, never in layout or structure.",
+        "section": "colors"
+      },
+      {
+        "name": "The Score Is the Headline Rule",
+        "body": "The current thrower's score is always the largest type on screen. Nothing else, including pop-ups' resting state, may outrank it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Medium Weights Rule",
+        "body": "Names 600, scores 700, keys 500, header line 500. Heavier weights (800) looked bubbly and cramped and were rejected; the one exception is the Baseball Miss and target tiles, which are bold by request.",
+        "section": "typography"
+      },
+      {
+        "name": "The Full Contrast Header Rule",
+        "body": "Header text (game, options, round) is always full contrast, never faint or greyed.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Screen Rule",
+        "body": "With 5 players on a 375×667 phone, every player, the hint bar and the whole keypad are visible without scrolling. Any new screen element must pass this test.",
+        "section": "layout"
+      },
+      {
+        "name": "The Thrower Sits Highest Rule",
+        "body": "The current thrower's card always has the deepest shadow on the playing screen.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** take every colour from the theme variables and keep Dark and Light structurally identical.",
+      "**Do** keep the current thrower's score the largest text on screen and its card the highest.",
+      "**Do** keep all players and the full keypad on one screen at 375×667 with 5 players; use the compact mode rather than scrolling.",
+      "**Do** use ring green only for \"you're up\" and primary actions, and treble red only for Triple and danger.",
+      "**Do** use tabular figures for every score so numbers don't shift as they change.",
+      "**Do** centre pop-up menus on screen, with rows at least 60px tall."
+    ],
+    "donts": [
+      "**Don't** use navy, blue-tinted darks or per-player colours.",
+      "**Don't** use red for the current thrower.",
+      "**Don't** use monospace, faint header text, or font weights above 700 (except the Baseball tiles).",
+      "**Don't** let the page scroll during a game, or round the top edge of the keypad band.",
+      "**Don't** copy the layout, icons or artwork of the reference darts app; it is a flow reference only.",
+      "**Don't** ship the Bond-style gun-barrel graphic in a public release."
+    ]
+  }
+}
