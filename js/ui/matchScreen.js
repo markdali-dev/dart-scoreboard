@@ -24,7 +24,7 @@ export function renderMatch(ctx) {
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
           <span>${esc(game.describe ? game.describe(match.options) : summary(game, match.options))}</span>
-          <span>Round ${state.turn.round}</span>
+          <span>${esc(game.roundLabel ?? 'Round')} ${state.turn.round}</span>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ export function renderMatch(ctx) {
           : `<span class="hint-wide">${esc(hint.parts[0])}</span>`}
       </div>` : ''}
 
-      <nav class="keypad" aria-label="Dart entry">
+      <nav class="keypad ${keys.length === 1 ? 'one-key' : ''}" aria-label="Dart entry">
         ${keys.map((n) => {
           const label = game.keyLabels?.[n] ?? n;
           return `<button class="key ${typeof label === 'string' ? 'word' : ''}" data-act="dart" data-n="${n}" ${n === 25 && mod === 3 ? 'disabled' : ''}>${esc(label)}</button>`;
@@ -54,7 +54,7 @@ export function renderMatch(ctx) {
         </div>
       </nav>
 
-      ${ui.toast ? `<div class="toast ${ui.toast.kind}" role="status">${esc(ui.toast.text)}</div>` : ''}
+      ${ui.toast ? `<div class="toast ${ui.toast.kind} ${ui.toast.text.length > 8 ? 'long' : ''}" role="status">${esc(ui.toast.text)}</div>` : ''}
       ${state.over ? winSheet(match, state) : ''}
       ${ui.confirmLeave ? leaveSheet() : ''}
     </div>`;
@@ -145,16 +145,22 @@ function card(side, i, sb, state, current, onDeck) {
         ? `<div class="slot">${esc(dartLabel(darts[k]))}</div>`
         : '<div class="slot empty">–</div>').join('')}</div>`
     : '';
-  const stats = isThrower && darts.length ? [`<b>Turn ${sb.turnPoints}</b>`, ...sb.stats.map(esc)] : sb.stats.map(esc);
+  const turnStat = isThrower && darts.length && sb.turnPoints !== undefined ? [`<b>Turn ${sb.turnPoints}</b>`] : [];
+  const stats = [...turnStat, ...sb.stats.map(esc)];
+  const lives = sb.lives
+    ? `<div class="lives" aria-label="${sb.lives.have} of ${sb.lives.max} lives">${[...Array(sb.lives.max)].map((_, k) =>
+        `<span class="pip ${k < sb.lives.have ? 'on' : ''}"></span>`).join('')}</div>`
+    : '';
+  const badge = sb.badge ? `<span class="badge ${sb.badge === 'Out' ? 'badge-out' : ''}">${esc(sb.badge)}</span>` : '';
   return `
-    <div class="card ${cls}">
+    <div class="card ${cls} ${sb.out ? 'is-out' : ''}">
       <div class="card-left">
-        <div class="name">${esc(team ? side.name : side.members[0])}${isNext ? ' <span class="tag">Next</span>' : ''}</div>
+        <div class="name">${esc(team ? side.name : side.members[0])}${lives}${isNext ? ' <span class="tag">Next</span>' : ''}${badge}</div>
         ${members}
         ${slots}
-        <div class="stats">${stats.join(' · ')}</div>
+        ${stats.length ? `<div class="stats">${stats.join(' · ')}</div>` : ''}
       </div>
-      <div class="score">${esc(sb.main)}</div>
+      <div class="score">${sb.mainLabel ? `<span class="main-label">${esc(sb.mainLabel)}</span>` : ''}${esc(sb.main)}</div>
     </div>`;
 }
 
@@ -207,7 +213,7 @@ export const matchActions = {
     ctx.state.ui.mod = 1;
     ctx.setMatch(next);
     const event = computeState(next).game.event;
-    if (event?.kind === 'bust' || event?.kind === 'big') showToast(ctx, event);
+    if (event && event.kind !== 'win' && event.text) showToast(ctx, event);
   },
   mod: (ctx, el) => {
     const m = Number(el.dataset.m);
@@ -226,6 +232,12 @@ export const matchActions = {
   'to-setup': (ctx) => ctx.leaveMatch(),
   rematch: (ctx) => {
     const { gameId, options, sides } = ctx.state.match;
-    ctx.startMatch(createMatch({ gameId, options, sides }));
+    const game = getGame(gameId);
+    if (game.needsNumberDraw?.(options)) {
+      ctx.state.match = null;
+      ctx.setDraw({ gameId, options, sides, picks: [] }); // throw for numbers again
+    } else {
+      ctx.startMatch(createMatch({ gameId, options, sides }));
+    }
   },
 };

@@ -222,7 +222,8 @@ export const setupActions = {
     const entries = pickedEntries(state);
     if (validateSetup(game, entries, { teams, options })) return;
     const sides = buildSides(entries, { teams, random: state.setup.random });
-    ctx.startMatch(createMatch({ gameId: game.id, options, sides }));
+    if (game.needsNumberDraw?.(options)) ctx.setDraw({ gameId: game.id, options, sides, picks: [] });
+    else ctx.startMatch(createMatch({ gameId: game.id, options, sides }));
   },
 };
 

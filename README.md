@@ -6,6 +6,8 @@ The plan, rules and progress live in `CLAUDE.md`.
 **Playable now:**
 - X01 (301 / 501 / 701 / custom, every In and Out rule, checkout hints, teams)
 - Cricket (No score / Points / Cut-throat, standard or wild card numbers, teams)
+- Baseball (9 innings, extra innings on a tie, teams)
+- Assassin (house rules; random numbers or an off-hand Number draw)
 
 The other games are on the way.
 

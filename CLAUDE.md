@@ -2,7 +2,7 @@
 
 Working title: Dart Scoreboard. A phone-first darts scoring app covering many games, built so new games can be added later as self-contained modules.
 
-Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, step 4 (Cricket) done 2026-11-18; next is step 5 (Baseball and Assassin). Items under "Open decisions" are not settled — ask Mark before building them.
+Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, steps 4–5 (Cricket, Baseball, Assassin) done 2026-11-18; next is step 6 (persistence: resume and history). Items under "Open decisions" are not settled — ask Mark before building them.
 
 ## Ground rules
 
@@ -78,7 +78,7 @@ Game picker grouped by Core, Cricket, Party, Practice → game options → playe
 - Inner bull counts as a double.
 - Checkout suggestions: always on, not a setup option (Mark, 2026-11-17). When the remaining score can be finished with the darts left in the turn under the chosen Out rule, show a suggested route (e.g. T20, T20, D20) on the current player's card. Update it after every dart. Built on `getHint`, so other games can offer hints later.
 
-**Baseball** — standard rules. 9 innings; in inning N only number N scores. Single 1 run, double 2, triple 3. Highest total wins. Tie → extra innings (10, 11, …) until broken.
+**Baseball** — standard rules. 9 innings; in inning N only number N scores. Single 1 run, double 2, triple 3. Highest total wins. Tie → extra innings (10, 11, …) until broken; only the players/teams tied for the lead play them (past inning 20 the target is the bull). Teams allowed (Mark, 2026-11-18). Keypad shows one big key for the inning's number.
 
 **Assassin** — Mark's house rules. This is not standard Killer; follow these exactly.
 - Each player has a unique number 1–20. Bull is never a player's number.
@@ -91,6 +91,7 @@ Game picker grouped by Core, Cricket, Party, Practice → game options → playe
 - An Assassin who drops below 6 lives loses Assassin status until they hit their own number back up to 6.
 - A player at 0 lives is out. Last player standing wins.
 - No teams in Assassin. Every player has their own number and lives.
+- Built 2026-11-18: Throw mode shows a Number draw screen after Start (each player taps the number they hit off-hand; taken numbers greyed out with the owner's name; miss or bull = throw again; Undo). Play again repeats the draw in Throw mode and deals fresh numbers in Random mode. Cards show the player's number big on the right, life dots next to the name, an ASSASSIN badge at 6 lives; knocked-out players are dimmed and skipped. Pop-ups: "<name> is an Assassin!" and "<name> is out!".
 - Scoreboard shows each player's number, lives, and Assassin status.
 
 ### Cricket
@@ -174,7 +175,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 2. [x] Roster, player/team selection, throw order, setup screen. Done 2026-11-17: Players tab (add, rename, remove, max 15), setup screen with game picker, option tiles, Random order and Teams switches, drag to reorder, Start opens a placeholder playing screen showing throw order. Bottom navigation in place; Stats, History and Settings are placeholders. 38 tests pass.
 3. [x] Entry pad and scoreboard layout, wired to X01 (all in/out options). Done 2026-11-17: X01 scoring for every In/Out rule, busts (score and any In opened that turn reset), win screen (Play again, New game, Undo last dart), checkout hints after every dart, "Bust" and 100+ score pop-ups, per-card average, darts thrown and last turn. All 5 players fit with the keypad on a 375×667 screen. 59 tests pass.
 4. [x] Cricket and its variants. Done 2026-11-18: marks grid (numbers down the side, one column per player/team, / X Ⓧ, numbers everyone has closed greyed out), keypad shows only the numbers in play, green turn strip with the thrower's darts and marks per round (MPR). 5 players fit on a 375×667 screen. 71 tests pass.
-5. Baseball and Assassin.
+5. [x] Baseball and Assassin. Done 2026-11-18: Baseball with teams, one big key for the inning's number, extra innings for tied leaders only. Assassin with Random or Throw numbers (Number draw screen before the game), life dots, Assassin badge, knocked-out players dimmed and skipped. 89 tests pass; 5 players fit on a 375×667 screen.
 6. Persistence: resume, history, dart log.
 7. Party games, one at a time.
 8. Practice games, one at a time.
@@ -212,11 +213,11 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 
 ## Where we left off (2026-11-18)
 
-- Steps 1–4 done, committed and pushed. Mark tested X01 and it worked well; Cricket not yet tested by Mark.
-- Next: step 5, Baseball and Assassin. Assassin rules are fully written above (Mark's house rules). Before building, confirm with Mark:
-  - Baseball: tie-break extra innings, and whether teams are allowed (plan says individual unless Mark says otherwise).
-  - Assassin "Throw" number assignment: how the off-hand throw is entered on screen (likely: each player in turn taps the number they hit; duplicates and bull refused).
-  - Assassin playing screen: cards showing each player's number, lives (0–6) and Assassin status.
+- Steps 1–5 done, committed and pushed. Mark tested X01 and Cricket (both good). Baseball and Assassin not yet tested by Mark.
+- Next: step 6, persistence: a game in progress survives closing the app and can be resumed; finished games saved to History with players, game, options, result, date and the full dart log. Before building, confirm with Mark:
+  - Resume: offer "Resume game" on the Home screen automatically, or ask on opening the app?
+  - Only one game in progress at a time (starting a new one replaces it after a warning)?
+  - History screen: what each row shows (date, game, winner, players) and whether a past game can be opened to see its final board.
 - Test data: the in-app preview browser has made-up players saved; Mark's own browser has his own.
 
 ## Future modules

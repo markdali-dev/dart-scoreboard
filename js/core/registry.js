@@ -24,7 +24,7 @@ export function validateGame(game) {
   for (const fn of REQUIRED_FUNCTIONS) {
     if (typeof game[fn] !== 'function') problems.push(`${fn}()`);
   }
-  for (const fn of ['getHint', 'isOut', 'prepareOptions', 'describe', 'getRows', 'getKeys']) {
+  for (const fn of ['getHint', 'isOut', 'prepareOptions', 'describe', 'getRows', 'getKeys', 'needsNumberDraw']) {
     if (fn in game && typeof game[fn] !== 'function') problems.push(`${fn}() must be a function if given`);
   }
   if (game.board === 'marks' && typeof game.getRows !== 'function') problems.push('getRows() (needed for a marks board)');

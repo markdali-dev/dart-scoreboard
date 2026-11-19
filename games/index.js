@@ -23,12 +23,22 @@
 //                                         then also getRows(state) -> [{ label, dead }] and
 //                                         getScoreboard(...)[i].marks -> marks per row
 //   getKeys(state)                     -> optional, the numbers that get keys on the pad
+//   keyLabels: { 25: 'Bull' }          -> optional, words shown on keys instead of numbers
+//   roundLabel: 'Inning'               -> optional, header says "Inning 4" instead of "Round 4"
+//   needsNumberDraw(options)           -> optional, true to show the Number draw screen
+//                                         before the game (fills options.numbers)
+//   Scoreboard extras for score cards: mainLabel (small text before the big number),
+//   lives: { have, max } (shown as pips), badge ('Assassin', 'Out'), out (card dimmed)
 //
 // The shell handles turn order, teams, the dart log and undo, so games don't.
 
 import { registerGame } from '../js/core/registry.js';
 import x01 from './x01.js';
 import cricket from './cricket.js';
+import baseball from './baseball.js';
+import assassin from './assassin.js';
 
 registerGame(x01);
+registerGame(baseball);
+registerGame(assassin);
 registerGame(cricket);

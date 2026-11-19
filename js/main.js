@@ -10,6 +10,7 @@ import { tabBar } from './ui/html.js';
 import { renderSetup, setupActions, setupForms, onCustomInput, enableDrag } from './ui/setupScreen.js';
 import { renderPlayers, playersActions, playersForms } from './ui/playersScreen.js';
 import { renderMatch, matchActions } from './ui/matchScreen.js';
+import { renderDraw, drawActions } from './ui/drawScreen.js';
 
 const app = document.getElementById('app');
 
@@ -25,6 +26,7 @@ const state = {
     ...load('setup', {}),
   },
   match: null, // the game being played (saved and resumable from step 6)
+  draw: null,  // Number draw in progress before a game like Assassin
   ui: {},      // short-lived screen state: open panels, error messages
 };
 // A saved game that no longer exists falls back to the first game.
@@ -50,6 +52,7 @@ const ctx = {
   },
   startMatch(match) { state.match = match; state.ui = {}; render(); },
   setMatch(match) { state.match = match; render(); },
+  setDraw(draw) { state.draw = draw; state.ui = {}; render(); window.scrollTo(0, 0); },
   leaveMatch() { state.match = null; state.ui = {}; render(); },
 };
 // Clean up on load too, in case the saved list and setup ever disagree.
@@ -59,6 +62,7 @@ const actions = {
   ...setupActions,
   ...playersActions,
   ...matchActions,
+  ...drawActions,
   tab: (c, el) => { state.tab = el.dataset.tab; state.ui = {}; render(); window.scrollTo(0, 0); },
   theme: (c, el) => { setTheme(el.dataset.themeChoice); render(); },
 };
@@ -72,6 +76,10 @@ function comingSoon(title, step) {
 function render() {
   if (state.match) {
     app.innerHTML = renderMatch(ctx);
+    return;
+  }
+  if (state.draw) {
+    app.innerHTML = renderDraw(ctx);
     return;
   }
   const screens = {

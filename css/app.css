@@ -475,3 +475,47 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .marks-board { grid-template-rows: auto repeat(var(--rows), minmax(40px, 54px)) auto; }
 .mcell { overflow: hidden; }
 .mark { width: auto; height: min(48px, calc(100% - 6px)); aspect-ratio: 1; stroke-width: 3.4; }
+
+/* ================= step 5: Baseball and Assassin ================= */
+
+/* lives as pips (Assassin) */
+.lives { display: flex; gap: 5px; margin-top: 6px; }
+.pip { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; opacity: 0.5; }
+.pip.on { background: currentColor; opacity: 1; }
+.badge {
+  margin-left: 8px; vertical-align: middle;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 6px;
+  background: var(--card-text); color: var(--card);
+}
+.card.thrower .badge { background: var(--thrower-text); color: var(--thrower); }
+.badge.badge-out { background: var(--danger); color: var(--danger-text); }
+.card.is-out { opacity: 0.45; }
+.main-label { font-size: 0.9rem; font-weight: 600; opacity: 0.8; margin-right: 4px; vertical-align: top; }
+.match.n4 .lives .pip, .match.n5 .lives .pip { width: 11px; height: 11px; }
+.match.n5 .lives { margin-top: 3px; }
+
+/* feedback pop-ups with longer text */
+.toast.long { font-size: 1.6rem; white-space: nowrap; max-width: calc(100vw - 24px); text-align: center; padding: 12px 22px; }
+.toast.info { background: var(--card); color: var(--card-text); outline: 2px solid var(--thrower-top); }
+
+/* Baseball: one big key for the inning's number */
+.keypad.one-key > .key:first-child { grid-column: 1 / -1; font-size: 2rem; height: 64px; }
+
+/* Number draw screen */
+.draw-prompt { margin: 6px 0 14px; }
+.draw-who { font-size: 1.45rem; font-weight: 700; margin-bottom: 4px; }
+.draw-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.draw-key { height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+.draw-key.taken { background: var(--card); color: var(--text-muted); opacity: 1; }
+.draw-owner { font-size: 0.7rem; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.draw-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+.draw-list li { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid var(--hairline); padding: 4px 0; }
+.draw-actions { display: flex; gap: 10px; margin-top: 16px; align-items: stretch; }
+.draw-actions .start { flex: 1; }
+.match.draw { overflow-y: auto; }
+/* life dots sit on the name line */
+.name .lives { display: inline-flex; margin: 0 0 0 10px; vertical-align: middle; gap: 4px; }
+.name .pip { width: 12px; height: 12px; }
+.match.n4 .name .pip, .match.n5 .name .pip { width: 10px; height: 10px; }
+.match.n5 .name .lives { margin-left: 6px; gap: 3px; }

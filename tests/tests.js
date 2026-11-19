@@ -9,6 +9,8 @@ import { addPlayer, renamePlayer, removePlayer, MAX_ROSTER, MAX_NAME } from '../
 import { nextOptionValue, optionLabel, validateSetup, teamChoices, buildSides, moveItem } from '../js/core/setup.js';
 import x01, { findCheckout } from '../games/x01.js';
 import cricket from '../games/cricket.js';
+import baseball from '../games/baseball.js';
+import assassin from '../games/assassin.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -489,6 +491,103 @@ test('Cricket wild card: 6 different numbers plus bull, fixed for the whole game
 test('Cricket: marks per round (extra hits count only when they score)', () => {
   eq(cricket.getScoreboard(cs(darts(cricketMatch(), 'T20 T19 20')).game)[0].stats, ['MPR 6.00']);
   eq(cricket.getScoreboard(cs(darts(cricketMatch({ scoring: 'points' }), 'T20 T19 20')).game)[0].stats, ['MPR 7.00']);
+});
+
+// ---------- Baseball ----------
+function baseballMatch(sides = players('Ann', 'Bob')) {
+  try { getGame('baseball'); } catch { registerGame(baseball); }
+  return createMatch({ gameId: 'baseball', options: {}, sides });
+}
+// Plays whole innings: perInning(k) returns one 3-dart string per side for inning k.
+function innings(match, from, to, perInning) {
+  let m = match;
+  for (let k = from; k <= to; k++) for (const turn of perInning(k)) m = darts(m, turn);
+  return m;
+}
+
+test('Baseball module passes the registry checks', () => validateGame(baseball));
+test('Baseball: in inning 1 only 1s score (single 1, double 2, triple 3)', () => {
+  eq(cs(darts(baseballMatch(), '1 D1 T1')).game.totals[0], 6);
+  eq(cs(darts(baseballMatch(), '20 T5 0')).game.totals[0], 0);
+});
+test('Baseball: next inning after everyone has thrown; keypad shows its number', () => {
+  const s = cs(darts(baseballMatch(), '1 1 1 0 0 0'));
+  eq(s.game.inning, 2); eq(s.turn.round, 2); eq(baseball.getKeys(s.game), [2]);
+});
+test('Baseball: most runs after 9 innings wins', () => {
+  const s = cs(innings(baseballMatch(), 1, 9, (k) => [`${k} 0 0`, '0 0 0']));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.game.totals, [9, 0]);
+});
+test('Baseball: a tie goes to extra innings, then the leader wins', () => {
+  let m = innings(baseballMatch(), 1, 9, (k) => [`${k} 0 0`, `${k} 0 0`]);
+  let s = cs(m);
+  eq(s.over, false, 'tied after 9'); eq(s.game.inning, 10); eq(s.game.event.text, 'Extra inning!');
+  m = darts(m, '10 0 0 0 0 0');
+  s = cs(m);
+  eq(s.over, true); eq(s.result.winners, [0]);
+});
+test('Baseball: only the tied leaders play extra innings', () => {
+  const m = innings(baseballMatch(players('Ann', 'Bob', 'Cat')), 1, 9, (k) => [`${k} 0 0`, `${k} 0 0`, '0 0 0']);
+  const s = cs(m);
+  eq(s.game.out, [false, false, true]);
+  const s2 = cs(darts(m, '0 0 0'));
+  eq(s2.turn.side, 1, 'Cat is skipped');
+});
+test('Baseball: teammates share runs', () => {
+  const sides = [{ name: 'Team A', members: ['Ann', 'Ade'] }, { name: 'Team B', members: ['Bob', 'Ben'] }];
+  const s = cs(darts(baseballMatch(sides), '1 1 0 0 0 0 2 0 0'));
+  eq(s.game.totals, [3, 0]); eq(s.turn.thrower, 'Ben');
+});
+
+// ---------- Assassin ----------
+function assassinMatch(numbers = [1, 2, 3], names = ['Ann', 'Bob', 'Cat']) {
+  try { getGame('assassin'); } catch { registerGame(assassin); }
+  return createMatch({ gameId: 'assassin', options: { assign: 'throw', numbers }, sides: players(...names) });
+}
+const lives = (m) => cs(m).game.lives;
+
+test('Assassin module passes the registry checks', () => validateGame(assassin));
+test('Assassin: Random deals different numbers 1-20 to everyone', () => {
+  try { getGame('assassin'); } catch { registerGame(assassin); }
+  const m = createMatch({ gameId: 'assassin', options: { assign: 'random' }, sides: players('a', 'b', 'c', 'd', 'e') });
+  const n = m.options.numbers;
+  eq(n.length, 5); eq(new Set(n).size, 5); eq(n.every((x) => x >= 1 && x <= 20), true);
+});
+test('Assassin: Throw keeps the drawn numbers; Number draw is needed', () => {
+  eq(assassinMatch([7, 14, 20]).options.numbers, [7, 14, 20]);
+  eq(assassin.needsNumberDraw({ assign: 'throw' }), true);
+  eq(assassin.needsNumberDraw({ assign: 'random' }), false);
+});
+test('Assassin: own number adds lives (1/2/3), capped at 6', () => {
+  eq(lives(darts(assassinMatch(), '1'))[0], 4);
+  eq(lives(darts(assassinMatch(), 'D1'))[0], 5);
+  eq(lives(darts(assassinMatch(), 'T1 T1'))[0], 6);
+});
+test('Assassin: reaching 6 makes you an Assassin', () => {
+  eq(cs(darts(assassinMatch(), 'T1')).game.event, { kind: 'big', text: 'Ann is an Assassin!' });
+});
+test('Assassin: a non-Assassin hitting another number does nothing', () => {
+  eq(lives(darts(assassinMatch(), 'T2 T3')), [3, 3, 3]);
+});
+test('Assassin: an Assassin takes lives (single 1, double 2, triple 3)', () => {
+  eq(lives(darts(assassinMatch(), 'T1 2 D3')), [6, 2, 1]);
+});
+test('Assassin: 0 lives is out, and their turns are skipped', () => {
+  const m = darts(assassinMatch(), 'T1 T2 0');
+  const s = cs(m);
+  eq(s.game.lives[1], 0); eq(s.turn.side, 2, 'Bob skipped, Cat is up');
+});
+test('Assassin: dropping below 6 loses Assassin status', () => {
+  // Ann becomes Assassin; Bob builds to 6 and hits Ann once; Ann (5 lives) can no longer hurt Cat.
+  const m = darts(assassinMatch(), 'T1 0 0 T2 1 0 0 0 0 T3');
+  eq(lives(m), [5, 6, 3]);
+});
+test('Assassin: last player standing wins', () => {
+  const s = cs(darts(assassinMatch(), 'T1 T2 T3'));
+  eq(s.over, true); eq(s.result.winners, [0]);
+});
+test('Assassin: bull and misses do nothing', () => {
+  eq(lives(darts(assassinMatch(), 'B 25 0')), [3, 3, 3]);
 });
 
 // ---------- report ----------

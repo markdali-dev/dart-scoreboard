@@ -30,7 +30,7 @@ export function createMatch({ gameId, options, sides }, rng = Math.random) {
   return {
     gameId,
     // Random choices are made here, once, and saved with the match.
-    options: game.prepareOptions ? game.prepareOptions({ ...options }, rng) : { ...options },
+    options: game.prepareOptions ? game.prepareOptions({ ...options }, rng, sides) : { ...options },
     sides: sides.map((s) => ({ name: s.name, members: [...s.members] })),
     darts: [],
     startedAt: new Date().toISOString(),
