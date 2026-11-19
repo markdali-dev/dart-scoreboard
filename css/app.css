@@ -519,3 +519,24 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .name .pip { width: 12px; height: 12px; }
 .match.n4 .name .pip, .match.n5 .name .pip { width: 10px; height: 10px; }
 .match.n5 .name .lives { margin-left: 6px; gap: 3px; }
+
+/* ================= Mark's feedback on step 5 (2026-11-18) ================= */
+
+/* Assassin badge in red so it stands out (Out badge stays red too, but cards are dimmed) */
+.badge:not(.badge-out), .card.thrower .badge:not(.badge-out) { background: var(--danger); color: var(--danger-text); }
+
+/* decorative graphic between sections; shrinks or hides when space is short */
+.match.has-art .cards { flex: 0 1 auto; }
+.match-art { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 8px var(--gutter); overflow: hidden; }
+.art { height: 100%; width: auto; max-width: 100%; max-height: 230px; }
+.match-art.art-diamond .art { opacity: 0.35; max-height: 170px; }
+
+/* Baseball pad: Miss and target tiles, then Double / Triple / Undo */
+.target-row { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.target-tile, .miss-tile { height: clamp(84px, 20vh, 170px); border-radius: var(--radius-card); }
+.target-tile { background: linear-gradient(var(--thrower-top), var(--thrower)); color: var(--thrower-text); font-size: 3.4rem; }
+.miss-tile { font-size: 1.8rem; }
+.keypad .bottom.no-miss { grid-template-columns: 1fr 1fr 1fr; }
+/* Hide the graphic when there isn't room for it to look like anything (e.g. 5 players on a small phone). */
+.match-art { container-type: size; }
+@container (max-height: 64px) { .art { display: none; } }

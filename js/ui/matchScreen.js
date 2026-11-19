@@ -6,6 +6,7 @@ import { computeState, throwDart, undo, getOnDeck, createMatch, DARTS_PER_TURN }
 import { makeDart, dartLabel } from '../core/dart.js';
 import { optionLabel } from '../core/setup.js';
 import { esc } from './html.js';
+import { ART } from './art.js';
 
 export function renderMatch(ctx) {
   const { match, ui } = ctx.state;
@@ -17,9 +18,42 @@ export function renderMatch(ctx) {
   const hint = state.over ? null : game.getHint?.(state.game, { side: current, dartsLeft: DARTS_PER_TURN - state.turn.darts.length });
   const mod = ui.mod ?? 1;
   const keys = game.getKeys?.(state.game) ?? [...[...Array(20)].map((_, i) => i + 1), 25];
+  const art = game.art ? `<div class="match-art art-${game.art.name}">${ART[game.art.name]()}</div>` : '';
+  const hintHtml = hint ? `<div class="hint">
+        <span class="label">${esc(hint.label)}</span>
+        ${hint.parts.length > 1
+          ? [0, 1, 2].map((k) => `<span>${esc(hint.parts[k] ?? '')}</span>`).join('')
+          : `<span class="hint-wide">${esc(hint.parts[0])}</span>`}
+      </div>` : '';
+  const modKeys = `
+          <button class="key double" data-act="mod" data-m="2" aria-pressed="${mod === 2}">DOUBLE</button>
+          <button class="key triple" data-act="mod" data-m="3" aria-pressed="${mod === 3}">TRIPLE</button>
+          <button class="key undo" data-act="undo" ${match.darts.length ? '' : 'disabled'}>Undo</button>`;
+  const keyLabel = (n) => game.keyLabels?.[n] ?? n;
+
+  // Keypad: the usual number grid, or (pad: 'target') two big tiles, Miss and the target.
+  const keypad = game.pad === 'target'
+    ? `<nav class="keypad target-pad" aria-label="Dart entry">
+        <div class="target-row">
+          <button class="key miss-tile" data-act="dart" data-n="0">Miss</button>
+          ${keys.map((n) => `<button class="key target-tile" data-act="dart" data-n="${n}" ${n === 25 && mod === 3 ? 'disabled' : ''}>${esc(keyLabel(n))}</button>`).join('')}
+        </div>
+        <div class="bottom no-miss">${modKeys}</div>
+      </nav>`
+    : `<nav class="keypad ${keys.length === 1 ? 'one-key' : ''}" aria-label="Dart entry">
+        ${keys.map((n) => {
+          const label = keyLabel(n);
+          return `<button class="key ${typeof label === 'string' ? 'word' : ''}" data-act="dart" data-n="${n}" ${n === 25 && mod === 3 ? 'disabled' : ''}>${esc(label)}</button>`;
+        }).join('')}
+        <div class="bottom">
+          <button class="key" data-act="dart" data-n="0" aria-label="Miss">0</button>
+          ${modKeys}
+        </div>
+      </nav>`;
+  const artBeforeHint = game.art?.place === 'before-hint';
 
   return `
-    <div class="match n${match.sides.length}">
+    <div class="match n${match.sides.length} ${art ? 'has-art' : ''}">
       <div class="match-top">
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
@@ -34,25 +68,10 @@ export function renderMatch(ctx) {
             ${match.sides.map((side, i) => card(side, i, board[i], state, current, onDeck)).join('')}
           </section>`}
 
-      ${hint ? `<div class="hint">
-        <span class="label">${esc(hint.label)}</span>
-        ${hint.parts.length > 1
-          ? [0, 1, 2].map((k) => `<span>${esc(hint.parts[k] ?? '')}</span>`).join('')
-          : `<span class="hint-wide">${esc(hint.parts[0])}</span>`}
-      </div>` : ''}
-
-      <nav class="keypad ${keys.length === 1 ? 'one-key' : ''}" aria-label="Dart entry">
-        ${keys.map((n) => {
-          const label = game.keyLabels?.[n] ?? n;
-          return `<button class="key ${typeof label === 'string' ? 'word' : ''}" data-act="dart" data-n="${n}" ${n === 25 && mod === 3 ? 'disabled' : ''}>${esc(label)}</button>`;
-        }).join('')}
-        <div class="bottom">
-          <button class="key" data-act="dart" data-n="0" aria-label="Miss">0</button>
-          <button class="key double" data-act="mod" data-m="2" aria-pressed="${mod === 2}">DOUBLE</button>
-          <button class="key triple" data-act="mod" data-m="3" aria-pressed="${mod === 3}">TRIPLE</button>
-          <button class="key undo" data-act="undo" ${match.darts.length ? '' : 'disabled'}>Undo</button>
-        </div>
-      </nav>
+      ${artBeforeHint ? art : ''}
+      ${hintHtml}
+      ${artBeforeHint ? '' : art}
+      ${keypad}
 
       ${ui.toast ? `<div class="toast ${ui.toast.kind} ${ui.toast.text.length > 8 ? 'long' : ''}" role="status">${esc(ui.toast.text)}</div>` : ''}
       ${state.over ? winSheet(match, state) : ''}

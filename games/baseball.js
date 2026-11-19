@@ -79,6 +79,8 @@ export default {
     return [targetFor(state.inning)];
   },
   keyLabels: { 25: 'Bull' },
+  pad: 'target',                                  // two big tiles: Miss and the inning's number
+  art: { name: 'diamond', place: 'before-pad' },  // faded diamond just above the tiles
 };
 
 export function targetFor(inning) {

@@ -20,7 +20,7 @@ const STANDARD_TARGETS = [20, 19, 18, 17, 16, 15, 25];
 export default {
   id: 'cricket',
   name: 'Cricket',
-  group: 'Cricket',
+  group: 'Core',
   rules: 'Hit each number in play 3 times to close it. Single = 1 mark, double = 2, triple = 3; outer bull 1, inner bull 2.',
   options: [
     {

@@ -20,7 +20,7 @@ Core rule: the app shell knows nothing about any specific game. Each game is one
 
 Each game module provides:
 
-- `id`, `name`, `group` (Core, Cricket, Party, Practice), short rules text
+- `id`, `name`, `group` (Core, Party, Practice; Cricket is Core), short rules text
 - `options`: the settings shown on the setup screen (type, choices, default)
 - `minPlayers` / `maxPlayers`, whether teams are supported
 - `init(sides, options)` → starting game state (a side is one player or one team)
@@ -66,7 +66,7 @@ A dart is `{ number: 0–20 or 25, multiplier: 1|2|3 }`. Miss is number 0.
 
 ## Setup screen
 
-Game picker grouped by Core, Cricket, Party, Practice → game options → players/teams → throw order → start. Single games only, no legs or sets.
+Game picker grouped by Core, Party, Practice → game options → players/teams → throw order → start. Single games only, no legs or sets.
 
 ## Games for version 1
 
@@ -201,6 +201,11 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - 2026-11-18 (step 4): Games can now fix random choices once at game start (`prepareOptions`), saved with the match so undo/resume replay the same game. Games can also show a marks grid instead of score cards (`board: 'marks'`) and limit the keypad to their numbers (`getKeys`). Cricket marks per round counts marks that close a number plus extra marks that score points.
 - 2026-11-18 (after Mark tested Cricket): keypad numbers run low to high (15…20, then a "Bull" key that still counts as 25); shorter grid rows with bigger marks; the green turn strip is gone. Instead a "Darts" row under every column shows that player's darts: current thrower's this-turn darts on green, everyone else's last-turn darts in a grey box (theme-aware colors). Marks per round moved into each column header.
 - 2026-11-18: Cricket rows made about 35% taller again (up to 54px, shrinking to no less than 40px on small screens) with marks growing to match (about 46px), so the grid uses the space without crowding the keypad.
+- 2026-11-18 (after Mark tested step 5):
+  - Cricket is a Core game, listed first (Cricket, X01, Baseball, Assassin). The Cricket group is gone; groups are now Core, Party, Practice.
+  - Assassin badge is red (Mark's choice, overriding "red only for bust/error"). An original gun-barrel graphic (figure aiming at the viewer, red-tinted swirl, no 007 logo) sits between the cards and the hint bar. It is inspired by the James Bond films; fine for personal use, but replace it before selling the app (trademark risk).
+  - Baseball entry: two big tiles above Double/Triple/Undo, "Miss" (left, counts as 0) and the inning's number (right, green); no 0 key in the bottom row. A faded baseball diamond graphic sits just above the tiles.
+  - Graphics shrink to fit and hide when there's under ~64px of room (e.g. 5 players on a small phone).
 - 2026-11-18: Phone testing over home Wi-Fi: `python serve.py --lan` prints an address to open on the phone. Gameplay works; offline mode and home-screen install need https, so they wait for GitHub Pages.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 

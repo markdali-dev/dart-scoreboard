@@ -2,7 +2,9 @@
 // To add a game: create one file in games/ and add one line below.
 //
 // Each game module provides:
-//   id, name, group ('Core' | 'Cricket' | 'Party' | 'Practice'), rules (short text)
+//   id, name, group ('Core' | 'Party' | 'Practice'), rules (short text)
+//   art: { name: 'barrel' | 'diamond', place: 'before-hint' | 'before-pad' } -> optional graphic
+//   pad: 'target'                      -> optional, two big tiles (Miss + target) instead of the grid
 //   options: settings shown as tiles on the setup screen. Each is one of:
 //     { id, label, type: 'choice', choices: [{ value, label }], default, custom?: { min, max } }
 //     { id, label, type: 'toggle', default: true | false }
@@ -38,7 +40,8 @@ import cricket from './cricket.js';
 import baseball from './baseball.js';
 import assassin from './assassin.js';
 
+// The order here is the order on the setup screen's game list.
+registerGame(cricket);
 registerGame(x01);
 registerGame(baseball);
 registerGame(assassin);
-registerGame(cricket);

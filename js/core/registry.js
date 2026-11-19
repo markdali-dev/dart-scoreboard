@@ -1,7 +1,8 @@
 // The game registry. The app shell only ever talks to games through here,
 // so it never needs to know anything about a specific game.
 
-export const GROUPS = ['Core', 'Cricket', 'Party', 'Practice'];
+// Cricket counts as a Core game (Mark, 2026-11-18), so there is no Cricket group.
+export const GROUPS = ['Core', 'Party', 'Practice'];
 
 const REQUIRED_FUNCTIONS = ['init', 'applyDart', 'isOver', 'getResult', 'getScoreboard'];
 

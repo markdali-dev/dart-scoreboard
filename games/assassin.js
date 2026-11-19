@@ -38,6 +38,7 @@ export default {
   teams: false,
 
   keyLabels: { 25: 'Bull' },
+  art: { name: 'barrel', place: 'before-hint' }, // gun-barrel graphic between the cards and the hint bar
   describe: (options) => `Assassin · ${options.assign === 'throw' ? 'Thrown' : 'Random'} numbers`,
 
   // True when the Number draw screen must run before the game starts.
