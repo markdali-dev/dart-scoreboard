@@ -559,3 +559,19 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
   background: var(--chip-bg); color: var(--chip-text);
   font-size: 0.85rem; font-weight: 700;
 }
+
+/* Mark's feedback (2026-11-18, round 3) */
+/* Assassin: first 3 dots red while a player has 3 lives or fewer */
+.lives .pip.risk { border-color: var(--danger); opacity: 1; }
+.lives .pip.risk.on { background: var(--danger); }
+.card.thrower .lives .pip.risk { border-color: #ff4d47; box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.35); }
+.card.thrower .lives .pip.risk.on { background: #ff4d47; }
+
+/* Setup: Game bar in the same green as Start; option tiles a lighter green */
+.game-pick {
+  background: linear-gradient(var(--thrower-top), var(--thrower));
+  color: var(--thrower-text);
+  box-shadow: var(--shadow-thrower);
+}
+.game-pick .pick-group { color: var(--thrower-text); opacity: 0.85; }
+.tile:not(.off) { background: linear-gradient(var(--accent-soft-top), var(--accent-soft)); color: var(--accent-soft-text); }

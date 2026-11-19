@@ -166,9 +166,11 @@ function card(side, i, sb, state, current, onDeck, game) {
     : '';
   const turnStat = isThrower && darts.length && sb.turnPoints !== undefined ? [`<b>Turn ${sb.turnPoints}</b>`] : [];
   const stats = [...turnStat, ...sb.stats.map(esc)];
+  // At 3 lives or fewer the first 3 dots turn red: this player is at risk.
+  const atRisk = sb.lives && sb.lives.have <= 3 && sb.lives.have > 0;
   const lives = sb.lives
-    ? `<div class="lives" aria-label="${sb.lives.have} of ${sb.lives.max} lives">${[...Array(sb.lives.max)].map((_, k) =>
-        `<span class="pip ${k < sb.lives.have ? 'on' : ''}"></span>`).join('')}</div>`
+    ? `<div class="lives ${atRisk ? 'at-risk' : ''}" aria-label="${sb.lives.have} of ${sb.lives.max} lives">${[...Array(sb.lives.max)].map((_, k) =>
+        `<span class="pip ${k < sb.lives.have ? 'on' : ''} ${atRisk && k < 3 ? 'risk' : ''}"></span>`).join('')}</div>`
     : '';
   const badge = sb.badge ? `<span class="badge ${sb.badge === 'Out' ? 'badge-out' : ''}">${esc(sb.badge)}</span>` : '';
   // Games like Baseball keep each player's last 3 darts on their card until their next turn.
