@@ -2,7 +2,7 @@
 
 Working title: Dart Scoreboard. A phone-first darts scoring app covering many games, built so new games can be added later as self-contained modules.
 
-Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, steps 4–5 (Cricket, Baseball, Assassin) done 2026-11-18; next is step 6 (persistence: resume and history). Items under "Open decisions" are not settled — ask Mark before building them.
+Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, steps 4–5 (Cricket, Baseball, Assassin) and several polish rounds done 2026-11-18; next is step 6 (persistence: resume and history). Items under "Open decisions" are not settled — ask Mark before building them.
 
 ## Ground rules
 
@@ -218,13 +218,17 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - Offline copy (service worker) not yet confirmed in a normal browser. Check: open the app once in Edge or Chrome, then the tests page, "Offline copy" line should say saved.
 - Final app name, if it's ever sold.
 
-## Where we left off (2026-11-18)
+## Where we left off (end of 2026-11-18)
 
-- Steps 1–5 done, committed and pushed. Mark tested X01 and Cricket (both good). Baseball and Assassin not yet tested by Mark.
-- Next: step 6, persistence: a game in progress survives closing the app and can be resumed; finished games saved to History with players, game, options, result, date and the full dart log. Before building, confirm with Mark:
-  - Resume: offer "Resume game" on the Home screen automatically, or ask on opening the app?
+- Steps 1–5 done, committed and pushed (latest work on `main` at GitHub `dart-scoreboard`). Playable: Cricket, X01, Baseball, Assassin (all in Core).
+- Mark tested X01, Cricket, Baseball and Assassin and asked for several rounds of visual polish, all done (see the Decisions log entries dated 2026-11-18). Nothing is half-finished.
+- Next session: build step 6, persistence. A game in progress survives closing the app and can be resumed; finished games are saved to History with players, game, options, result, date and the full dart log. Before building, confirm with Mark:
+  - Resume: show a "Resume game" bar on the Home screen, or ask straight away when the app opens?
   - Only one game in progress at a time (starting a new one replaces it after a warning)?
   - History screen: what each row shows (date, game, winner, players) and whether a past game can be opened to see its final board.
+- How to run: `python serve.py` (this PC, http://localhost:8000) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (89 passing).
+- Still open (see Open decisions): GitHub Pages (needs a public repo on the free plan) and confirming the offline copy in a normal browser.
+- Possible later polish Mark mentioned: the Assassin gun-barrel graphic is "weaker than hoped"; a better image could replace it (and should, before any sale, for trademark reasons).
 - Test data: the in-app preview browser has made-up players saved; Mark's own browser has his own.
 
 ## Future modules
