@@ -28,6 +28,7 @@ export function createMatch({ gameId, options, sides }, rng = Math.random) {
     if (side.members.length > 3) throw new Error('Teams can have at most 3 players');
   }
   return {
+    id: 'g' + Date.now().toString(36) + Math.floor(rng() * 1e9).toString(36),
     gameId,
     // Random choices are made here, once, and saved with the match.
     options: game.prepareOptions ? game.prepareOptions({ ...options }, rng, sides) : { ...options },

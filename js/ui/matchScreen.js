@@ -8,8 +8,25 @@ import { optionLabel } from '../core/setup.js';
 import { esc } from './html.js';
 import { ART } from './art.js';
 
-export function renderMatch(ctx) {
-  const { match, ui } = ctx.state;
+// Header text for a game, e.g. "X01 · 501 · Open in · Double out".
+export function describeMatch(match) {
+  const game = getGame(match.gameId);
+  return game.describe ? game.describe(match.options) : summary(game, match.options);
+}
+
+// "Mark" or "Team A (Mark, Dean)" for the winner(s) of a finished game.
+export function winnerText(match, state) {
+  return state.result.winners.map((w) => {
+    const side = match.sides[w];
+    return side.members.length > 1 ? `${side.name} (${side.members.join(', ')})` : side.members[0];
+  }).join(' & ');
+}
+
+// opts.readonly + opts.match: show a finished game from History (no keypad, no sheets).
+export function renderMatch(ctx, opts = {}) {
+  const readonly = !!opts.readonly;
+  const match = opts.match ?? ctx.state.match;
+  const ui = readonly ? {} : ctx.state.ui;
   const game = getGame(match.gameId);
   const state = computeState(match);
   const board = game.getScoreboard(state.game);
@@ -52,12 +69,26 @@ export function renderMatch(ctx) {
       </nav>`;
   const artBeforeHint = game.art?.place === 'before-hint';
 
+  if (readonly) {
+    return `
+      <div class="match past n${match.sides.length}">
+        <div class="match-top">
+          <button class="btn small-btn" data-act="close-entry" aria-label="Back to History">‹</button>
+          <div class="game-header"><span>${esc(describeMatch(match))}</span><span>${esc(opts.dateText ?? '')}</span></div>
+        </div>
+        <div class="result-banner">${state.over ? `<span>Winner</span> ${esc(winnerText(match, state))}` : 'Unfinished'}</div>
+        ${game.board === 'marks'
+          ? marksBoard(game, match, state, board, current, onDeck)
+          : `<section class="cards">${match.sides.map((side, i) => card(side, i, board[i], state, current, onDeck, game)).join('')}</section>`}
+      </div>`;
+  }
+
   return `
     <div class="match n${match.sides.length} ${art ? 'has-art' : ''}">
       <div class="match-top">
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
-          <span>${esc(game.describe ? game.describe(match.options) : summary(game, match.options))}</span>
+          <span>${esc(describeMatch(match))}</span>
           <span>${esc(game.roundLabel ?? 'Round')} ${state.turn.round}</span>
         </div>
       </div>
@@ -75,7 +106,6 @@ export function renderMatch(ctx) {
 
       ${ui.toast ? `<div class="toast ${ui.toast.kind} ${ui.toast.text.length > 8 ? 'long' : ''}" role="status">${esc(ui.toast.text)}</div>` : ''}
       ${state.over ? winSheet(match, state) : ''}
-      ${ui.confirmLeave ? leaveSheet() : ''}
     </div>`;
 }
 
@@ -191,31 +221,16 @@ function card(side, i, sb, state, current, onDeck, game) {
 }
 
 function winSheet(match, state) {
-  const names = state.result.winners.map((w) => {
-    const side = match.sides[w];
-    return side.members.length > 1 ? `${side.name} (${side.members.join(', ')})` : side.members[0];
-  });
+  const many = state.result.winners.length > 1;
   return `
     <div class="sheet-backdrop"></div>
     <div class="sheet win" role="dialog" aria-modal="true" aria-label="Game over">
-      <div class="win-title">${esc(names.join(' & '))} ${names.length > 1 ? 'win' : 'wins'}!</div>
+      <div class="win-title">${esc(winnerText(match, state))} ${many ? 'win' : 'wins'}!</div>
+      <p class="note center small">Saved to History.</p>
       <div class="sheet-rows">
         <button class="sheet-row" data-act="rematch"><span class="sheet-label">Play again</span><span class="sheet-desc">Same players and settings</span></button>
         <button class="sheet-row" data-act="to-setup"><span class="sheet-label">New game</span><span class="sheet-desc">Back to setup</span></button>
         <button class="sheet-row" data-act="undo"><span class="sheet-label">Undo last dart</span><span class="sheet-desc">Entered it wrong? Step back</span></button>
-      </div>
-    </div>`;
-}
-
-function leaveSheet() {
-  return `
-    <div class="sheet-backdrop" data-act="cancel-leave"></div>
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Leave game">
-      <div class="sheet-title">Leave this game?</div>
-      <p class="note">Games can't be resumed yet (that comes in build step 6), so this game will be lost.</p>
-      <div class="sheet-rows">
-        <button class="sheet-row" data-act="cancel-leave"><span class="sheet-label">Keep playing</span></button>
-        <button class="sheet-row danger" data-act="to-setup"><span class="sheet-label">Leave game</span></button>
       </div>
     </div>`;
 }
@@ -250,11 +265,8 @@ export const matchActions = {
     ctx.state.ui.toast = null;
     ctx.setMatch(undo(ctx.state.match));
   },
-  'leave-match': (ctx) => {
-    if (!ctx.state.match.darts.length || computeState(ctx.state.match).over) ctx.leaveMatch();
-    else ctx.setUi({ confirmLeave: true });
-  },
-  'cancel-leave': (ctx) => ctx.setUi({ confirmLeave: false }),
+  // Back to Home. An unfinished game stays saved and shows as "Resume game".
+  'leave-match': (ctx) => ctx.leaveMatch(),
   'to-setup': (ctx) => ctx.leaveMatch(),
   rematch: (ctx) => {
     const { gameId, options, sides } = ctx.state.match;

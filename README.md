@@ -9,6 +9,8 @@ The plan, rules and progress live in `CLAUDE.md`.
 - Baseball (9 innings, extra innings on a tie, teams)
 - Assassin (house rules; random numbers or an off-hand Number draw)
 
+Games are saved as you play: close the app mid-game and a "Resume game" bar brings it back. Finished games are kept in History.
+
 The other games are on the way.
 
 ## Run it on this PC

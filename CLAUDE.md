@@ -2,7 +2,7 @@
 
 Working title: Dart Scoreboard. A phone-first darts scoring app covering many games, built so new games can be added later as self-contained modules.
 
-Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, steps 4–5 (Cricket, Baseball, Assassin) and several polish rounds done 2026-11-18; next is step 6 (persistence: resume and history). Items under "Open decisions" are not settled — ask Mark before building them.
+Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, steps 4–5 (Cricket, Baseball, Assassin) and several polish rounds done 2026-11-18; step 6 (resume and History) done the same evening; next is step 7 (Party games, one at a time). Items under "Open decisions" are not settled — ask Mark before building them.
 
 ## Ground rules
 
@@ -176,7 +176,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 3. [x] Entry pad and scoreboard layout, wired to X01 (all in/out options). Done 2026-11-17: X01 scoring for every In/Out rule, busts (score and any In opened that turn reset), win screen (Play again, New game, Undo last dart), checkout hints after every dart, "Bust" and 100+ score pop-ups, per-card average, darts thrown and last turn. All 5 players fit with the keypad on a 375×667 screen. 59 tests pass.
 4. [x] Cricket and its variants. Done 2026-11-18: marks grid (numbers down the side, one column per player/team, / X Ⓧ, numbers everyone has closed greyed out), keypad shows only the numbers in play, green turn strip with the thrower's darts and marks per round (MPR). 5 players fit on a 375×667 screen. 71 tests pass.
 5. [x] Baseball and Assassin. Done 2026-11-18: Baseball with teams, one big key for the inning's number, extra innings for tied leaders only. Assassin with Random or Throw numbers (Number draw screen before the game), life dots, Assassin badge, knocked-out players dimmed and skipped. 89 tests pass; 5 players fit on a 375×667 screen.
-6. Persistence: resume, history, dart log.
+6. [x] Persistence: resume, history, dart log. Done 2026-11-18: the game in progress is saved after every dart; leaving or closing the app keeps it, and a green "Resume game" bar on Home brings it back exactly where it was. Only one unfinished game: starting a new one asks first, then discards it. Finished games go to History (newest first, up to 500) with players, game, options, result, date and the full dart log; tapping one shows its final board. Undo on the win screen takes a game back out of History. 97 tests pass.
 7. Party games, one at a time.
 8. Practice games, one at a time.
 9. Stats screens (after Mark defines the stats).
@@ -208,6 +208,7 @@ The visual direction is chosen (see Design). Build the theme variables for both 
   - Graphics shrink to fit and hide when there's under ~64px of room (e.g. 5 players on a small phone).
 - 2026-11-18 (Mark's second pass): Assassin graphic redrawn close to Mark's mockup: realistic tuxedo silhouette in a lunging firing stance (pistol raised beside the face, other arm out), shaded grey rifling blades with black edges lit from the right, and a blood-red wash with drips over the top third. Life dots bigger (16px) and spaced 8px apart for easy counting. Baseball: Miss/target tile text bigger and bold; every other player's card keeps their last 3 darts in grey chips until their next turn starts; the Inning bar sits under the diamond, just above the tiles.
 - 2026-11-18 (round 3): Assassin: while a player has 3 lives or fewer, the first 3 life dots turn red (filled for lives they have, red outline for lives lost); at 4 or more all dots go back to the normal color. Mark is keeping the redrawn gun-barrel graphic for now but finds it weaker than hoped; a better image could replace it later. Setup: the Game bar uses the same green as Start; option tiles use a darker, muted green so they don't compete with the Game bar and Start (both themes). All pop-up menus (option and team menus, win screen, leave-game) open centred on the screen, not anchored to the bottom.
+- 2026-11-18 (step 6, Mark's choices): Resume bar on Home (not auto-open); one unfinished game at a time; History list with tap-to-view final board; games left unfinished and then replaced are discarded, not kept. The old "Leave this game? It will be lost" question was removed: leaving now keeps the game for Resume.
 - 2026-11-18: Phone testing over home Wi-Fi: `python serve.py --lan` prints an address to open on the phone. Gameplay works; offline mode and home-screen install need https, so they wait for GitHub Pages.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 
@@ -218,18 +219,15 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - Offline copy (service worker) not yet confirmed in a normal browser. Check: open the app once in Edge or Chrome, then the tests page, "Offline copy" line should say saved.
 - Final app name, if it's ever sold.
 
-## Where we left off (end of 2026-11-18)
+## Where we left off (2026-11-18, late)
 
-- Steps 1–5 done, committed and pushed (latest work on `main` at GitHub `dart-scoreboard`). Playable: Cricket, X01, Baseball, Assassin (all in Core).
-- Mark tested X01, Cricket, Baseball and Assassin and asked for several rounds of visual polish, all done (see the Decisions log entries dated 2026-11-18). Nothing is half-finished.
-- Next session: build step 6, persistence. A game in progress survives closing the app and can be resumed; finished games are saved to History with players, game, options, result, date and the full dart log. Before building, confirm with Mark:
-  - Resume: show a "Resume game" bar on the Home screen, or ask straight away when the app opens?
-  - Only one game in progress at a time (starting a new one replaces it after a warning)?
-  - History screen: what each row shows (date, game, winner, players) and whether a past game can be opened to see its final board.
-- How to run: `python serve.py` (this PC, http://localhost:8000) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (89 passing).
-- Still open (see Open decisions): GitHub Pages (needs a public repo on the free plan) and confirming the offline copy in a normal browser.
-- Possible later polish Mark mentioned: the Assassin gun-barrel graphic is "weaker than hoped"; a better image could replace it (and should, before any sale, for trademark reasons).
-- Test data: the in-app preview browser has made-up players saved; Mark's own browser has his own.
+- Steps 1–6 done, committed and pushed. Playable: Cricket, X01, Baseball, Assassin; games resume after closing the app; finished games are in History.
+- Mark has not yet tried step 6 himself.
+- Next: step 7, Party games, one at a time (Shanghai, Halve-It, Gotcha, Bermuda, Knockout, Hare and Hounds, Mickey Mouse, Follow the Leader). The plan says to confirm each game's rules with Mark before building it. Ask which game he wants first.
+- Stats (step 9) will read the dart logs saved in History; nothing extra needs storing.
+- How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (97 passing).
+- Still open: GitHub Pages (needs a public repo on the free plan); confirming the offline copy in a normal browser; a better Assassin graphic some day.
+- Test data: the in-app preview browser has made-up players and games saved; Mark's own browser has his own.
 
 ## Future modules
 

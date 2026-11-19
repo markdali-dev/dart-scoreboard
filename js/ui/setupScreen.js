@@ -7,8 +7,10 @@ import {
   nextOptionValue, isCustomValue, optionLabel, maxEntries, teamChoices, defaultTeam,
   validateSetup, buildSides, moveItem,
 } from '../core/setup.js';
-import { createMatch } from '../core/engine.js';
+import { createMatch, computeState } from '../core/engine.js';
+import { wouldReplace } from '../core/saved.js';
 import { esc, icon, themeToggle } from './html.js';
+import { describeMatch } from './matchScreen.js';
 
 // Picked players with their current names; drops anyone removed from the roster.
 export function pickedEntries(state) {
@@ -34,6 +36,7 @@ export function renderSetup(ctx) {
   return `
     <header class="topbar"><h1>Dart Scoreboard</h1>${themeToggle(ctx.theme)}</header>
     <main class="screen">
+      ${state.current ? resumeBar(state.current) : ''}
 
       <section class="section">
         <h2>Game</h2>
@@ -95,7 +98,35 @@ export function renderSetup(ctx) {
         <button class="start" data-act="start" ${problem ? 'disabled' : ''}>Start</button>
       </section>
     </main>
-    ${ui.sheet ? renderSheet(ui.sheet, game, options, entries) : ''}`;
+    ${ui.sheet ? renderSheet(ui.sheet, game, options, entries) : ''}
+    ${ui.confirmReplace ? replaceSheet(state.current) : ''}`;
+}
+
+// "Resume game" bar: the unfinished game, who's in it and where it got to.
+function resumeBar(match) {
+  const s = computeState(match);
+  const game = getGame(match.gameId);
+  const names = match.sides.map((side) => (side.members.length > 1 ? side.name : side.members[0])).join(', ');
+  return `<section class="section">
+    <button class="resume-bar" data-act="resume">
+      <span class="resume-label">Resume game</span>
+      <span class="resume-what">${esc(describeMatch(match))} · ${esc(game.roundLabel ?? 'Round')} ${s.turn.round}</span>
+      <span class="resume-who">${esc(names)}</span>
+    </button>
+  </section>`;
+}
+
+function replaceSheet(match) {
+  return `
+    <div class="sheet-backdrop" data-act="cancel-replace"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Replace unfinished game">
+      <div class="sheet-title">Replace the unfinished game?</div>
+      <p class="note">${esc(describeMatch(match))} isn’t finished. Starting a new game discards it.</p>
+      <div class="sheet-rows">
+        <button class="sheet-row" data-act="cancel-replace"><span class="sheet-label">Keep it</span><span class="sheet-desc">Go back; you can still resume it</span></button>
+        <button class="sheet-row danger" data-act="start" data-force="1"><span class="sheet-label">Start new game</span><span class="sheet-desc">The unfinished game is discarded</span></button>
+      </div>
+    </div>`;
 }
 
 // Pop-up menu that slides up from the bottom, with big rows for fingers.
@@ -214,13 +245,18 @@ export const setupActions = {
   'open-add': (ctx) => ctx.setUi({ addOpen: true, setupError: null }),
   'close-add': (ctx) => ctx.setUi({ addOpen: false, setupError: null }),
   pick: (ctx, el) => pickPlayer(ctx, el.dataset.id),
-  start: (ctx) => {
+  resume: (ctx) => ctx.resumeMatch(),
+  'cancel-replace': (ctx) => ctx.setUi({ confirmReplace: false }),
+  start: (ctx, el) => {
     const { state } = ctx;
     const game = getGame(state.setup.gameId);
     const options = currentOptions(state, game);
     const teams = state.setup.teams && game.teams;
     const entries = pickedEntries(state);
     if (validateSetup(game, entries, { teams, options })) return;
+    // Only one unfinished game is kept: ask before replacing it.
+    if (wouldReplace(state.current) && !el.dataset.force) { ctx.setUi({ confirmReplace: true }); return; }
+    state.ui.confirmReplace = false;
     const sides = buildSides(entries, { teams, random: state.setup.random });
     if (game.needsNumberDraw?.(options)) ctx.setDraw({ gameId: game.id, options, sides, picks: [] });
     else ctx.startMatch(createMatch({ gameId: game.id, options, sides }));

@@ -11,6 +11,7 @@ import x01, { findCheckout } from '../games/x01.js';
 import cricket from '../games/cricket.js';
 import baseball from '../games/baseball.js';
 import assassin from '../games/assassin.js';
+import { recordMatch, wouldReplace, MAX_HISTORY } from '../js/core/saved.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -588,6 +589,55 @@ test('Assassin: last player standing wins', () => {
 });
 test('Assassin: bull and misses do nothing', () => {
   eq(lives(darts(assassinMatch(), 'B 25 0')), [3, 3, 3]);
+});
+
+// ---------- saving: resume and History ----------
+const when = new Date('2026-11-18T20:00:00Z');
+test('every game gets its own id', () => {
+  const a = x01Match(), b = x01Match();
+  eq(typeof a.id, 'string'); eq(a.id !== b.id, true);
+});
+test('an unfinished game is kept as the one to resume', () => {
+  const m = darts(x01Match(), 'T20');
+  const r = recordMatch({ history: [], current: null }, m, false, when);
+  eq(r.current.id, m.id); eq(r.history.length, 0);
+});
+test('a finished game goes to the top of History with the full dart log; resume is cleared', () => {
+  const m = darts(x01Match({ start: 40 }), 'D20');
+  const older = { id: 'old', finishedAt: '2026-11-17T20:00:00Z' };
+  const r = recordMatch({ history: [older], current: m }, m, true, when);
+  eq(r.current, null); eq(r.history.map((h) => h.id), [m.id, 'old']);
+  eq(r.history[0].finishedAt, when.toISOString()); eq(r.history[0].darts.length, 1);
+});
+test('undo on the win screen takes the game back out of History', () => {
+  const m = darts(x01Match({ start: 40 }), 'D20');
+  let saved = recordMatch({ history: [], current: m }, m, true, when);
+  const reopened = undo(m);
+  saved = recordMatch(saved, reopened, false, when);
+  eq(saved.history.length, 0); eq(saved.current.id, m.id);
+});
+test('finishing again keeps one History entry, not two', () => {
+  const m = darts(x01Match({ start: 40 }), 'D20');
+  let saved = recordMatch({ history: [], current: m }, m, true, when);
+  saved = recordMatch(saved, m, true, new Date('2026-11-18T21:00:00Z'));
+  eq(saved.history.length, 1); eq(saved.history[0].finishedAt, when.toISOString(), 'first finish time kept');
+});
+test('starting a new game replaces the unfinished one', () => {
+  const old = darts(x01Match(), 'T20');
+  const fresh = x01Match();
+  eq(wouldReplace(old), true); eq(wouldReplace(null), false);
+  eq(recordMatch({ history: [], current: old }, fresh, false, when).current.id, fresh.id);
+});
+test('History keeps at most the newest games', () => {
+  const many = [...Array(MAX_HISTORY)].map((_, i) => ({ id: 'h' + i }));
+  const m = darts(x01Match({ start: 40 }), 'D20');
+  const r = recordMatch({ history: many, current: m }, m, true, when);
+  eq(r.history.length, MAX_HISTORY); eq(r.history[0].id, m.id);
+});
+test('a saved game survives the trip to storage and back', () => {
+  const m = darts(cricketMatch({ numbers: 'wild' }), '0 0');
+  const loaded = JSON.parse(JSON.stringify(m));
+  eq(computeState(loaded), computeState(m));
 });
 
 // ---------- report ----------

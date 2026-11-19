@@ -11,6 +11,9 @@ import { renderSetup, setupActions, setupForms, onCustomInput, enableDrag } from
 import { renderPlayers, playersActions, playersForms } from './ui/playersScreen.js';
 import { renderMatch, matchActions } from './ui/matchScreen.js';
 import { renderDraw, drawActions } from './ui/drawScreen.js';
+import { renderHistory, renderHistoryEntry, historyActions } from './ui/historyScreen.js';
+import { computeState } from './core/engine.js';
+import { recordMatch } from './core/saved.js';
 
 const app = document.getElementById('app');
 
@@ -25,12 +28,27 @@ const state = {
     random: false,
     ...load('setup', {}),
   },
-  match: null, // the game being played (saved and resumable from step 6)
-  draw: null,  // Number draw in progress before a game like Assassin
-  ui: {},      // short-lived screen state: open panels, error messages
+  match: null,   // the game on screen right now
+  current: load('current', null), // the unfinished game, kept so it can be resumed
+  history: load('history', []),   // finished games, newest first
+  draw: null,    // Number draw in progress before a game like Assassin
+  ui: {},        // short-lived screen state: open panels, error messages
 };
 // A saved game that no longer exists falls back to the first game.
 if (!listGames().some((g) => g.id === state.setup.gameId)) state.setup.gameId = listGames()[0].id;
+// Drop a saved unfinished game that can't be replayed (e.g. its game was removed).
+if (state.current) {
+  try { computeState(state.current); } catch { state.current = null; save('current', null); }
+}
+
+// Save the game after every dart, undo or start.
+function keep(match) {
+  const next = recordMatch(state, match, computeState(match).over);
+  state.history = next.history;
+  state.current = next.current;
+  save('history', state.history);
+  save('current', state.current);
+}
 
 const ctx = {
   state,
@@ -50,10 +68,13 @@ const ctx = {
     save('setup', state.setup);
     render();
   },
-  startMatch(match) { state.match = match; state.ui = {}; render(); },
-  setMatch(match) { state.match = match; render(); },
+  // Starting a game replaces any unfinished one (the setup screen asks first).
+  startMatch(match) { state.match = match; state.ui = {}; keep(match); render(); },
+  setMatch(match) { state.match = match; keep(match); render(); },
+  resumeMatch() { if (state.current) { state.match = state.current; state.ui = {}; render(); } },
   setDraw(draw) { state.draw = draw; state.ui = {}; render(); window.scrollTo(0, 0); },
-  leaveMatch() { state.match = null; state.ui = {}; render(); },
+  // Leaving keeps an unfinished game saved; it shows up as "Resume game" on Home.
+  leaveMatch() { state.match = null; state.ui = {}; state.tab = 'home'; render(); },
 };
 // Clean up on load too, in case the saved list and setup ever disagree.
 ctx.setRoster(state.roster);
@@ -63,6 +84,7 @@ const actions = {
   ...playersActions,
   ...matchActions,
   ...drawActions,
+  ...historyActions,
   tab: (c, el) => { state.tab = el.dataset.tab; state.ui = {}; render(); window.scrollTo(0, 0); },
   theme: (c, el) => { setTheme(el.dataset.themeChoice); render(); },
 };
@@ -82,11 +104,15 @@ function render() {
     app.innerHTML = renderDraw(ctx);
     return;
   }
+  if (state.tab === 'history' && state.ui.viewing) {
+    app.innerHTML = renderHistoryEntry(ctx);
+    return;
+  }
   const screens = {
     home: () => renderSetup(ctx),
     players: () => renderPlayers(ctx),
     stats: () => comingSoon('Stats', 9),
-    history: () => comingSoon('History', 6),
+    history: () => renderHistory(ctx),
     settings: () => comingSoon('Settings', 10),
   };
   app.innerHTML = screens[state.tab]() + tabBar(state.tab);
