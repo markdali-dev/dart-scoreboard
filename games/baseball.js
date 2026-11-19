@@ -80,7 +80,8 @@ export default {
   },
   keyLabels: { 25: 'Bull' },
   pad: 'target',                                  // two big tiles: Miss and the inning's number
-  art: { name: 'diamond', place: 'before-pad' },  // faded diamond just above the tiles
+  art: { name: 'diamond', place: 'before-hint' }, // faded diamond under the cards, inning bar below it
+  showLastDarts: true,                             // other players' cards keep their last 3 darts
 };
 
 export function targetFor(inning) {

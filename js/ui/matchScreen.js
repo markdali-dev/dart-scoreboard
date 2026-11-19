@@ -65,7 +65,7 @@ export function renderMatch(ctx) {
       ${game.board === 'marks'
         ? marksBoard(game, match, state, board, current, onDeck)
         : `<section class="cards" aria-live="polite">
-            ${match.sides.map((side, i) => card(side, i, board[i], state, current, onDeck)).join('')}
+            ${match.sides.map((side, i) => card(side, i, board[i], state, current, onDeck, game)).join('')}
           </section>`}
 
       ${artBeforeHint ? art : ''}
@@ -148,7 +148,7 @@ function summary(game, options) {
     (o.id === 'start' ? optionLabel(o, options[o.id]) : `${optionLabel(o, options[o.id])} ${o.label.toLowerCase()}`))].join(' · ');
 }
 
-function card(side, i, sb, state, current, onDeck) {
+function card(side, i, sb, state, current, onDeck, game) {
   const isThrower = i === current;
   const isNext = i === onDeck;
   const cls = isThrower ? 'thrower' : isNext ? 'next' : '';
@@ -171,10 +171,15 @@ function card(side, i, sb, state, current, onDeck) {
         `<span class="pip ${k < sb.lives.have ? 'on' : ''}"></span>`).join('')}</div>`
     : '';
   const badge = sb.badge ? `<span class="badge ${sb.badge === 'Out' ? 'badge-out' : ''}">${esc(sb.badge)}</span>` : '';
+  // Games like Baseball keep each player's last 3 darts on their card until their next turn.
+  const last = game.showLastDarts && !isThrower ? lastTurnDarts(state, i) : [];
+  const lastDarts = last.length
+    ? `<span class="mini-darts" aria-label="Last turn">${[0, 1, 2].map((k) => `<span>${last[k] ? esc(shortLabel(last[k])) : '–'}</span>`).join('')}</span>`
+    : '';
   return `
     <div class="card ${cls} ${sb.out ? 'is-out' : ''}">
       <div class="card-left">
-        <div class="name">${esc(team ? side.name : side.members[0])}${lives}${isNext ? ' <span class="tag">Next</span>' : ''}${badge}</div>
+        <div class="name">${esc(team ? side.name : side.members[0])}${lives}${isNext ? ' <span class="tag">Next</span>' : ''}${badge}${lastDarts}</div>
         ${members}
         ${slots}
         ${stats.length ? `<div class="stats">${stats.join(' · ')}</div>` : ''}
