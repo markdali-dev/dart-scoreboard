@@ -41,7 +41,7 @@ export default {
       help: 'Which numbers are in play',
       type: 'choice',
       choices: [
-        { value: 'standard', label: '15–20', description: '15 to 20 and the bull' },
+        { value: 'standard', label: 'Std: 15–20', description: 'Standard: 15 to 20 and the bull' },
         { value: 'wild', label: 'Wild card', description: '6 random numbers drawn at the start, plus the bull' },
       ],
       default: 'standard',
