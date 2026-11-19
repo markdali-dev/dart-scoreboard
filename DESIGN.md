@@ -262,7 +262,7 @@ A five-tab bar (Home, Players, Stats, History, Settings) pinned to the bottom on
 ### Signature Components
 - **Hint bar:** a tinted green strip above the keypad: "Out:" then the suggested darts spaced evenly, or a one-line instruction.
 - **Cricket marks grid:** number labels down the left, one column per player, marks as slash / X / circled X; a number everyone has closed is dimmed and struck through.
-- **Life dots (Assassin):** six circles beside the name, 16px with 8px gaps; the first three turn red at 3 lives or fewer.
+- **Life dots (Assassin, Knockout):** one circle per life beside the name, 16px with 8px gaps (14px / 6px with 4–5 players). When a player is down to the game's danger count (Assassin 3, Knockout 1), those dots turn red.
 - **Feedback pop-ups:** short centred toasts for about 1.4s: red for BUST and knock-outs, green for 100+ scores and new Assassins.
 
 ## Do's and Don'ts

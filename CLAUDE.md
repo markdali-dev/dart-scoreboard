@@ -2,7 +2,7 @@
 
 Working title: Dart Scoreboard. A phone-first darts scoring app covering many games, built so new games can be added later as self-contained modules.
 
-Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, steps 4–5 (Cricket, Baseball, Assassin) and several polish rounds done 2026-11-18; step 6 (resume and History) done the same evening; next is step 7 (Party games, one at a time). Items under "Open decisions" are not settled — ask Mark before building them.
+Status: building. Spec written 2026-11-14, updated 2026-11-16. Build steps 1–3 done 2026-11-17, steps 4–5 (Cricket, Baseball, Assassin) and several polish rounds done 2026-11-18; step 6 (resume and History) done the same evening; step 7 (Party games) in progress, Knockout done. Items under "Open decisions" are not settled — ask Mark before building them.
 
 ## Ground rules
 
@@ -111,7 +111,7 @@ Standard published rules. Confirm details with Mark before building each.
 - **Halve-It** — fixed list of targets, one per round (default 20, 16, D7, 14, T10, 17, bull; editable). Score what you hit on the target; miss with all three and your total is halved.
 - **Gotcha** — count up to exactly 301. Going over busts the turn. Landing exactly on an opponent's score sends them back to 0.
 - **Bermuda** — 13 rounds: 12, 13, 14, any double, 15, 16, 17, any triple, 18, 19, 20, bull, inner bull. Miss the target with all three and your total is halved. Highest total wins.
-- **Knockout** — each player must beat the previous player's three-dart total or lose a life. 3 lives. Last standing wins.
+- **Knockout** — built 2026-11-18 (rules confirmed by Mark). Each player must BEAT the previous player's three-dart total (a tie loses a life); the first turn of the game only sets the score. The next player always has to beat whoever threw just before them, even if that player failed. Lives setting 3 or 5 (default 3); the last life shows red. Individual players only. Last standing wins.
 - **Hare and Hounds** — hare starts on 20 and travels clockwise around the board back to 20. Hound starts behind and chases. Hound wins by catching the hare; hare wins by finishing.
 - **Mickey Mouse** — Cricket-style on 20 down to 12, plus doubles, triples and bull as categories.
 - **Follow the Leader** — a player sets a target segment; the next must hit it within three darts or lose a life, then sets the next target. 3 lives.
@@ -177,7 +177,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 4. [x] Cricket and its variants. Done 2026-11-18: marks grid (numbers down the side, one column per player/team, / X Ⓧ, numbers everyone has closed greyed out), keypad shows only the numbers in play, green turn strip with the thrower's darts and marks per round (MPR). 5 players fit on a 375×667 screen. 71 tests pass.
 5. [x] Baseball and Assassin. Done 2026-11-18: Baseball with teams, one big key for the inning's number, extra innings for tied leaders only. Assassin with Random or Throw numbers (Number draw screen before the game), life dots, Assassin badge, knocked-out players dimmed and skipped. 89 tests pass; 5 players fit on a 375×667 screen.
 6. [x] Persistence: resume, history, dart log. Done 2026-11-18: the game in progress is saved after every dart; leaving or closing the app keeps it, and a green "Resume game" bar on Home brings it back exactly where it was. Only one unfinished game: starting a new one asks first, then discards it. Finished games go to History (newest first, up to 500) with players, game, options, result, date and the full dart log; tapping one shows its final board. Undo on the win screen takes a game back out of History. 97 tests pass.
-7. Party games, one at a time.
+7. Party games, one at a time. In progress: Knockout done 2026-11-18 (106 tests pass); Shanghai, Halve-It, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse and Follow the Leader still to build.
 8. Practice games, one at a time.
 9. Stats screens (after Mark defines the stats).
 10. Visual polish pass, offline check, install test on phone.
@@ -210,6 +210,7 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - 2026-11-18 (round 3): Assassin: while a player has 3 lives or fewer, the first 3 life dots turn red (filled for lives they have, red outline for lives lost); at 4 or more all dots go back to the normal color. Mark is keeping the redrawn gun-barrel graphic for now but finds it weaker than hoped; a better image could replace it later. Setup: the Game bar uses the same green as Start; option tiles use a darker, muted green so they don't compete with the Game bar and Start (both themes). All pop-up menus (option and team menus, win screen, leave-game) open centred on the screen, not anchored to the bottom.
 - 2026-11-18 (step 6, Mark's choices): Resume bar on Home (not auto-open); one unfinished game at a time; History list with tap-to-view final board; games left unfinished and then replaced are discarded, not kept. The old "Leave this game? It will be lost" question was removed: leaving now keeps the game for Resume.
 - 2026-11-18: PRODUCT.md added (Impeccable init): users (Mark's group now, casual public players later), positioning (everyone on one screen; many game types), and access needs (readable at arm's length; big, forgiving tap targets). CLAUDE.md stays the build plan; PRODUCT.md holds product truth for design work.
+- 2026-11-18 (Knockout): the Bull key now says "Bull" in every game by default. Life dots take a per-game `risk` count (Assassin 3, Knockout 1) for when they turn red. Knockout cards don't show last-darts chips (the big Last total covers it; chips beside the dots overflowed 5 players). With 5 players the thrower card's dart slots are slightly tighter so all cards fit on a 375x667 phone in every game.
 - 2026-11-18: Phone testing over home Wi-Fi: `python serve.py --lan` prints an address to open on the phone. Gameplay works; offline mode and home-screen install need https, so they wait for GitHub Pages.
 - 2026-11-17: App icon is a simple SVG dartboard for now; PNG icons for iPhone home-screen install come in step 10.
 
@@ -222,11 +223,11 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 
 ## Where we left off (2026-11-18, late)
 
-- Steps 1–6 done, committed and pushed. Playable: Cricket, X01, Baseball, Assassin; games resume after closing the app; finished games are in History.
+- Steps 1–6 done, committed and pushed. Playable: Cricket, X01, Baseball, Assassin (Core) and Knockout (Party); games resume after closing the app; finished games are in History.
 - Mark has not yet tried step 6 himself.
-- Next: step 7, Party games, one at a time (Shanghai, Halve-It, Gotcha, Bermuda, Knockout, Hare and Hounds, Mickey Mouse, Follow the Leader). The plan says to confirm each game's rules with Mark before building it. Ask which game he wants first.
+- Step 7 in progress: Knockout is built (Mark has not played it yet). Next Party game: ask Mark which one (Shanghai, Halve-It, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse, Follow the Leader) and confirm its rules before building.
 - Stats (step 9) will read the dart logs saved in History; nothing extra needs storing.
-- How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (97 passing).
+- How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (106 passing).
 - Still open: GitHub Pages (needs a public repo on the free plan); confirming the offline copy in a normal browser; a better Assassin graphic some day.
 - Test data: the in-app preview browser has made-up players and games saved; Mark's own browser has his own.
 

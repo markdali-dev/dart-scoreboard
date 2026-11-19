@@ -12,6 +12,7 @@ import cricket from '../games/cricket.js';
 import baseball from '../games/baseball.js';
 import assassin from '../games/assassin.js';
 import { recordMatch, wouldReplace, MAX_HISTORY } from '../js/core/saved.js';
+import knockout from '../games/knockout.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -638,6 +639,55 @@ test('a saved game survives the trip to storage and back', () => {
   const m = darts(cricketMatch({ numbers: 'wild' }), '0 0');
   const loaded = JSON.parse(JSON.stringify(m));
   eq(computeState(loaded), computeState(m));
+});
+
+// ---------- Knockout ----------
+function knockoutMatch(lives = 3, names = ['Ann', 'Bob', 'Cat']) {
+  try { getGame('knockout'); } catch { registerGame(knockout); }
+  return createMatch({ gameId: 'knockout', options: { lives }, sides: players(...names) });
+}
+const koLives = (m) => cs(m).game.lives;
+
+test('Knockout module passes the registry checks', () => validateGame(knockout));
+test('Knockout: the first turn just sets the score to beat', () => {
+  const s = cs(darts(knockoutMatch(), '1 1 1'));
+  eq(s.game.lives, [3, 3, 3]); eq(s.game.target, 3);
+});
+test('Knockout: beating the previous total keeps your lives', () => {
+  eq(koLives(darts(knockoutMatch(), '20 20 20 T20 0 1')), [3, 3, 3]);
+});
+test('Knockout: a tie loses a life', () => {
+  const s = cs(darts(knockoutMatch(), '20 20 20 T20 0 0'));
+  eq(s.game.lives, [3, 2, 3]); eq(s.game.event, { kind: 'bust', text: 'Bob loses a life' });
+});
+test('Knockout: the next player must beat the failing player, not the best score', () => {
+  const s = cs(darts(knockoutMatch(), 'T20 T20 T20 1 0 0 2 0 0'));
+  eq(s.game.lives, [3, 2, 3], 'Cat beat 1 with 2'); eq(s.game.target, 2);
+});
+test('Knockout: 0 lives is out and skipped; last one standing wins', () => {
+  // Ann sets 60; Bob scores 0 every time; Cat keeps beating Bob's 0.
+  let m = knockoutMatch(3, ['Ann', 'Bob']);
+  m = darts(m, '20 20 20 0 0 0');          // Bob 2 lives
+  m = darts(m, '1 0 0 0 0 0');            // Ann beats 0; Bob fails: 1 life
+  let s = cs(m);
+  eq(s.game.lives, [3, 1]);
+  m = darts(m, '1 0 0 0 0 0');            // Bob out
+  s = cs(m);
+  eq(s.over, true); eq(s.result.winners, [0]);
+});
+test('Knockout: knocked-out players are skipped', () => {
+  let m = knockoutMatch(1);
+  m = darts(m, '20 20 20 0 0 0');          // Bob (1 life) fails and is out
+  const s = cs(m);
+  eq(s.game.lives, [1, 0, 1]); eq(s.turn.side, 2); eq(s.over, false);
+});
+test('Knockout: 5 lives setting', () => {
+  eq(koLives(knockoutMatch(5)), [5, 5, 5]);
+});
+test('Knockout: hint shows the score to beat', () => {
+  const s = cs(darts(knockoutMatch(), '20 20 5'));
+  eq(knockout.getHint(s.game, { dartsLeft: 3 }), { label: 'Beat:', parts: ['45 (score 46+)'] });
+  eq(knockout.getHint(cs(knockoutMatch()).game, { dartsLeft: 3 }).label, 'First:');
 });
 
 // ---------- report ----------

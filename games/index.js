@@ -30,7 +30,8 @@
 //   needsNumberDraw(options)           -> optional, true to show the Number draw screen
 //                                         before the game (fills options.numbers)
 //   Scoreboard extras for score cards: mainLabel (small text before the big number),
-//   lives: { have, max } (shown as pips), badge ('Assassin', 'Out'), out (card dimmed)
+//   lives: { have, max, risk? } (shown as dots; at `risk` lives or fewer those dots turn red),
+//   badge ('Assassin', 'Out'), out (card dimmed)
 //
 // The shell handles turn order, teams, the dart log and undo, so games don't.
 
@@ -39,9 +40,12 @@ import x01 from './x01.js';
 import cricket from './cricket.js';
 import baseball from './baseball.js';
 import assassin from './assassin.js';
+import knockout from './knockout.js';
 
 // The order here is the order on the setup screen's game list.
 registerGame(cricket);
 registerGame(x01);
 registerGame(baseball);
 registerGame(assassin);
+// Party
+registerGame(knockout);

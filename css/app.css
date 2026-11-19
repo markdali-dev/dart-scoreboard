@@ -627,3 +627,8 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .match.past { height: auto; min-height: 100vh; overflow: visible; }
 .match.past .cards, .match.past .marks-board { flex: 0 0 auto; }
 .result-banner { margin: 2px var(--gutter) 10px; font-size: 1.3rem; font-weight: 700; }
+
+/* 5 players: a slightly tighter thrower card so every card fits on a small phone */
+.match.n5 .card.thrower .slots { margin-top: 4px; }
+.match.n5 .card.thrower .slot { padding: 3px 4px; font-size: 1.05rem; }
+.match.n5 .card.thrower .stats { margin-top: 3px; }

@@ -8,6 +8,7 @@ The plan, rules and progress live in `CLAUDE.md`.
 - Cricket (No score / Points / Cut-throat, standard or wild card numbers, teams)
 - Baseball (9 innings, extra innings on a tie, teams)
 - Assassin (house rules; random numbers or an off-hand Number draw)
+- Knockout (Party: beat the previous total or lose a life; 3 or 5 lives)
 
 Games are saved as you play: close the app mid-game and a "Resume game" bar brings it back. Finished games are kept in History.
 

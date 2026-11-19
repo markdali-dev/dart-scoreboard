@@ -112,7 +112,7 @@ export default {
     return state.numbers.map((n, i) => ({
       main: n,
       mainLabel: 'No.',
-      lives: { have: state.lives[i], max: MAX_LIVES },
+      lives: { have: state.lives[i], max: MAX_LIVES, risk: 3 }, // first 3 dots red at 3 lives or fewer
       badge: state.lives[i] === MAX_LIVES ? 'Assassin' : state.lives[i] === 0 ? 'Out' : null,
       out: state.lives[i] === 0,
       stats: [], // lives are shown as dots next to the name

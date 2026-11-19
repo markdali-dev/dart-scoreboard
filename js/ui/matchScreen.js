@@ -46,7 +46,8 @@ export function renderMatch(ctx, opts = {}) {
           <button class="key double" data-act="mod" data-m="2" aria-pressed="${mod === 2}">DOUBLE</button>
           <button class="key triple" data-act="mod" data-m="3" aria-pressed="${mod === 3}">TRIPLE</button>
           <button class="key undo" data-act="undo" ${match.darts.length ? '' : 'disabled'}>Undo</button>`;
-  const keyLabel = (n) => game.keyLabels?.[n] ?? n;
+  // The bull key always says "Bull" (it still counts as 25); games can relabel others.
+  const keyLabel = (n) => game.keyLabels?.[n] ?? (n === 25 ? 'Bull' : n);
 
   // Keypad: the usual number grid, or (pad: 'target') two big tiles, Miss and the target.
   const keypad = game.pad === 'target'
@@ -196,11 +197,13 @@ function card(side, i, sb, state, current, onDeck, game) {
     : '';
   const turnStat = isThrower && darts.length && sb.turnPoints !== undefined ? [`<b>Turn ${sb.turnPoints}</b>`] : [];
   const stats = [...turnStat, ...sb.stats.map(esc)];
-  // At 3 lives or fewer the first 3 dots turn red: this player is at risk.
-  const atRisk = sb.lives && sb.lives.have <= 3 && sb.lives.have > 0;
+  // A game can mark the last few lives as "at risk" (lives.risk): when a player is down
+  // to that many, those first dots turn red. Assassin uses 3, Knockout uses 1.
+  const risk = sb.lives?.risk ?? 0;
+  const atRisk = sb.lives && sb.lives.have <= risk && sb.lives.have > 0;
   const lives = sb.lives
     ? `<div class="lives ${atRisk ? 'at-risk' : ''}" aria-label="${sb.lives.have} of ${sb.lives.max} lives">${[...Array(sb.lives.max)].map((_, k) =>
-        `<span class="pip ${k < sb.lives.have ? 'on' : ''} ${atRisk && k < 3 ? 'risk' : ''}"></span>`).join('')}</div>`
+        `<span class="pip ${k < sb.lives.have ? 'on' : ''} ${atRisk && k < risk ? 'risk' : ''}"></span>`).join('')}</div>`
     : '';
   const badge = sb.badge ? `<span class="badge ${sb.badge === 'Out' ? 'badge-out' : ''}">${esc(sb.badge)}</span>` : '';
   // Games like Baseball keep each player's last 3 darts on their card until their next turn.
