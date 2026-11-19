@@ -38,10 +38,10 @@
   --key-triple: #d7322d;
   --key-mod-text: #ffffff;
 
-  /* lighter green, e.g. setup option tiles under the green Game bar */
-  --accent-soft-top: #4cbf7c;
-  --accent-soft: #38a866;
-  --accent-soft-text: #ffffff;
+  /* darker, muted green: setup option tiles, quieter than the Game bar and Start */
+  --accent-soft-top: #1d6a40;
+  --accent-soft: #165834;
+  --accent-soft-text: #f3efe6;
 
   /* small grey boxes, e.g. last turn's darts */
   --chip-bg: #3a3a3a;
@@ -88,9 +88,9 @@
   --key-triple: #d7322d;
   --key-mod-text: #ffffff;
 
-  --accent-soft-top: #4cbf7c;
-  --accent-soft: #38a866;
-  --accent-soft-text: #ffffff;
+  --accent-soft-top: #1d6a40;
+  --accent-soft: #165834;
+  --accent-soft-text: #f3efe6;
 
   --chip-bg: #dcd5c4;
   --chip-text: #111111;

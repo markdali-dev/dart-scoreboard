@@ -575,3 +575,18 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 }
 .game-pick .pick-group { color: var(--thrower-text); opacity: 0.85; }
 .tile:not(.off) { background: linear-gradient(var(--accent-soft-top), var(--accent-soft)); color: var(--accent-soft-text); }
+
+/* Pop-up menus sit in the middle of the screen (Mark, 2026-11-18) instead of at the bottom. */
+.sheet {
+  top: 0; bottom: 0; left: var(--gutter); right: var(--gutter);
+  margin: auto;
+  height: fit-content;
+  max-width: 488px;
+  max-height: 85vh;
+  border-radius: 20px;
+  padding: 16px var(--gutter) 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  animation: sheet-pop 0.16s ease-out;
+}
+@keyframes sheet-pop { from { transform: scale(0.94); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet { border: 1px solid var(--hairline); }
