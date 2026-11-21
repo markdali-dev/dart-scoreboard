@@ -127,17 +127,24 @@ export default {
       return {
         main: total,
         turnPoints: i === current && state.turnSide === i ? state.turnPoints : undefined,
-        stats: last === undefined ? [] : [last === 'halved' ? 'Last round: halved' : `Last round: +${last}`],
+        // Only the current player's card shows the "Last round" line; the others keep to
+        // one line (their last darts are in the small boxes) so the bullseye has room.
+        stats: i !== current || last === undefined ? [] : [last === 'halved' ? 'Last round: halved' : `Last round: +${last}`],
       };
     });
   },
 
+  // Shown as a big bullseye under the players (Mark's chosen design, 2026-11-21):
+  // "TARGET" in the outer ring, the target on the bull, Round and Next below.
   getHint(state) {
     const target = state.targets[state.round - 1];
     const next = state.targets[state.round];
     return {
-      label: `Round ${state.round}/${state.targets.length}:`,
-      parts: [`${targetHelp(target)}${next ? ` · next ${targetLabel(next)}` : ''}`],
+      bullseye: true,
+      value: targetLabel(target),
+      help: targetHelp(target), // read out by screen readers
+      round: `${state.round}/${state.targets.length}`,
+      next: next ? targetLabel(next) : 'Last round',
     };
   },
 };

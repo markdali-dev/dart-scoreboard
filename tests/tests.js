@@ -745,11 +745,13 @@ test('Halve-It: game ends after the last round; highest total wins, ties share',
   const tie = cs(darts(halveMatch(), ['20 0 0 20 0 0', '16 0 0 16 0 0', 'D7 0 0 D7 0 0', '14 0 0 14 0 0', 'T10 0 0 T10 0 0', '17 0 0 17 0 0', '25 0 0 25 0 0'].join(' ')));
   eq(tie.over, true); eq(tie.result.winners, [0, 1]);
 });
-test('Halve-It: hint shows the round, the target and the next one', () => {
+test('Halve-It: the bullseye shows the target, the round and the next target', () => {
   const s = cs(darts(halveMatch(), '20 0 0 0 0 0'));
-  eq(halveit.getHint(s.game), { label: 'Round 2/7:', parts: ['Any 16 · next D7'] });
+  eq(halveit.getHint(s.game), { bullseye: true, value: '16', help: 'Any 16', round: '2/7', next: 'D7' });
   const s2 = cs(darts(halveMatch(), '20 0 0 0 0 0 16 0 0 0 0 0'));
-  eq(halveit.getHint(s2.game).parts, ['Double 7s · next 14']);
+  eq([halveit.getHint(s2.game).value, halveit.getHint(s2.game).help], ['D7', 'Double 7s']);
+  const last = cs(darts(halveMatch('classic', ['Ann']), '20 0 0 16 0 0 D7 0 0 14 0 0 T10 0 0 17 0 0'));
+  eq([halveit.getHint(last.game).value, halveit.getHint(last.game).next], ['Bull', 'Last round']);
 });
 
 // ---------- report ----------

@@ -43,6 +43,13 @@
   --accent-soft: #165834;
   --accent-soft-text: #f3efe6;
 
+  /* bullseye target (Halve-It): faded treble red */
+  --bull-ring: rgba(222, 58, 52, 0.55);
+  --bull-gap: #1d1312;
+  --bull-centre: rgba(222, 58, 52, 0.62);
+  --bull-text: #ffffff;
+  --bull-text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+
   /* small grey boxes, e.g. last turn's darts */
   --chip-bg: #3a3a3a;
   --chip-text: #f3e7c9;
@@ -91,6 +98,12 @@
   --accent-soft-top: #1d6a40;
   --accent-soft: #165834;
   --accent-soft-text: #f3efe6;
+
+  --bull-ring: rgba(215, 50, 45, 0.5);
+  --bull-gap: #f8eee3;
+  --bull-centre: rgba(215, 50, 45, 0.58);
+  --bull-text: #1a0a09;
+  --bull-text-shadow: 0 1px 3px rgba(255, 250, 236, 0.8);
 
   --chip-bg: #dcd5c4;
   --chip-text: #111111;

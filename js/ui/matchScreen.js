@@ -38,7 +38,7 @@ export function renderMatch(ctx, opts = {}) {
   const art = game.art ? `<div class="match-art art-${game.art.name}">${ART[game.art.name]()}</div>` : '';
   // A hint is either the slim bar ("Out: T20 D16") or, with hint.panel, a big red
   // target panel that fills the space under the players (Knockout's score to beat).
-  const hintHtml = !hint ? '' : hint.panel
+  const hintHtml = !hint ? '' : hint.bullseye ? bullseyeTarget(hint) : hint.panel
     ? `<div class="beat-panel" role="status">
         <span class="bp-label">${esc(hint.title)}</span>
         <span class="bp-num">${esc(hint.value)}</span>
@@ -94,7 +94,7 @@ export function renderMatch(ctx, opts = {}) {
   }
 
   return `
-    <div class="match n${match.sides.length} ${art ? 'has-art' : ''} ${hint?.panel ? 'has-panel' : ''} ${game.plainNext ? 'plain-next' : ''}">
+    <div class="match n${match.sides.length} ${art ? 'has-art' : ''} ${hint?.panel ? 'has-panel' : ''} ${hint?.bullseye ? 'has-target' : ''} ${game.plainNext ? 'plain-next' : ''}">
       <div class="match-top">
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
@@ -117,6 +117,28 @@ export function renderMatch(ctx, opts = {}) {
       ${ui.toast ? `<div class="toast ${ui.toast.kind} ${ui.toast.text.length > 8 ? 'long' : ''}" role="status">${esc(ui.toast.text)}</div>` : ''}
       ${state.over ? winSheet(match, state) : ''}
     </div>`;
+}
+
+// Big bullseye target (Halve-It): fills the space between the players and the keypad.
+// "TARGET" sits in the outer ring, the target on the bull (longer names shrink a step
+// and may spread over the background), Round and Next underneath on the background.
+function bullseyeTarget(hint) {
+  const len = String(hint.value).length;
+  const size = len <= 3 ? '' : len <= 4 ? 'len-4' : 'len-long';
+  return `<div class="target-space" role="status" aria-label="Target ${esc(hint.help ?? hint.value)}, round ${esc(hint.round)}, next ${esc(hint.next)}">
+    <div class="bull-tile">
+      <div class="disc">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="49.5" fill="var(--bull-ring)"/>
+          <circle cx="50" cy="50" r="35" fill="var(--bull-gap)"/>
+          <circle cx="50" cy="50" r="21" fill="var(--bull-centre)"/>
+        </svg>
+        <span class="disc-label">Target</span>
+        <span class="disc-num ${size}">${esc(hint.value)}</span>
+      </div>
+      <div class="bull-foot"><span>Round <b>${esc(hint.round)}</b></span><span>Next: <b>${esc(hint.next)}</b></span></div>
+    </div>
+  </div>`;
 }
 
 // Who in a side throws now (current side) or next time (other sides).
