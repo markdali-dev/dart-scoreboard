@@ -47,6 +47,7 @@ import halveit from './halveit.js';
 import shanghai from './shanghai.js';
 import crackshot from './crackshot.js';
 import hareandhounds from './hareandhounds.js';
+import aroundtheclock from './aroundtheclock.js';
 
 // The order here is the order on the setup screen's game list.
 registerGame(cricket);
@@ -59,3 +60,5 @@ registerGame(halveit);
 registerGame(shanghai);
 registerGame(crackshot);
 registerGame(hareandhounds);
+// Practice
+registerGame(aroundtheclock);

@@ -121,7 +121,7 @@ Standard published rules. Confirm details with Mark before building each.
 
 Standard published rules. Solo play supported. Confirm details with Mark before building each.
 
-- **Around the Clock** — hit 1–20 in order. Options: finish on bull; singles, doubles or triples only.
+- **Around the Clock** — built 2026-11-21 (rules confirmed by Mark). Hit 1–20 in order; 1–5 players. Rings option: Any (single moves on 1 number, double 2, triple 3), Doubles only or Triples only (only that ring counts; each hit moves on 1). Finish on bull option (off by default): after 20, either bull finishes, and a double or triple near the end never skips the bull. First to finish wins, but the round is played out so everyone has the same turns; everyone finishing in that round shares the win. Individual players only. Screen: the Shanghai-style bullseye with the thrower's number, Done 5/20 and Next; each card shows the number that player is on (Done and a Finished badge once through); the current player's card shows darts thrown; the win screen says Finished in N darts for a single winner.
 - **Bob's 27** — start at 27. Rounds D1 to D20 then bull. Each hit adds that double's value; missing with all three subtracts it. Out if the score drops below 1.
 - **Chase the Dragon** — triples 10 through 20 in order, then outer bull, then inner bull.
 - **51 by 5s** — a turn only scores if its total is divisible by 5; score total ÷ 5. First to exactly 51.
@@ -179,7 +179,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 5. [x] Baseball and Assassin. Done 2026-11-18: Baseball with teams, one big key for the inning's number, extra innings for tied leaders only. Assassin with Random or Throw numbers (Number draw screen before the game), life dots, Assassin badge, knocked-out players dimmed and skipped. 89 tests pass; 5 players fit on a 375×667 screen.
 6. [x] Persistence: resume, history, dart log. Done 2026-11-18: the game in progress is saved after every dart; leaving or closing the app keeps it, and a green "Resume game" bar on Home brings it back exactly where it was. Only one unfinished game: starting a new one asks first, then discards it. Finished games go to History (newest first, up to 500) with players, game, options, result, date and the full dart log; tapping one shows its final board. Undo on the win screen takes a game back out of History. 97 tests pass.
 7. [x] Party games. Done: Knockout (2026-11-18), Halve-It, Shanghai, Crackshot and Hare and Hounds (2026-11-21). Parked (not building for now): Gotcha, Bermuda, Mickey Mouse, Follow the Leader.
-8. Practice games, one at a time. Mark's choice (2026-11-21): Around the Clock, 121 Checkout, Catch 40 (confirm each one's rules first). Not building for now: Bob's 27, Chase the Dragon, 51 by 5s.
+8. Practice games, one at a time. Mark's choice (2026-11-21): Around the Clock (built 2026-11-21), 121 Checkout, Catch 40 (confirm each one's rules first). Not building for now: Bob's 27, Chase the Dragon, 51 by 5s.
 9. Stats screens (after Mark defines the stats).
 10. Visual polish pass, offline check, install test on phone.
 
@@ -225,9 +225,9 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 ## Where we left off (end of 2026-11-18)
 
 - Steps 1–6 done; step 7 (Party games) in progress. All committed and pushed to GitHub `dart-scoreboard` (main).
-- Playable: Cricket, X01, Baseball, Assassin (Core); Knockout, Halve-It, Shanghai, Crackshot and Hare and Hounds (Party). Games resume after closing the app; finished games are in History.
+- Playable: Cricket, X01, Baseball, Assassin (Core); Knockout, Halve-It, Shanghai, Crackshot and Hare and Hounds (Party); Around the Clock (Practice). Games resume after closing the app; finished games are in History.
 - Knockout: built, tested by Mark, then reworked to his chosen mockup (Option 2): a red "Score to beat" bar sized to its text, the thrower's running turn total, last-round dart boxes on other cards, life dots beside the score. Mark is happy with it.
-- Party games done: Knockout, Halve-It, Shanghai, Crackshot (tested by Mark) and Hare and Hounds (built 2026-11-21, not yet played by Mark). Next: step 8 Practice games, one at a time: Around the Clock, 121 Checkout, Catch 40 (confirm each one's rules with Mark first).
+- Party games done: Knockout, Halve-It, Shanghai, Crackshot (tested by Mark) and Hare and Hounds (built 2026-11-21, not yet played by Mark). Step 8 Practice games: Around the Clock built 2026-11-21 (not yet played by Mark). Next: 121 Checkout, then Catch 40 (confirm each one's rules with Mark first).
 - Design system is recorded: PRODUCT.md (product truth), DESIGN.md + `.impeccable/design.json` ("The Board After Dark"). Keep DESIGN.md in step when a screen pattern changes.
 - Mark likes visual options shown as side-by-side mockups (a throwaway page in the git-ignored `scratch/` folder) before choosing.
 - How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (138 passing).

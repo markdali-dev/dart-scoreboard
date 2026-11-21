@@ -18,6 +18,7 @@ import shanghai from '../games/shanghai.js';
 import crackshot from '../games/crackshot.js';
 import hareandhounds, { BOARD, HOME, numberAt } from '../games/hareandhounds.js';
 import { zoneDart } from '../js/core/dart.js';
+import aroundtheclock from '../games/aroundtheclock.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -903,6 +904,54 @@ test('Hare and Hounds: board map puts each animal at its number, 20 at the top',
   // 18 is 2 steps clockwise of 20 (-90 + 36 = -54 deg); 12 is 2 steps anticlockwise (234 deg = -126 deg).
   eq(ring.map((r) => [r.number, r.kind, r.angle, r.current]), [[18, 'hare', -54, false], [12, 'hound', 234, true]]);
   eq(ring[0].color, '#e0413b', 'the hare is red');
+});
+
+// ---------- Around the Clock ----------
+function atcMatch(options = {}, names = ['Ann', 'Bob']) {
+  try { getGame('aroundtheclock'); } catch { registerGame(aroundtheclock); }
+  return createMatch({ gameId: 'aroundtheclock', options: { rings: 'any', bull: false, ...options }, sides: players(...names) });
+}
+const atcTarget = (m, side = 0) => aroundtheclock.getHint(cs(m).game, { side }).value;
+
+test('Around the Clock module passes the registry checks', () => validateGame(aroundtheclock));
+test('Around the Clock: hit 1, 2, 3 in order; the wrong number does nothing', () => {
+  eq(atcTarget(darts(atcMatch(), '1 3 2')), '3');
+});
+test('Around the Clock: any ring, double skips 1 number and triple 2', () => {
+  eq(atcTarget(darts(atcMatch(), 'D1 T3 0')), '6');
+});
+test('Around the Clock: doubles only, a single does not count and a double moves on 1', () => {
+  eq(atcTarget(darts(atcMatch({ rings: 'double' }), '1 D1 T2')), '2');
+  eq(atcTarget(darts(atcMatch({ rings: 'triple' }), 'D1 T1 1')), '2');
+});
+const toTwenty = (prefix = '') => [...Array(20)].map((_, i) => `${prefix}${i + 1}`);
+// Ann hits every dart; Bob misses every dart.
+const annRuns = (list) => { const out = []; for (let i = 0; i < list.length; i += 3) out.push(...list.slice(i, i + 3), '0', '0', '0'); return out.join(' '); };
+test('Around the Clock: solo player finishes after 20 and the game ends', () => {
+  const s = cs(darts(atcMatch({}, ['Ann']), toTwenty().join(' ')));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.game.finishedIn, [20]);
+});
+test('Around the Clock: the round is played out, and a tie is shared', () => {
+  // Ann finishes on dart 2 of round 7 (20 darts); Bob still gets his turn.
+  const m = darts(atcMatch(), annRuns(toTwenty()).replace(/ 0 0 0$/, ''));
+  eq(cs(m).over, false, 'Bob still to throw');
+  eq(cs(darts(m, '0 0 0')).result.winners, [0]);
+  // Bob throws triples and catches up in the same round.
+  const both = [...Array(7)].map((_, r) => {
+    const a = toTwenty().slice(r * 3, r * 3 + 3); // round 7: Ann finishes on her 2nd dart
+    return `${a.join(' ')} ${['T1 T4 T7', 'T10 T13 T16', '0 0 0', '0 0 0', '0 0 0', '0 0 0', 'T19'][r]}`;
+  }).join(' ');
+  const s = cs(darts(atcMatch(), both));
+  eq(s.over, true); eq(s.result.winners.sort(), [0, 1]);
+});
+test('Around the Clock: finish on the bull; a triple near the end never skips it', () => {
+  const m = darts(atcMatch({ bull: true }, ['Ann']), `${toTwenty().slice(0, 18).join(' ')} T19`);
+  eq(atcTarget(m), 'Bull');
+  eq(cs(darts(m, '0 0 25')).over, true, 'single bull finishes');
+});
+test('Around the Clock: hint shows progress and next', () => {
+  const s = cs(darts(atcMatch(), '1 2 0'));
+  eq(aroundtheclock.getHint(s.game, { side: 0 }), { bullseye: true, big: true, value: '3', help: 'Any 3', leftLabel: 'Done', round: '2/20', next: '4' });
 });
 
 // ---------- report ----------
