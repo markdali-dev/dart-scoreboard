@@ -71,6 +71,8 @@ const ctx = {
   // Starting a game replaces any unfinished one (the setup screen asks first).
   startMatch(match) { state.match = match; state.ui = {}; keep(match); render(); },
   setMatch(match) { state.match = match; keep(match); render(); },
+  // End Game on the Resume tile: discard the unfinished game (it never reaches History).
+  endCurrent() { state.current = null; save('current', null); state.ui = {}; render(); },
   resumeMatch() { if (state.current) { state.match = state.current; state.ui = {}; render(); } },
   setDraw(draw) { state.draw = draw; state.ui = {}; render(); window.scrollTo(0, 0); },
   // Leaving keeps an unfinished game saved; it shows up as "Resume game" on Home.

@@ -36,6 +36,19 @@ It prints an address like `http://192.168.1.23:8000`. Type that into the phone's
 If Windows asks about the firewall, allow Python on **Private networks** only.
 Offline mode and "Add to Home Screen" need https, so those only work once the app is on GitHub Pages.
 
+## Publish it online (GitHub Pages, free)
+
+The app is plain files with no build step, so GitHub Pages can host it as is.
+
+1. On github.com open the repository, then **Settings → General**, scroll to **Danger Zone → Change repository visibility → Public**. (GitHub Pages is free for public repositories.)
+2. **Settings → Pages**: under **Build and deployment**, set Source to **Deploy from a branch**, Branch **main**, folder **/ (root)**, then **Save**.
+3. After a minute or two the page shows the address, e.g. `https://<your-github-name>.github.io/dart-scoreboard/`.
+4. Open that address on the phone, then **Add to Home Screen** (Safari: Share button; Chrome: ⋮ menu). It then opens like an app and works with no internet.
+
+Updates: every `git push` to `main` republishes the site in a minute or two. Phones pick up the new version the next time the app is opened online (bump `VERSION` in `sw.js` with each change).
+
+Scores, players and History are saved on each phone only; nothing is sent anywhere.
+
 ## Run the tests
 
 With the server running, open http://localhost:8000/tests/ — the top bar turns green when every test passes.

@@ -107,12 +107,15 @@ function resumeBar(match) {
   const s = computeState(match);
   const game = getGame(match.gameId);
   const names = match.sides.map((side) => (side.members.length > 1 ? side.name : side.members[0])).join(', ');
-  return `<section class="section">
+  const round = game.roundText ? game.roundText(s.game) : `${game.roundLabel ?? 'Round'} ${s.turn.round}`;
+  // End Game (Mark, 2026-11-21): discards it on the spot, so picking a new game needs no pop-up.
+  return `<section class="section resume-row">
     <button class="resume-bar" data-act="resume">
       <span class="resume-label">Resume game</span>
-      <span class="resume-what">${esc(describeMatch(match))} · ${esc(game.roundLabel ?? 'Round')} ${s.turn.round}</span>
+      <span class="resume-what">${esc(describeMatch(match))} · ${esc(round)}</span>
       <span class="resume-who">${esc(names)}</span>
     </button>
+    <button class="resume-end" data-act="end-current" aria-label="End the unfinished game">End<br>Game</button>
   </section>`;
 }
 
@@ -246,6 +249,7 @@ export const setupActions = {
   'close-add': (ctx) => ctx.setUi({ addOpen: false, setupError: null }),
   pick: (ctx, el) => pickPlayer(ctx, el.dataset.id),
   resume: (ctx) => ctx.resumeMatch(),
+  'end-current': (ctx) => ctx.endCurrent(),
   'cancel-replace': (ctx) => ctx.setUi({ confirmReplace: false }),
   start: (ctx, el) => {
     const { state } = ctx;

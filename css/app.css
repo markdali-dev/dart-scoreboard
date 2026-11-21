@@ -898,3 +898,14 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
   .match.slim-thrower .card.thrower .stats { grid-column: 1 / -1; }
   .match.slim-thrower .card.thrower .slot { min-width: 40px; padding: 3px 2px; font-size: 0.95rem; }
 }
+
+/* Resume tile with a red End Game button on its right (Mark, 2026-11-21) */
+.resume-row { display: flex; gap: 8px; align-items: stretch; }
+.resume-row .resume-bar { flex: 1; min-width: 0; }
+.resume-end {
+  flex: 0 0 auto; min-width: 76px; padding: 0 12px; border: 0; cursor: pointer;
+  border-radius: var(--radius-card); font: inherit; font-weight: 800; font-size: 1rem;
+  line-height: 1.15; text-transform: uppercase; letter-spacing: 0.04em;
+  background: var(--danger); color: #fff; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
+}
+.resume-end:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45); }
