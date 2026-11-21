@@ -3,7 +3,7 @@
 // fall back to the saved copy when offline.
 // When you add a new file the app needs, add it to FILES and bump VERSION.
 
-const VERSION = 'v28';
+const VERSION = 'v29';
 const CACHE = `dartscoreboard-${VERSION}`;
 const FILES = [
   './',

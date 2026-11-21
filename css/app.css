@@ -693,7 +693,7 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 }
 .bull-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
 .disc { position: relative; height: calc(80cqh - 34px); aspect-ratio: 1; container-type: size; }
-.disc svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.disc > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .disc-label {
   position: absolute; left: 0; right: 0; top: 2.5%; text-align: center;
   font-weight: 700; font-size: 8cqh; letter-spacing: 0.08em; text-transform: uppercase;
