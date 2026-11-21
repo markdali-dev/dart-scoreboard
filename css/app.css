@@ -842,3 +842,38 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 /* Slim green card with an animal: tighter dart boxes so nothing runs into the score */
 .match.has-target .card.thrower:has(.name-animal) .slot { min-width: 38px; padding: 3px 2px; font-size: 0.95rem; }
 .match.has-target .card.thrower:has(.name-animal) .slots { gap: 4px; }
+
+/* Hare and Hounds, round 3 (Mark, 2026-11-21): no Gap/Next line, so the bullseye uses the whole
+   area (bigger bullseye, number and TARGET); every animal the same size, centred on the ring edge. */
+.bull-tile.no-foot { flex-direction: column; height: 100%; justify-content: center; }
+.bull-tile.no-foot .disc,
+.bull-tile.no-foot:has(.ring-marker) .disc { height: min(calc(100cqh - 30px), calc(100cqw - 40px), 300px); margin: 0; }
+@container (max-height: 190px) {
+  .bull-tile.no-foot { flex-direction: column; }
+  .bull-tile.no-foot .disc,
+  .bull-tile.no-foot:has(.ring-marker) .disc { height: min(calc(100cqh - 30px), 300px); margin: 0; }
+  .bull-tile.no-foot .disc-label { display: block; }
+}
+.bull-tile.no-foot .disc-label { top: 13%; font-size: 9cqh; }
+.bull-tile.no-foot .disc-num { top: 55%; font-size: 62cqh; }
+.ring-marker, .ring-marker.now { width: 20%; }
+/* Animals are 20% of the bullseye wide and centred on its edge, so they stick out 10% each
+   side: size the bullseye so bullseye + overhang exactly fills the space. */
+.bull-tile.no-foot .disc,
+.bull-tile.no-foot:has(.ring-marker) .disc { height: min(calc(100cqh / 1.2), calc(100cqw / 1.2), 300px); }
+@container (max-height: 190px) {
+  .bull-tile.no-foot .disc,
+  .bull-tile.no-foot:has(.ring-marker) .disc { height: min(calc(100cqh / 1.2), 300px); }
+}
+/* Short screens: slightly shorter keys in Hare and Hounds for a bigger board map */
+@media (max-height: 720px) {
+  .match.has-target:has(.no-foot) .keypad .key { height: 46px; }
+}
+/* Bigger animals (24% of the bullseye), still centred on its edge */
+.bull-tile.no-foot .ring-marker, .bull-tile.no-foot .ring-marker.now { width: 24%; }
+.bull-tile.no-foot .disc,
+.bull-tile.no-foot:has(.ring-marker) .disc { height: min(calc(100cqh / 1.24), calc(100cqw / 1.24), 300px); }
+@container (max-height: 190px) {
+  .bull-tile.no-foot .disc,
+  .bull-tile.no-foot:has(.ring-marker) .disc { height: min(calc(100cqh / 1.24), 300px); }
+}

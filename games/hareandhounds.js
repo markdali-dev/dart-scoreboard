@@ -6,7 +6,7 @@
 // - Hounds start 2 numbers behind the hare (on 12).
 // - A hound that reaches the hare's number catches it and wins.
 //   The hare wins by hitting 20 again (home) before being caught.
-// Screen: the bullseye target (the thrower's number), with Gap/Lead and Next.
+// Screen: the bullseye target (the thrower's number) with the board map round it.
 
 // Clockwise order of the numbers, starting at 20.
 export const BOARD = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
@@ -99,6 +99,7 @@ export default {
     const nextPos = p + 1;
     return {
       bullseye: true,
+      noFoot: true, // Mark: no Gap/Next line here; the bullseye and board map get the space
       value: String(numberAt(p)),
       help: hare ? 'You are the hare' : 'You are a hound',
       leftLabel: hare ? 'Lead' : 'Gap',

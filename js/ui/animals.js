@@ -14,19 +14,38 @@ function bunnyShapes() {
     <ellipse cx="40" cy="33" rx="6.5" ry="2.6" transform="rotate(-30 40 33)"/>`;
 }
 
-// Running hound: long body, head up, ears down, tail up behind, legs stretched out.
+// Running hound (beagle-like), mid-stride: deep chest, tucked waist, head forward with a
+// long muzzle and drop ear, tail up and curved, front legs reaching, hind legs pushing off.
 function houndShapes() {
   return `
-    <ellipse cx="29" cy="21" rx="18" ry="7.5"/>
-    <path d="M40 17 L47 8 L54 11 L47 23 Z"/>
-    <ellipse cx="51" cy="10" rx="6.6" ry="5"/>
-    <path d="M53 9 L62 11.5 L61.5 15 L53 14 Z"/>
-    <ellipse cx="48" cy="13.5" rx="2.6" ry="5" transform="rotate(18 48 13.5)"/>
-    <path d="M13 17 Q6 10 5 3" fill="none" stroke-width="3.2" stroke-linecap="round"/>
-    <path d="M43 24 L59 30" fill="none" stroke-width="3.6" stroke-linecap="round"/>
-    <path d="M40 25 L51 35" fill="none" stroke-width="3.6" stroke-linecap="round"/>
-    <path d="M17 24 L5 31" fill="none" stroke-width="3.6" stroke-linecap="round"/>
-    <path d="M21 25 L12 37" fill="none" stroke-width="3.6" stroke-linecap="round"/>`;
+    <path d="M15 14.5
+      C 21 12.6, 30 12.4, 37.5 13.2
+      C 41 13.6, 43.5 11.8, 45.6 8.6
+      C 47.2 6.1, 50.2 4.6, 53.4 5.0
+      C 55.6 5.3, 57.0 6.4, 58.0 7.6
+      L 62.2 9.6
+      C 63.4 10.3, 63.2 12.2, 61.8 12.6
+      L 56.6 13.4
+      C 54.6 13.8, 53.4 15.0, 52.4 16.6
+      C 51.2 18.6, 50.0 20.0, 49.6 21.4
+      L 58.4 23.2
+      C 60.4 23.6, 60.6 25.8, 58.6 26.0
+      L 48.0 25.6
+      C 47.0 26.4, 46.6 27.0, 47.0 27.8
+      L 53.2 33.4
+      C 54.4 34.6, 53.0 36.2, 51.6 35.2
+      L 42.6 29.2
+      C 37.4 27.0, 31.0 26.6, 26.4 27.8
+      C 23.6 28.6, 21.6 29.6, 20.0 30.4
+      L 12.2 36.6
+      C 10.8 37.6, 9.2 36.2, 10.4 34.8
+      L 16.4 27.6
+      L 8.2 28.6
+      C 6.4 28.8, 6.0 26.6, 7.8 26.2
+      L 14.8 24.6
+      C 13.0 21.6, 12.8 17.6, 15.0 14.5 Z"/>
+    <path d="M51.2 6.6 C 48.8 8.2, 48.2 12.6, 49.8 15.2 C 51.4 13.4, 52.4 9.8, 51.2 6.6 Z"/>
+    <path d="M15.4 15.2 C 11.6 13.2, 8.6 9.6, 7.2 4.6" fill="none" stroke-width="2.8" stroke-linecap="round"/>`;
 }
 
 export function animalSvg(kind, color, cls = 'animal') {

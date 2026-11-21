@@ -134,7 +134,7 @@ function bullseyeTarget(hint) {
   const len = String(hint.value).length;
   const size = hint.big && len <= 2 ? 'len-big' : len <= 3 ? '' : len <= 4 ? 'len-4' : 'len-long';
   return `<div class="target-space" role="status" aria-label="Target ${esc(hint.value)}. ${esc(hint.help ?? '')}. ${esc(hint.leftLabel ?? 'Round')} ${esc(hint.round)}, next ${esc(hint.next)}">
-    <div class="bull-tile">
+    <div class="bull-tile ${hint.noFoot ? 'no-foot' : ''}">
       <div class="disc">
         <svg viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="50" cy="50" r="49.5" fill="var(--bull-ring)"/>
@@ -145,7 +145,7 @@ function bullseyeTarget(hint) {
         <span class="disc-num ${size}">${esc(hint.value)}</span>
         ${hint.ring ? ringMarkers(hint.ring) : ''}
       </div>
-      <div class="bull-foot"><span>${esc(hint.leftLabel ?? 'Round')} <b>${esc(hint.round)}</b></span><span>Next: <b>${esc(hint.next)}</b></span></div>
+      ${hint.noFoot ? '' : `<div class="bull-foot"><span>${esc(hint.leftLabel ?? 'Round')} <b>${esc(hint.round)}</b></span><span>Next: <b>${esc(hint.next)}</b></span></div>`}
     </div>
   </div>`;
 }
@@ -153,13 +153,17 @@ function bullseyeTarget(hint) {
 // Board map (Hare and Hounds): each player's animal just outside the outer ring, at the
 // angle of the number they're on. Players on the same number stack outward.
 function ringMarkers(ring) {
+  // Every animal is the same size and centred exactly on the outer edge of the outer ring
+  // (49.5% of the bullseye's width from the centre). Players sharing a number sit side by
+  // side along the edge, spread a few degrees either side of that number.
+  const count = {};
+  ring.forEach((r) => { count[r.number] = (count[r.number] ?? 0) + 1; });
   const seen = {};
   return ring.map((r) => {
-    const stack = seen[r.number] = (seen[r.number] ?? -1) + 1;
-    // Distance from the centre in % of the bullseye's width: the outer ring's edge is at
-    // about 50%, so each animal sits on that edge; extra players on that number step out.
-    const distance = 52 + stack * 17;
-    const rad = (r.angle * Math.PI) / 180;
+    const k = seen[r.number] = (seen[r.number] ?? -1) + 1;
+    const spread = (k - (count[r.number] - 1) / 2) * 11; // degrees
+    const distance = 49.5;
+    const rad = ((r.angle + spread) * Math.PI) / 180;
     const x = 50 + distance * Math.cos(rad);
     const y = 50 + distance * Math.sin(rad);
     return `<span class="ring-marker ${r.current ? 'now' : ''}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">${animalSvg(r.kind, r.color, 'animal')}</span>`;
