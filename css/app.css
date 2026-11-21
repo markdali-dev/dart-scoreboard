@@ -943,3 +943,8 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
           mask-image: linear-gradient(#000 60%, transparent 90%);
 }
 .board-art svg { display: block; width: 100%; height: 100%; }
+
+/* Dark theme pop-ups (Mark, 2026-11-21): a lighter grey wash over the screen behind, so the
+   board-black pop-up stands out clearly. The light theme keeps its dark wash. */
+:root[data-theme="dark"] .sheet-backdrop { background: rgba(105, 105, 105, 0.5); }
+:root[data-theme="dark"] .sheet { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 18px 44px rgba(0, 0, 0, 0.6); }
