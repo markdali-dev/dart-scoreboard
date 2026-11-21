@@ -107,6 +107,7 @@ export default {
     const n = state.round;
     return {
       bullseye: true,
+      big: true, // plain 1-2 digit numbers: drawn larger on the bull (Mark, 2026-11-21)
       value: String(n),
       help: `Any ${n}; single, double and triple for a Shanghai`,
       round: `${n}/${state.rounds}`,

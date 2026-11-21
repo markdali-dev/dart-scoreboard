@@ -784,7 +784,7 @@ test('Shanghai: highest total after the last round wins; ties share', () => {
 });
 test('Shanghai: 20-round option', () => {
   const s = cs(shanghaiMatch(20));
-  eq(shanghai.getHint(s.game), { bullseye: true, value: '1', help: 'Any 1; single, double and triple for a Shanghai', round: '1/20', next: '2' });
+  eq(shanghai.getHint(s.game), { bullseye: true, big: true, value: '1', help: 'Any 1; single, double and triple for a Shanghai', round: '1/20', next: '2' });
 });
 test('Shanghai: last round says so', () => {
   const s = cs(darts(shanghaiMatch(7, ['Ann']), '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'));

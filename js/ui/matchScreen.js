@@ -124,7 +124,7 @@ export function renderMatch(ctx, opts = {}) {
 // and may spread over the background), Round and Next underneath on the background.
 function bullseyeTarget(hint) {
   const len = String(hint.value).length;
-  const size = len <= 3 ? '' : len <= 4 ? 'len-4' : 'len-long';
+  const size = hint.big && len <= 2 ? 'len-big' : len <= 3 ? '' : len <= 4 ? 'len-4' : 'len-long';
   return `<div class="target-space" role="status" aria-label="Target ${esc(hint.help ?? hint.value)}, round ${esc(hint.round)}, next ${esc(hint.next)}">
     <div class="bull-tile">
       <div class="disc">

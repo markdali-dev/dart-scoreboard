@@ -766,3 +766,12 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 
 /* Shanghai instant win: a kicker line above the winner's name */
 .win-kicker { text-align: center; font-size: 1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--danger); }
+
+/* Shanghai: plain round numbers drawn larger on the bull (about twice the thrower's score on a phone) */
+.disc-num.len-big { font-size: 74cqh; }
+@container (max-height: 190px) { .bull-tile .disc-num.len-big { font-size: 74cqh; } }
+/* Round / Next beside the bullseye always stay on one line (e.g. "Round 12/20") */
+@container (max-height: 190px) {
+  .bull-foot span { white-space: nowrap; font-size: 1rem; }
+  .bull-foot b { font-size: 1.1rem; }
+}
