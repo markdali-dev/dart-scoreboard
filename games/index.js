@@ -29,6 +29,7 @@
 //   getKeys(state)                     -> optional, the numbers that get keys on the pad
 //   keyLabels: { 25: 'Bull' }          -> optional, words shown on keys instead of numbers
 //   roundLabel: 'Inning'               -> optional, header says "Inning 4" instead of "Round 4"
+//   roundText(state)                   -> optional, the whole header text instead ("Target 64")
 //   needsNumberDraw(options)           -> optional, true to show the Number draw screen
 //                                         before the game (fills options.numbers)
 //   Scoreboard extras for score cards: mainLabel (small text before the big number),
@@ -49,6 +50,7 @@ import crackshot from './crackshot.js';
 import hareandhounds from './hareandhounds.js';
 import aroundtheclock from './aroundtheclock.js';
 import checkout121 from './checkout121.js';
+import catch40 from './catch40.js';
 
 // The order here is the order on the setup screen's game list.
 registerGame(cricket);
@@ -64,3 +66,4 @@ registerGame(hareandhounds);
 // Practice
 registerGame(aroundtheclock);
 registerGame(checkout121);
+registerGame(catch40);

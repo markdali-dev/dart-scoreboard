@@ -107,7 +107,7 @@ export function renderMatch(ctx, opts = {}) {
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
           <span>${esc(describeMatch(match))}</span>
-          <span>${esc(game.roundLabel ?? 'Round')} ${state.turn.round}</span>
+          <span>${esc(game.roundText ? game.roundText(state.game) : `${game.roundLabel ?? 'Round'} ${state.turn.round}`)}</span>
         </div>
       </div>
 

@@ -20,6 +20,7 @@ import hareandhounds, { BOARD, HOME, numberAt } from '../games/hareandhounds.js'
 import { zoneDart } from '../js/core/dart.js';
 import aroundtheclock from '../games/aroundtheclock.js';
 import checkout121 from '../games/checkout121.js';
+import catch40 from '../games/catch40.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -1005,6 +1006,42 @@ test('121: checkout hint, as in X01', () => {
   const h = checkout121.getHint(g121(c121Match()), { side: 0, dartsLeft: 3 });
   eq([h.label, h.parts.length, h.parts[2][0]], ['Out:', 3, 'D']);
 });
+
+// ---------- Catch 40 ----------
+function c40Match(last = 100, names = ['Ann', 'Bob']) {
+  try { getGame('catch40'); } catch { registerGame(catch40); }
+  return createMatch({ gameId: 'catch40', options: { last }, sides: players(...names) });
+}
+const g40 = (m) => cs(m).game;
+
+test('Catch 40 module passes the registry checks', () => validateGame(catch40));
+test('Catch 40: 2-dart finish scores 3, 3-dart 2, darts 4-6 score 1, none 0', () => {
+  eq(g40(darts(c40Match(100, ['Ann']), 'T15 D8')).points, [3], '61 in 2 darts');
+  eq(g40(darts(c40Match(100, ['Ann']), '1 20 D20')).points, [2], '61 in 3 darts');
+  eq(g40(darts(c40Match(100, ['Ann']), '0 0 0 1 20 D20')).points, [1], '61 on dart 6');
+  const g = g40(darts(c40Match(100, ['Ann']), '0 0 0 0 0 0'));
+  eq([g.points[0], g.target, g.score[0]], [0, 62, 62], 'missed: on to 62');
+});
+test('Catch 40: a bust loses the rest of that turn, darts still count', () => {
+  const g = g40(darts(c40Match(100, ['Ann']), 'T20'));           // 61 - 60 = 1 left: bust
+  eq([g.score[0], g.turnsUsed[0]], [61, 1]);
+  eq(g40(darts(c40Match(100, ['Ann']), 'T20 T15 D8')).points, [1], 'finished on dart 5 (bust turn counts as 3)');
+});
+test('Catch 40: everyone plays each target; finished players wait; player 1 starts the next', () => {
+  // Ann out in 2; Bob misses his first turn, Ann is skipped, Bob throws again.
+  let m = darts(c40Match(), 'T15 D8 0 0 0');
+  eq(cs(m).turn.side, 1, 'Bob again');
+  m = darts(m, '0 0 0');
+  eq([cs(m).game.target, cs(m).turn.side], [62, 0]);
+  // Ann misses twice, Bob finishes first time: Ann's 2nd turn, then Ann starts 63, not Bob.
+  m = darts(m, '0 0 0 T14 D10 0 0 0');
+  eq([cs(m).game.target, cs(m).turn.side, cs(m).game.points], [63, 0, [3, 3]]);
+});
+test('Catch 40: the quick game ends after 80; most points wins', () => {
+  const s = cs(darts(c40Match(80, ['Ann']), `T15 D8 ${Array(19 * 6).fill('0').join(' ')}`));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.result.kicker, '3 of 60 points');
+});
+test('Catch 40: header shows the target', () => eq(catch40.roundText(g40(c40Match())), 'Target 61'));
 
 // ---------- report ----------
 const failed = results.filter((r) => !r.ok);
