@@ -13,6 +13,7 @@ import baseball from '../games/baseball.js';
 import assassin from '../games/assassin.js';
 import { recordMatch, wouldReplace, MAX_HISTORY } from '../js/core/saved.js';
 import knockout from '../games/knockout.js';
+import halveit, { TARGET_LISTS, hitsTarget, targetLabel } from '../games/halveit.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -698,6 +699,57 @@ test('Knockout: the thrower shows their running total, everyone else their last 
   const sb = knockout.getScoreboard(s.game, { current: 1 });
   eq([sb[0].main, sb[1].main, sb[1].mainLabel, sb[2].main], [45, 23, 'Turn', '–']);
   eq(knockout.getScoreboard(cs(darts(knockoutMatch(), '20 20 5')).game, { current: 1 })[1].main, 0, 'thrower before their first dart');
+});
+
+// ---------- Halve-It ----------
+function halveMatch(list = 'classic', names = ['Ann', 'Bob']) {
+  try { getGame('halveit'); } catch { registerGame(halveit); }
+  return createMatch({ gameId: 'halveit', options: { list }, sides: players(...names) });
+}
+const totals = (m) => cs(m).game.totals;
+
+test('Halve-It module passes the registry checks', () => validateGame(halveit));
+test('Halve-It: preset lists and labels', () => {
+  eq(TARGET_LISTS.classic.map(targetLabel), ['20', '16', 'D7', '14', 'T10', '17', 'Bull']);
+  eq(TARGET_LISTS.long.length, 10); eq(TARGET_LISTS.tough.map(targetLabel).at(-1), 'Inner bull');
+});
+test('Halve-It: a plain number counts any ring at full value', () => {
+  eq(totals(darts(halveMatch(), '20 D20 T20')), [120, 0]);
+});
+test('Halve-It: D and T rounds only count that ring; bull rounds count 25 and 50', () => {
+  eq(hitsTarget(D(7, 2), { n: 7, m: 2 }), true);
+  eq(hitsTarget(D(7), { n: 7, m: 2 }), false);
+  eq(hitsTarget(D(10, 2), { n: 10, m: 3 }), false);
+  eq(hitsTarget(D(25), { n: 25, m: null }), true);
+  eq(hitsTarget(D(25, 2), { n: 25, m: null }), true);
+  eq(hitsTarget(D(25), { n: 25, m: 2 }), false);
+});
+test('Halve-It: missing with all three darts halves the total', () => {
+  // Round 1 (any 20): Ann 20+20 = 40 (the 5 misses); Bob misses. Round 2 (any 16): Ann misses all three.
+  let m = darts(halveMatch(), '20 20 5 0 0 0');
+  eq(totals(m), [40, 0]);
+  m = darts(m, '0 0 0');
+  const s = cs(m);
+  eq(s.game.totals[0], 20); eq(s.game.event, { kind: 'bust', text: 'Halved! 40 → 20' });
+  eq(totals(darts(halveMatch(), 'T20 20 0 0 0 0 1 0 0')), [40, 0], 'a 1 is not a 16: 80 halved to 40');
+});
+test('Halve-It: odd totals round down when halved', () => {
+  // Solo, classic list: 20 + 16 + D7 (14) + 14 + T10 (30) + 17 = 111, then miss the bull: 111 -> 55.
+  const s = cs(darts(halveMatch('classic', ['Ann']), '20 0 0 16 0 0 D7 0 0 14 0 0 T10 0 0 17 0 0 0 0 0'));
+  eq(s.game.totals[0], 55); eq(s.over, true);
+});
+test('Halve-It: game ends after the last round; highest total wins, ties share', () => {
+  // Solo through the 7 classic rounds hitting one target dart each round.
+  const s = cs(darts(halveMatch('classic', ['Ann']), '20 0 0 16 0 0 D7 0 0 14 0 0 T10 0 0 17 0 0 25 0 0'));
+  eq(s.over, true); eq(s.game.totals[0], 20 + 16 + 14 + 14 + 30 + 17 + 25);
+  const tie = cs(darts(halveMatch(), ['20 0 0 20 0 0', '16 0 0 16 0 0', 'D7 0 0 D7 0 0', '14 0 0 14 0 0', 'T10 0 0 T10 0 0', '17 0 0 17 0 0', '25 0 0 25 0 0'].join(' ')));
+  eq(tie.over, true); eq(tie.result.winners, [0, 1]);
+});
+test('Halve-It: hint shows the round, the target and the next one', () => {
+  const s = cs(darts(halveMatch(), '20 0 0 0 0 0'));
+  eq(halveit.getHint(s.game), { label: 'Round 2/7:', parts: ['Any 16 · next D7'] });
+  const s2 = cs(darts(halveMatch(), '20 0 0 0 0 0 16 0 0 0 0 0'));
+  eq(halveit.getHint(s2.game).parts, ['Double 7s · next 14']);
 });
 
 // ---------- report ----------

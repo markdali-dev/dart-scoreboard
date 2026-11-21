@@ -41,6 +41,7 @@ import cricket from './cricket.js';
 import baseball from './baseball.js';
 import assassin from './assassin.js';
 import knockout from './knockout.js';
+import halveit from './halveit.js';
 
 // The order here is the order on the setup screen's game list.
 registerGame(cricket);
@@ -49,3 +50,4 @@ registerGame(baseball);
 registerGame(assassin);
 // Party
 registerGame(knockout);
+registerGame(halveit);

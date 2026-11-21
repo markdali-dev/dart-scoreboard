@@ -108,7 +108,7 @@ Built as one Cricket game with two setup tiles (Mark, 2026-11-18):
 Standard published rules. Confirm details with Mark before building each.
 
 - **Shanghai** — rounds 1–7 (option: 1–20). Only the round's number scores. Single, double and triple of that number in one turn is a Shanghai and wins instantly. Otherwise highest total.
-- **Halve-It** — fixed list of targets, one per round (default 20, 16, D7, 14, T10, 17, bull; editable). Score what you hit on the target; miss with all three and your total is halved.
+- **Halve-It** — built 2026-11-21 (rules confirmed by Mark). One target per round from a preset list (Targets tile): Classic 7 rounds (20, 16, D7, 14, T10, 17, Bull), Long 10 rounds (19, 18, D20, 15, T19, 16, D16, 13, T20, Bull), Tough 7 rounds (D20, T20, D16, T19, D10, T17, Inner bull). A plain number counts any ring at full value; a D or T target counts only that ring; Bull counts 25 and 50; Inner bull only 50. Miss the target with all three darts and the total is halved, rounding down. Highest total after the last round wins; a tie is shared. Individual players only. Other players' cards keep their last 3 darts; the hint shows the round, the target and the next one.
 - **Gotcha** — count up to exactly 301. Going over busts the turn. Landing exactly on an opponent's score sends them back to 0.
 - **Bermuda** — 13 rounds: 12, 13, 14, any double, 15, 16, 17, any triple, 18, 19, 20, bull, inner bull. Miss the target with all three and your total is halved. Highest total wins.
 - **Knockout** — built 2026-11-18 (rules confirmed by Mark). Each player must BEAT the previous player's three-dart total (a tie loses a life); the first turn of the game only sets the score. The next player always has to beat whoever threw just before them, even if that player failed. Lives setting 3 or 5 (default 3); the last life shows red. Individual players only. Last standing wins. Screen (Mark picked mockup Option 2, 2026-11-18): a big red "Score to beat" panel under the players shows the target, who set it and "Need N more" (or "Beaten!"); before anyone has thrown it is a normal hint. The current thrower's big number is their running turn total; every other card shows the last 3 darts in small boxes beside the name, life dots beside the score, one line per card. The on-deck card keeps its outline and NEXT tag but not the larger score. After testing, Mark had the red bar shrunk to just fit its three lines of text, with its number the same size as the current thrower's score, so it no longer overshadows the thrower.
@@ -177,7 +177,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 4. [x] Cricket and its variants. Done 2026-11-18: marks grid (numbers down the side, one column per player/team, / X Ⓧ, numbers everyone has closed greyed out), keypad shows only the numbers in play, green turn strip with the thrower's darts and marks per round (MPR). 5 players fit on a 375×667 screen. 71 tests pass.
 5. [x] Baseball and Assassin. Done 2026-11-18: Baseball with teams, one big key for the inning's number, extra innings for tied leaders only. Assassin with Random or Throw numbers (Number draw screen before the game), life dots, Assassin badge, knocked-out players dimmed and skipped. 89 tests pass; 5 players fit on a 375×667 screen.
 6. [x] Persistence: resume, history, dart log. Done 2026-11-18: the game in progress is saved after every dart; leaving or closing the app keeps it, and a green "Resume game" bar on Home brings it back exactly where it was. Only one unfinished game: starting a new one asks first, then discards it. Finished games go to History (newest first, up to 500) with players, game, options, result, date and the full dart log; tapping one shows its final board. Undo on the win screen takes a game back out of History. 97 tests pass.
-7. Party games, one at a time. In progress: Knockout done 2026-11-18 (106 tests pass); Shanghai, Halve-It, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse and Follow the Leader still to build.
+7. Party games, one at a time. In progress: Knockout done 2026-11-18, Halve-It done 2026-11-21 (115 tests pass); Shanghai, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse and Follow the Leader still to build.
 8. Practice games, one at a time.
 9. Stats screens (after Mark defines the stats).
 10. Visual polish pass, offline check, install test on phone.
@@ -224,12 +224,12 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 ## Where we left off (end of 2026-11-18)
 
 - Steps 1–6 done; step 7 (Party games) in progress. All committed and pushed to GitHub `dart-scoreboard` (main).
-- Playable: Cricket, X01, Baseball, Assassin (Core); Knockout (Party). Games resume after closing the app; finished games are in History.
+- Playable: Cricket, X01, Baseball, Assassin (Core); Knockout and Halve-It (Party). Games resume after closing the app; finished games are in History.
 - Knockout: built, tested by Mark, then reworked to his chosen mockup (Option 2): a red "Score to beat" bar sized to its text, the thrower's running turn total, last-round dart boxes on other cards, life dots beside the score. Mark is happy with it.
-- Next session: the next Party game. Ask Mark which (Shanghai, Halve-It, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse, Follow the Leader) and confirm its rules before building.
+- Halve-It built 2026-11-21; Mark has not played it yet. Then the next Party game: ask Mark which (Shanghai, Gotcha, Bermuda, Hare and Hounds, Mickey Mouse, Follow the Leader) and confirm its rules before building.
 - Design system is recorded: PRODUCT.md (product truth), DESIGN.md + `.impeccable/design.json` ("The Board After Dark"). Keep DESIGN.md in step when a screen pattern changes.
 - Mark likes visual options shown as side-by-side mockups (a throwaway page in the git-ignored `scratch/` folder) before choosing.
-- How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (107 passing).
+- How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (115 passing).
 - Still open: GitHub Pages (needs a public repo on the free plan); confirming the offline copy in a normal browser; a better Assassin graphic some day.
 - Test data: the in-app preview browser has made-up players and games saved; Mark's own browser has his own.
 

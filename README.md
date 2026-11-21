@@ -9,6 +9,7 @@ The plan, rules and progress live in `CLAUDE.md`.
 - Baseball (9 innings, extra innings on a tie, teams)
 - Assassin (house rules; random numbers or an off-hand Number draw)
 - Knockout (Party: beat the previous total or lose a life; 3 or 5 lives)
+- Halve-It (Party: one target per round, miss and your total is halved; three target lists)
 
 Games are saved as you play: close the app mid-game and a "Resume game" bar brings it back. Finished games are kept in History.
 
