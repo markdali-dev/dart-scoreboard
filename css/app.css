@@ -919,3 +919,14 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .stats-table tbody tr + tr { border-top: 1px solid rgba(127, 127, 127, 0.22); }
 .stats-table td { font-weight: 700; }
 .stats-note { margin: 8px 2px 0; font-size: 0.85rem; opacity: 0.7; line-height: 1.35; }
+
+/* Settings tab */
+.settings-buttons { display: flex; gap: 10px; margin-top: 10px; }
+.settings-buttons .btn { flex: 1; cursor: pointer; min-height: 52px; display: flex; align-items: center; justify-content: center; }
+.btn.settings-wide { width: 100%; min-height: 52px; margin-top: 10px; }
+.settings-msg { margin-top: 10px; font-weight: 700; color: var(--thrower); }
+.settings-msg.bad { color: var(--danger); }
+.about { margin: 6px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.about div { background: var(--card); color: var(--card-text); border-radius: var(--radius-card); padding: 10px 14px; box-shadow: var(--shadow-card); }
+.about dt { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.7; }
+.about dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }

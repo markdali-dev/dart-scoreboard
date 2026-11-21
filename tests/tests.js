@@ -22,6 +22,7 @@ import aroundtheclock from '../games/aroundtheclock.js';
 import checkout121 from '../games/checkout121.js';
 import catch40 from '../games/catch40.js';
 import { computeStats } from '../js/core/stats.js';
+import { makeBackup, readBackup, backupFileName } from '../js/core/backup.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -1072,6 +1073,21 @@ test('Stats: Cricket marks per round, best and worst game', () => {
   eq(cs(m).over, true);
   eq([ann.cricket.turns, ann.cricket.marks], [3, 21]);
   eq(ann.cricket.games, [7]);
+});
+
+// ---------- Backup ----------
+test('Backup: saves players and History, and reads back the same', () => {
+  const data = { roster: [{ id: 'p1', name: 'Ann' }], history: [darts(statsX01(), 'T20 0 0 0 0 0 1 D20')], current: null, setup: { gameId: 'x01' } };
+  const back = readBackup(JSON.stringify(makeBackup(data, new Date('2026-11-21T10:00:00Z'))));
+  eq([back.roster, back.history.length, back.history[0].darts.length, back.savedAt], [data.roster, 1, 8, '2026-11-21T10:00:00.000Z']);
+  eq(backupFileName(new Date('2026-11-21T10:00:00Z')), 'dart-scoreboard-2026-11-21.json');
+});
+test('Backup: other files are refused with a plain message', () => {
+  const msg = (text) => { try { readBackup(text); return 'accepted'; } catch (e) { return e.message; } };
+  eq(msg('not json'), 'That file is not a Dart Scoreboard backup.');
+  eq(msg('{"hello":1}'), 'That file is not a Dart Scoreboard backup.');
+  eq(msg('{"kind":"dart-scoreboard-backup","version":1,"roster":"x","history":[]}'), 'That backup is damaged.');
+  eq(msg('{"kind":"dart-scoreboard-backup","version":2,"roster":[],"history":[]}'), 'That backup is from a newer version of the app.');
 });
 
 // ---------- report ----------

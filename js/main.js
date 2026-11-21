@@ -13,6 +13,7 @@ import { renderMatch, matchActions } from './ui/matchScreen.js';
 import { renderDraw, drawActions } from './ui/drawScreen.js';
 import { renderHistory, renderHistoryEntry, historyActions } from './ui/historyScreen.js';
 import { renderStats } from './ui/statsScreen.js';
+import { renderSettings, settingsActions, onRestoreFile } from './ui/settingsScreen.js';
 import { computeState } from './core/engine.js';
 import { recordMatch } from './core/saved.js';
 
@@ -74,6 +75,16 @@ const ctx = {
   setMatch(match) { state.match = match; keep(match); render(); },
   // End Game on the Resume tile: discard the unfinished game (it never reaches History).
   endCurrent() { state.current = null; save('current', null); state.ui = {}; render(); },
+  // Settings: Clear History (players are kept), and Restore from a backup file.
+  clearHistory() { state.history = []; save('history', []); },
+  restoreBackup(data) {
+    state.history = data.history;
+    state.current = data.current ?? null;
+    save('history', state.history);
+    save('current', state.current);
+    if (data.setup) { state.setup = { ...state.setup, ...data.setup }; save('setup', state.setup); }
+    ctx.setRoster(data.roster); // also drops setup entries for players that no longer exist
+  },
   resumeMatch() { if (state.current) { state.match = state.current; state.ui = {}; render(); } },
   setDraw(draw) { state.draw = draw; state.ui = {}; render(); window.scrollTo(0, 0); },
   // Leaving keeps an unfinished game saved; it shows up as "Resume game" on Home.
@@ -88,15 +99,11 @@ const actions = {
   ...matchActions,
   ...drawActions,
   ...historyActions,
+  ...settingsActions,
   tab: (c, el) => { state.tab = el.dataset.tab; state.ui = {}; render(); window.scrollTo(0, 0); },
   theme: (c, el) => { setTheme(el.dataset.themeChoice); render(); },
 };
 const forms = { ...setupForms, ...playersForms };
-
-function comingSoon(title, step) {
-  return `<header class="topbar"><h1>${title}</h1></header>
-    <main class="screen"><section class="section"><p class="note">Coming in build step ${step}.</p></section></main>`;
-}
 
 function render() {
   if (state.match) {
@@ -116,7 +123,7 @@ function render() {
     players: () => renderPlayers(ctx),
     stats: () => renderStats(ctx),
     history: () => renderHistory(ctx),
-    settings: () => comingSoon('Settings', 10),
+    settings: () => renderSettings(ctx),
   };
   app.innerHTML = screens[state.tab]() + tabBar(state.tab);
   if (state.tab === 'home') enableDrag(ctx, app);
@@ -143,6 +150,7 @@ app.addEventListener('submit', (ev) => {
 });
 app.addEventListener('change', (ev) => {
   if (ev.target.dataset.custom) onCustomInput(ctx, ev.target);
+  if ('restore' in ev.target.dataset) onRestoreFile(ctx, ev.target);
 });
 
 applyTheme(getTheme());

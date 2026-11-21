@@ -47,7 +47,7 @@ The app is plain files with no build step, so GitHub Pages can host it as is.
 
 Updates: every `git push` to `main` republishes the site in a minute or two. Phones pick up the new version the next time the app is opened online (bump `VERSION` in `sw.js` with each change).
 
-Scores, players and History are saved on each phone only; nothing is sent anywhere.
+Scores, players and History are saved on each phone only; nothing is sent anywhere. To move them to another phone, use Settings → Save backup, then Settings → Restore on the other phone.
 
 ## Run the tests
 
