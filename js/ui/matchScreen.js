@@ -262,6 +262,7 @@ function winSheet(match, state) {
   return `
     <div class="sheet-backdrop"></div>
     <div class="sheet win" role="dialog" aria-modal="true" aria-label="Game over">
+      ${state.result.shanghai ? '<div class="win-kicker">Shanghai!</div>' : ''}
       <div class="win-title">${esc(winnerText(match, state))} ${many ? 'win' : 'wins'}!</div>
       <p class="note center small">Saved to History.</p>
       <div class="sheet-rows">

@@ -14,6 +14,7 @@ import assassin from '../games/assassin.js';
 import { recordMatch, wouldReplace, MAX_HISTORY } from '../js/core/saved.js';
 import knockout from '../games/knockout.js';
 import halveit, { TARGET_LISTS, hitsTarget, targetLabel } from '../games/halveit.js';
+import shanghai from '../games/shanghai.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -752,6 +753,42 @@ test('Halve-It: the bullseye shows the target, the round and the next target', (
   eq([halveit.getHint(s2.game).value, halveit.getHint(s2.game).help], ['D7', 'Double 7s']);
   const last = cs(darts(halveMatch('classic', ['Ann']), '20 0 0 16 0 0 D7 0 0 14 0 0 T10 0 0 17 0 0'));
   eq([halveit.getHint(last.game).value, halveit.getHint(last.game).next], ['Bull', 'Last round']);
+});
+
+// ---------- Shanghai ----------
+function shanghaiMatch(rounds = 7, names = ['Ann', 'Bob']) {
+  try { getGame('shanghai'); } catch { registerGame(shanghai); }
+  return createMatch({ gameId: 'shanghai', options: { rounds }, sides: players(...names) });
+}
+
+test('Shanghai module passes the registry checks', () => validateGame(shanghai));
+test('Shanghai: only the round number scores, at face value', () => {
+  eq(cs(darts(shanghaiMatch(), '1 D1 20')).game.totals, [3, 0]);
+  const s = cs(darts(shanghaiMatch(), '0 0 0 0 0 0 2 T2 1'));
+  eq(s.game.totals, [8, 0], 'round 2: 2 + 6, the 1 does not count');
+});
+test('Shanghai: single, double and triple in one turn wins instantly, any order', () => {
+  const s = cs(darts(shanghaiMatch(), 'T1 1 D1'));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.result.shanghai, true);
+});
+test('Shanghai: the three rings spread over two turns is not a Shanghai', () => {
+  const s = cs(darts(shanghaiMatch(), '0 0 0 0 0 0 2 D2 0 0 0 0 0 0 0 0 0 0'));
+  eq(s.over, false);
+});
+test('Shanghai: highest total after the last round wins; ties share', () => {
+  const play = (a, b) => [1, 2, 3, 4, 5, 6, 7].map((n) => `${a ? n : 0} 0 0 ${b ? n : 0} 0 0`).join(' ');
+  const s = cs(darts(shanghaiMatch(), play(true, false)));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.game.totals, [28, 0]);
+  const tie = cs(darts(shanghaiMatch(), play(true, true)));
+  eq(tie.result.winners, [0, 1]);
+});
+test('Shanghai: 20-round option', () => {
+  const s = cs(shanghaiMatch(20));
+  eq(shanghai.getHint(s.game), { bullseye: true, value: '1', help: 'Any 1; single, double and triple for a Shanghai', round: '1/20', next: '2' });
+});
+test('Shanghai: last round says so', () => {
+  const s = cs(darts(shanghaiMatch(7, ['Ann']), '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'));
+  eq([shanghai.getHint(s.game).value, shanghai.getHint(s.game).next], ['7', 'Last round']);
 });
 
 // ---------- report ----------

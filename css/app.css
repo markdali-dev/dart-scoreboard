@@ -763,3 +763,6 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
   .match.has-target .card.thrower .slots { margin-top: 0; }
   .match.has-target .card.thrower .stats { display: none; }
 }
+
+/* Shanghai instant win: a kicker line above the winner's name */
+.win-kicker { text-align: center; font-size: 1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--danger); }
