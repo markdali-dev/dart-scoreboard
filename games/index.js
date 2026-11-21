@@ -5,6 +5,8 @@
 //   id, name, group ('Core' | 'Party' | 'Practice'), rules (short text)
 //   art: { name: 'barrel' | 'diamond', place: 'before-hint' | 'before-pad' } -> optional graphic
 //   pad: 'target'                      -> optional, two big tiles (Miss + target) instead of the grid
+//   zonePad: [[{ zone, label, points, tone } | { undo: true }], ...] -> optional, rows of
+//                                         board-area buttons (darts carry a `zone`)
 //   options: settings shown as tiles on the setup screen. Each is one of:
 //     { id, label, type: 'choice', choices: [{ value, label }], default, custom?: { min, max } }
 //     { id, label, type: 'toggle', default: true | false }
@@ -43,6 +45,7 @@ import assassin from './assassin.js';
 import knockout from './knockout.js';
 import halveit from './halveit.js';
 import shanghai from './shanghai.js';
+import crackshot from './crackshot.js';
 
 // The order here is the order on the setup screen's game list.
 registerGame(cricket);
@@ -53,3 +56,4 @@ registerGame(assassin);
 registerGame(knockout);
 registerGame(halveit);
 registerGame(shanghai);
+registerGame(crackshot);

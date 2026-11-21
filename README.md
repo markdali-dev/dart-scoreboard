@@ -11,6 +11,7 @@ The plan, rules and progress live in `CLAUDE.md`.
 - Knockout (Party: beat the previous total or lose a life; 3 or 5 lives)
 - Halve-It (Party: one target per round, miss and your total is halved; three target lists)
 - Shanghai (Party: rounds 1–7 or 1–20; single, double and triple in one turn wins instantly)
+- Crackshot (Party: 6 rounds scored by board area; ring of fire costs 2; three bulls in a turn wins)
 
 Games are saved as you play: close the app mid-game and a "Resume game" bar brings it back. Finished games are kept in History.
 

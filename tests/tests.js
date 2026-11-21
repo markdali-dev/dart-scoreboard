@@ -15,6 +15,8 @@ import { recordMatch, wouldReplace, MAX_HISTORY } from '../js/core/saved.js';
 import knockout from '../games/knockout.js';
 import halveit, { TARGET_LISTS, hitsTarget, targetLabel } from '../games/halveit.js';
 import shanghai from '../games/shanghai.js';
+import crackshot from '../games/crackshot.js';
+import { zoneDart } from '../js/core/dart.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -789,6 +791,63 @@ test('Shanghai: 20-round option', () => {
 test('Shanghai: last round says so', () => {
   const s = cs(darts(shanghaiMatch(7, ['Ann']), '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'));
   eq([shanghai.getHint(s.game).value, shanghai.getHint(s.game).next], ['7', 'Last round']);
+});
+
+// ---------- Crackshot ----------
+function crackMatch(names = ['Ann', 'Bob']) {
+  try { getGame('crackshot'); } catch { registerGame(crackshot); }
+  return createMatch({ gameId: 'crackshot', options: {}, sides: players(...names) });
+}
+// Plays board-area darts: 'inner bull dbull fire miss'
+const zones = (m, list) => list.split(' ').reduce((acc, z) => throwDart(acc, zoneDart(z)), m);
+const ctot = (m) => cs(m).game.totals;
+const missTurn = 'miss miss miss';
+
+test('Crackshot module passes the registry checks', () => validateGame(crackshot));
+test('Area darts are valid and keep their area through a save', () => {
+  eq(isValidDart(zoneDart('fire')), true);
+  eq(isValidDart({ number: 20, multiplier: 1, zone: 'fire' }), false, 'area and number must agree');
+  eq(isValidDart({ number: 0, multiplier: 1, zone: 'nonsense' }), false);
+  const m = zones(crackMatch(), 'dbull inner fire');
+  eq(JSON.parse(JSON.stringify(m)).darts.map((d) => d.zone), ['dbull', 'inner', 'fire']);
+  eq(m.darts.map(dartLabel), ['DB', 'In', 'Fire']);
+});
+test('Crackshot: area points, and totals can go negative', () => {
+  eq(ctot(zones(crackMatch(), 'inner bull dbull')), [6, 0]);
+  eq(ctot(zones(crackMatch(), 'fire fire miss')), [-5, 0]);
+});
+test('Crackshot: three bulls in one turn wins instantly (single or double bull)', () => {
+  const s = cs(zones(crackMatch(), 'bull dbull bull'));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.result.kicker, 'Three bulls!');
+});
+test('Crackshot: two bulls is not enough, and bulls do not carry over turns', () => {
+  eq(cs(zones(crackMatch(), 'bull bull inner')).over, false);
+  eq(cs(zones(crackMatch(), `bull bull miss ${missTurn} bull inner inner`)).over, false);
+});
+test('Crackshot: highest total after 6 rounds wins', () => {
+  const rounds = Array(6).fill(`inner miss miss ${missTurn}`).join(' ');
+  const s = cs(zones(crackMatch(), rounds));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.game.totals, [-6, -18]);
+});
+test('Crackshot: a tie goes to sudden death, one dart each, highest wins', () => {
+  let m = zones(crackMatch(['Ann', 'Bob', 'Cat']), Array(6).fill(`inner inner inner inner inner inner ${missTurn}`).join(' '));
+  let s = cs(m);
+  eq(s.over, false); eq(s.game.sudden, true); eq(s.game.contenders, [0, 1]); eq(s.turn.side, 0);
+  m = zones(m, 'bull');            // Ann: one dart only, then Bob (Cat is out of the sudden death)
+  s = cs(m);
+  eq(s.turn.side, 1, 'one dart each');
+  m = zones(m, 'inner');
+  s = cs(m);
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.game.totals[0], 18, 'sudden death does not change totals');
+});
+test('Crackshot: still tied in sudden death goes again', () => {
+  let m = zones(crackMatch(), Array(6).fill('inner inner inner inner inner inner').join(' '));
+  m = zones(m, 'bull bull');
+  let s = cs(m);
+  eq(s.over, false); eq(s.game.contenders, [0, 1]);
+  m = zones(m, 'dbull miss');
+  s = cs(m);
+  eq(s.over, true); eq(s.result.winners, [0]);
 });
 
 // ---------- report ----------

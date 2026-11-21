@@ -50,7 +50,9 @@ export function computeState(match) {
 export function throwDart(match, dart) {
   if (!isValidDart(dart)) throw new Error(`Invalid dart ${JSON.stringify(dart)}`);
   if (computeState(match).over) throw new Error('The game is already over');
-  return { ...match, darts: [...match.darts, { number: dart.number, multiplier: dart.multiplier }] };
+  const saved = { number: dart.number, multiplier: dart.multiplier };
+  if (dart.zone) saved.zone = dart.zone; // board-area darts (Crackshot)
+  return { ...match, darts: [...match.darts, saved] };
 }
 
 // Returns a new match without the last dart. Press again to keep stepping back,

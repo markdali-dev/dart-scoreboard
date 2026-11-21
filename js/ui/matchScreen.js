@@ -3,7 +3,7 @@
 
 import { getGame } from '../core/registry.js';
 import { computeState, throwDart, undo, getOnDeck, createMatch, DARTS_PER_TURN } from '../core/engine.js';
-import { makeDart, dartLabel } from '../core/dart.js';
+import { makeDart, dartLabel, zoneDart } from '../core/dart.js';
 import { optionLabel } from '../core/setup.js';
 import { esc } from './html.js';
 import { ART } from './art.js';
@@ -58,8 +58,15 @@ export function renderMatch(ctx, opts = {}) {
   // The bull key always says "Bull" (it still counts as 25); games can relabel others.
   const keyLabel = (n) => game.keyLabels?.[n] ?? (n === 25 ? 'Bull' : n);
 
-  // Keypad: the usual number grid, or (pad: 'target') two big tiles, Miss and the target.
-  const keypad = game.pad === 'target'
+  // Keypad: the usual number grid; (pad: 'target') two big tiles, Miss and the target;
+  // or (zonePad) a vertical stack of board-area buttons (Crackshot).
+  const keypad = game.zonePad
+    ? `<nav class="keypad zone-pad" aria-label="Where did the dart land?">
+        ${game.zonePad.map((row) => `<div class="zone-row">${row.map((b) => b.undo
+          ? `<button class="zkey z-undo" data-act="undo" ${match.darts.length ? '' : 'disabled'}><span class="zname">Undo</span></button>`
+          : `<button class="zkey z-${b.tone}" data-act="zone" data-zone="${b.zone}"><span class="zname">${esc(b.label)}</span><span class="zpts">${esc(b.points)}</span></button>`).join('')}</div>`).join('')}
+      </nav>`
+    : game.pad === 'target'
     ? `<nav class="keypad target-pad" aria-label="Dart entry">
         <div class="target-row">
           <button class="key miss-tile" data-act="dart" data-n="0">Miss</button>
@@ -94,7 +101,7 @@ export function renderMatch(ctx, opts = {}) {
   }
 
   return `
-    <div class="match n${match.sides.length} ${art ? 'has-art' : ''} ${hint?.panel ? 'has-panel' : ''} ${hint?.bullseye ? 'has-target' : ''} ${game.plainNext ? 'plain-next' : ''}">
+    <div class="match n${match.sides.length} ${art ? 'has-art' : ''} ${hint?.panel ? 'has-panel' : ''} ${hint?.bullseye ? 'has-target' : ''} ${game.zonePad ? 'has-zonepad' : ''} ${game.plainNext ? 'plain-next' : ''}">
       <div class="match-top">
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">
@@ -190,8 +197,10 @@ function lastTurnDarts(state, side) {
   return [];
 }
 
-// Compact labels for the narrow throws row: a miss shows as 0, outer bull 25, inner bull DB.
+// Compact labels for the narrow throws row: a miss shows as 0, outer bull 25, inner bull DB
+// (Crackshot area darts show In, Bull, DB, Fire, Miss).
 function shortLabel(dart) {
+  if (dart.zone) return dartLabel(dart); // board-area darts: In, 25, DB, Fire, Miss
   if (dart.number === 0) return '0';
   if (dart.number === 25) return dart.multiplier === 2 ? 'DB' : '25';
   return dartLabel(dart);
@@ -262,7 +271,7 @@ function winSheet(match, state) {
   return `
     <div class="sheet-backdrop"></div>
     <div class="sheet win" role="dialog" aria-modal="true" aria-label="Game over">
-      ${state.result.shanghai ? '<div class="win-kicker">Shanghai!</div>' : ''}
+      ${state.result.kicker ? `<div class="win-kicker">${esc(state.result.kicker)}</div>` : ''}
       <div class="win-title">${esc(winnerText(match, state))} ${many ? 'win' : 'wins'}!</div>
       <p class="note center small">Saved to History.</p>
       <div class="sheet-rows">
@@ -290,6 +299,17 @@ export const matchActions = {
     if (!dart) return; // e.g. triple 25
     const next = throwDart(match, dart);
     ctx.state.ui.mod = 1;
+    ctx.setMatch(next);
+    const event = computeState(next).game.event;
+    if (event && event.kind !== 'win' && event.text) showToast(ctx, event);
+  },
+  // Board-area buttons (Crackshot): record where the dart landed.
+  zone: (ctx, el) => {
+    const match = ctx.state.match;
+    if (computeState(match).over) return;
+    const dart = zoneDart(el.dataset.zone);
+    if (!dart) return;
+    const next = throwDart(match, dart);
     ctx.setMatch(next);
     const event = computeState(next).game.event;
     if (event && event.kind !== 'win' && event.text) showToast(ctx, event);

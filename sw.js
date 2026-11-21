@@ -1,9 +1,9 @@
-// Service worker: makes the app work offline.
+﻿// Service worker: makes the app work offline.
 // Strategy: try the network first (so new versions show up straight away),
 // fall back to the saved copy when offline.
 // When you add a new file the app needs, add it to FILES and bump VERSION.
 
-const VERSION = 'v19';
+const VERSION = 'v21';
 const CACHE = `dartscoreboard-${VERSION}`;
 const FILES = [
   './',
@@ -36,6 +36,7 @@ const FILES = [
   './games/knockout.js',
   './games/halveit.js',
   './games/shanghai.js',
+  './games/crackshot.js',
 ];
 
 self.addEventListener('install', (event) => {

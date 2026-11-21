@@ -775,3 +775,35 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
   .bull-foot span { white-space: nowrap; font-size: 1rem; }
   .bull-foot b { font-size: 1.1rem; }
 }
+
+/* ================= Crackshot: vertical stack of board-area buttons (Mark's layout, 2026-11-21) ================= */
+.keypad.zone-pad { display: flex; flex-direction: column; gap: 8px; }
+.zone-row { display: flex; gap: 8px; }
+.zkey {
+  flex: 1; border: 0; border-radius: var(--radius-key); height: 62px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-weight: 700; color: #fff; box-shadow: var(--shadow-key); cursor: pointer;
+}
+.zkey:active { transform: translateY(1px); box-shadow: none; }
+.zkey:focus-visible { outline: 3px solid var(--key-text); outline-offset: -3px; }
+.zkey .zname { font-size: 1.25rem; }
+.zkey .zpts { font-size: 1.45rem; font-variant-numeric: tabular-nums; }
+.z-plus  { background: linear-gradient(#2a6b45, #1f5536); }
+.z-plus2 { background: linear-gradient(#2a8a55, #207143); }
+.z-plus3 { background: linear-gradient(var(--thrower-top), var(--thrower)); }
+.z-fire  { background: linear-gradient(#e0413b, var(--danger)); }
+.z-minus { background: linear-gradient(#5e2c29, #4a2120); }
+.z-undo  { background: linear-gradient(var(--key-top), var(--key)); color: var(--key-text); }
+.z-undo:disabled { opacity: 0.45; }
+@media (max-height: 720px) { .zkey { height: 54px; } }
+/* Crackshot on short screens or with 5 players: slim one-line current-player card, so all cards fit */
+@media (max-height: 720px) {
+  .match.has-zonepad .card.thrower { padding-top: 6px; padding-bottom: 6px; }
+  .match.has-zonepad .card.thrower .card-left { display: flex; align-items: center; gap: 10px; }
+  .match.has-zonepad .card.thrower .slots { margin-top: 0; }
+  .match.has-zonepad .card.thrower .stats { display: none; }
+}
+.match.has-zonepad.n5 .card.thrower { padding-top: 6px; padding-bottom: 6px; }
+.match.has-zonepad.n5 .card.thrower .card-left { display: flex; align-items: center; gap: 10px; }
+.match.has-zonepad.n5 .card.thrower .slots { margin-top: 0; }
+.match.has-zonepad.n5 .card.thrower .stats { display: none; }

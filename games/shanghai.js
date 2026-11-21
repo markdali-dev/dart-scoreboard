@@ -83,7 +83,7 @@ export default {
   getResult(state) {
     const order = state.totals.map((_, i) => i).sort((a, b) => state.totals[b] - state.totals[a]);
     if (state.shanghai !== null) {
-      return { winners: [state.shanghai], standings: [state.shanghai, ...order.filter((i) => i !== state.shanghai)], shanghai: true };
+      return { winners: [state.shanghai], standings: [state.shanghai, ...order.filter((i) => i !== state.shanghai)], shanghai: true, kicker: 'Shanghai!' };
     }
     const best = Math.max(...state.totals);
     return { winners: order.filter((i) => state.totals[i] === best), standings: order };
