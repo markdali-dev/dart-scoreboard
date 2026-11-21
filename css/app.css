@@ -884,3 +884,17 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 @container (max-height: 190px) {
   .bull-tile.no-foot:has(.dot) .disc { height: min(calc(100cqh / 1.18), 300px); }
 }
+/* 121 Checkout on short screens or with 5 players: the thrower's name and darts share one
+   line, keeping the info line (target, dart, best) below, so all cards fit */
+@media (max-height: 720px) {
+  .match.slim-thrower .card.thrower { padding-top: 6px; padding-bottom: 6px; }
+  .match.slim-thrower .card.thrower .card-left { display: flex; flex-wrap: wrap; align-items: center; column-gap: 10px; }
+  .match.slim-thrower .card.thrower .slots { margin-top: 0; }
+  .match.slim-thrower .card.thrower .stats { flex-basis: 100%; margin-top: 2px; }
+}
+@media (max-height: 720px) {
+  .match.slim-thrower .card.thrower .card-left { flex-wrap: nowrap; flex-direction: row; }
+  .match.slim-thrower .card.thrower .card-left { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; }
+  .match.slim-thrower .card.thrower .stats { grid-column: 1 / -1; }
+  .match.slim-thrower .card.thrower .slot { min-width: 40px; padding: 3px 2px; font-size: 0.95rem; }
+}

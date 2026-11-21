@@ -102,7 +102,7 @@ export function renderMatch(ctx, opts = {}) {
   }
 
   return `
-    <div class="match n${match.sides.length} ${art ? 'has-art' : ''} ${hint?.panel ? 'has-panel' : ''} ${hint?.bullseye ? 'has-target' : ''} ${game.zonePad ? 'has-zonepad' : ''} ${game.plainNext ? 'plain-next' : ''}">
+    <div class="match n${match.sides.length} ${art ? 'has-art' : ''} ${hint?.panel ? 'has-panel' : ''} ${hint?.bullseye ? 'has-target' : ''} ${game.zonePad ? 'has-zonepad' : ''} ${game.plainNext ? 'plain-next' : ''} ${game.slimThrower ? 'slim-thrower' : ''}">
       <div class="match-top">
         <button class="btn small-btn" data-act="leave-match" aria-label="Back to setup">‹</button>
         <div class="game-header">

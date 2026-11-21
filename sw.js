@@ -3,7 +3,7 @@
 // fall back to the saved copy when offline.
 // When you add a new file the app needs, add it to FILES and bump VERSION.
 
-const VERSION = 'v29';
+const VERSION = 'v30';
 const CACHE = `dartscoreboard-${VERSION}`;
 const FILES = [
   './',
@@ -40,6 +40,7 @@ const FILES = [
   './games/crackshot.js',
   './games/hareandhounds.js',
   './games/aroundtheclock.js',
+  './games/checkout121.js',
 ];
 
 self.addEventListener('install', (event) => {

@@ -19,6 +19,7 @@ import crackshot from '../games/crackshot.js';
 import hareandhounds, { BOARD, HOME, numberAt } from '../games/hareandhounds.js';
 import { zoneDart } from '../js/core/dart.js';
 import aroundtheclock from '../games/aroundtheclock.js';
+import checkout121 from '../games/checkout121.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -959,6 +960,50 @@ test('Around the Clock: board map puts each initial at the number they are on', 
   const ring = aroundtheclock.getHint(s.game, { side: 1 }).ring;
   // 3 is 10 steps clockwise of 20 (-90 + 180 = 90 deg); 1 is 1 step (-72 deg).
   eq(ring.map((r) => [r.number, r.angle, r.kind, r.initial, r.current]), [[3, 90, 'dot', 'A', false], [1, -72, 'dot', 'B', true]]);
+});
+
+// ---------- 121 Checkout ----------
+function c121Match(targets = 5, names = ['Ann', 'Bob']) {
+  try { getGame('checkout121'); } catch { registerGame(checkout121); }
+  return createMatch({ gameId: 'checkout121', options: { targets }, sides: players(...names) });
+}
+const g121 = (m) => cs(m).game;
+const miss3 = '0 0 0';
+
+test('121 Checkout module passes the registry checks', () => validateGame(checkout121));
+test('121: checking out on a double moves the target up one', () => {
+  const g = g121(darts(c121Match(), 'T20 T17 D5'));
+  eq([g.best[0], g.target[0], g.score[0], g.attempts[0]], [121, 122, 122, 1]);
+});
+test('121: finishing on a single is a bust, and so is leaving 1', () => {
+  let g = g121(darts(c121Match(), 'T20 T20 1'));
+  eq([g.score[0], g.turnsUsed[0]], [121, 1], 'zero on a single');
+  g = g121(darts(c121Match(), 'T20 T20'));
+  eq([g.score[0], g.turnsUsed[0]], [121, 1], 'leaving 1 busts');
+});
+test('121: 9 darts without a checkout fails the target, back to 121', () => {
+  const g = g121(darts(c121Match(), `T20 T17 D5 ${miss3} ${miss3} ${miss3} ${miss3} ${miss3} 0 0 0 ${miss3}`));
+  // Ann: 121 out, then 3 missed turns at 122 -> back to 121.
+  eq([g.best[0], g.target[0], g.attempts[0]], [121, 121, 2]);
+});
+test('121: each player gets their own number of targets; highest checkout wins', () => {
+  const ann = 'T20 T17 D5';                    // 121 out in one turn
+  const fail = `${miss3} ${miss3} ${miss3}`;   // a failed target (3 turns)
+  // Solo game, 2 targets: check out 121, then fail 122.
+  const s = cs(darts(c121Match(2, ['Ann']), `${ann} ${fail}`));
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.result.kicker, 'Best checkout 121');
+});
+test('121: a player who has finished is skipped', () => {
+  // Ann checks out once (1 target game) and is done; Bob still has his 3 turns.
+  const m = darts(c121Match(1), `T20 T17 D5 ${miss3}`);
+  eq(cs(m).over, false);
+  eq(cs(m).turn.side, 1, 'Bob throws again, Ann skipped');
+  const s = cs(darts(m, `${miss3} ${miss3}`));
+  eq(s.over, true); eq(s.result.winners, [0]);
+});
+test('121: checkout hint, as in X01', () => {
+  const h = checkout121.getHint(g121(c121Match()), { side: 0, dartsLeft: 3 });
+  eq([h.label, h.parts.length, h.parts[2][0]], ['Out:', 3, 'D']);
 });
 
 // ---------- report ----------

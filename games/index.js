@@ -48,6 +48,7 @@ import shanghai from './shanghai.js';
 import crackshot from './crackshot.js';
 import hareandhounds from './hareandhounds.js';
 import aroundtheclock from './aroundtheclock.js';
+import checkout121 from './checkout121.js';
 
 // The order here is the order on the setup screen's game list.
 registerGame(cricket);
@@ -62,3 +63,4 @@ registerGame(crackshot);
 registerGame(hareandhounds);
 // Practice
 registerGame(aroundtheclock);
+registerGame(checkout121);
