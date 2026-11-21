@@ -807,3 +807,7 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .match.has-zonepad.n5 .card.thrower .card-left { display: flex; align-items: center; gap: 10px; }
 .match.has-zonepad.n5 .card.thrower .slots { margin-top: 0; }
 .match.has-zonepad.n5 .card.thrower .stats { display: none; }
+
+/* Bullseye screens: the player list never shrinks (no hidden scroll); the bullseye gives way instead */
+.match.has-target .cards { flex-shrink: 0; }
+.match.has-target .cards { overflow: visible; }

@@ -16,6 +16,7 @@ import knockout from '../games/knockout.js';
 import halveit, { TARGET_LISTS, hitsTarget, targetLabel } from '../games/halveit.js';
 import shanghai from '../games/shanghai.js';
 import crackshot from '../games/crackshot.js';
+import hareandhounds, { BOARD, HOME, numberAt } from '../games/hareandhounds.js';
 import { zoneDart } from '../js/core/dart.js';
 
 // ---------- tiny test runner ----------
@@ -848,6 +849,52 @@ test('Crackshot: still tied in sudden death goes again', () => {
   m = zones(m, 'dbull miss');
   s = cs(m);
   eq(s.over, true); eq(s.result.winners, [0]);
+});
+
+// ---------- Hare and Hounds ----------
+function hareMatch(names = ['Hare', 'Dog']) {
+  try { getGame('hareandhounds'); } catch { registerGame(hareandhounds); }
+  return createMatch({ gameId: 'hareandhounds', options: {}, sides: players(...names) });
+}
+const pos = (m) => cs(m).game.pos;
+
+test('Hare and Hounds module passes the registry checks', () => validateGame(hareandhounds));
+test('Hare and Hounds: clockwise order, hare on 20, hounds 2 behind on 12', () => {
+  eq(BOARD.slice(0, 5), [20, 1, 18, 4, 13]); eq(BOARD.length, 20);
+  const s = cs(hareMatch(['H', 'A', 'B']));
+  eq(s.game.pos.map(numberAt), [20, 12, 12]);
+});
+test('Hare and Hounds: hits on your number move you on; single 1, double 2, triple 3', () => {
+  eq(pos(darts(hareMatch(), '20 1 D18')), [4, -2]);                    // 20 -> 1 -> 18 -> (D) past 4 to 13
+  eq(pos(darts(hareMatch(), '20 T1 0')), [4, -2]);                     // T1 moves 3: to 13
+  eq(numberAt(4), 13);
+});
+test('Hare and Hounds: hitting other numbers does nothing', () => {
+  eq(pos(darts(hareMatch(), '19 5 18')), [0, -2]);
+});
+test('Hare and Hounds: a hound reaching the hare catches it and wins', () => {
+  // Hare stays on 20; hound hits 12 (now on 5), then 5 (now on 20, the hare's number) = caught.
+  const s = cs(darts(hareMatch(), '0 0 0 12 5'));
+  eq(s.over, true); eq(s.result.winners, [1]); eq(s.result.kicker, 'Caught!');
+});
+test('Hare and Hounds: the hare wins by getting all the way round back to 20', () => {
+  // Hare hits every number in order with triples, hound misses: 21 segments in 7 triples.
+  const order = [20, 4, 10, 17, 7, 11, 12];
+  let m = hareMatch();
+  for (let i = 0; i < order.length; i++) m = darts(m, `T${order[i]} 0 0 0 0 0`.split(' ').slice(0, i === order.length - 1 ? 1 : 6).join(' '));
+  const s = cs(m);
+  eq(s.over, true); eq(s.result.winners, [0]); eq(s.result.kicker, 'The hare made it home!'); eq(s.game.pos[0], HOME);
+});
+test('Hare and Hounds: with several hounds, the first to catch wins', () => {
+  // Hound B's double 12 jumps 2 segments, from 12 past 5 onto 20: the hare's number.
+  const s = cs(darts(hareMatch(['H', 'A', 'B']), '0 0 0 0 0 0 D12'));
+  eq(s.over, true); eq(s.result.winners, [2]);
+});
+test('Hare and Hounds: the bullseye shows your number, gap or lead, and next', () => {
+  const m = darts(hareMatch(), '20 1 0');
+  const s = cs(m);
+  eq(hareandhounds.getHint(s.game, { side: 1 }), { bullseye: true, big: true, value: '12', help: 'You are a hound', leftLabel: 'Gap', round: '4', next: '5' });
+  eq(hareandhounds.getHint(s.game, { side: 0 }).leftLabel, 'Lead');
 });
 
 // ---------- report ----------

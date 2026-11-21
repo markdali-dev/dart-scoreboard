@@ -132,7 +132,7 @@ export function renderMatch(ctx, opts = {}) {
 function bullseyeTarget(hint) {
   const len = String(hint.value).length;
   const size = hint.big && len <= 2 ? 'len-big' : len <= 3 ? '' : len <= 4 ? 'len-4' : 'len-long';
-  return `<div class="target-space" role="status" aria-label="Target ${esc(hint.help ?? hint.value)}, round ${esc(hint.round)}, next ${esc(hint.next)}">
+  return `<div class="target-space" role="status" aria-label="Target ${esc(hint.value)}. ${esc(hint.help ?? '')}. ${esc(hint.leftLabel ?? 'Round')} ${esc(hint.round)}, next ${esc(hint.next)}">
     <div class="bull-tile">
       <div class="disc">
         <svg viewBox="0 0 100 100" aria-hidden="true">
@@ -143,7 +143,7 @@ function bullseyeTarget(hint) {
         <span class="disc-label">Target</span>
         <span class="disc-num ${size}">${esc(hint.value)}</span>
       </div>
-      <div class="bull-foot"><span>Round <b>${esc(hint.round)}</b></span><span>Next: <b>${esc(hint.next)}</b></span></div>
+      <div class="bull-foot"><span>${esc(hint.leftLabel ?? 'Round')} <b>${esc(hint.round)}</b></span><span>Next: <b>${esc(hint.next)}</b></span></div>
     </div>
   </div>`;
 }
