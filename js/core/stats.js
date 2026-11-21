@@ -1,6 +1,9 @@
 // Player stats worked out from History (the saved dart-by-dart log of every finished
 // game), so nothing extra is stored. Stats for version 1 (CLAUDE.md):
-// - Record: games played and won (team games count for each teammate).
+// - Record: games played and won (team games count for each teammate), and best round:
+//   the most points thrown in one turn in any game, counting each dart at face value
+//   (T20 T20 T20 = 180), even in a turn that bust or in games scored differently.
+//   Crackshot's board-area darts have no face value, so they are left out.
 // - X01: 3-dart average (points per 3 darts, busts score 0), best checkout, and
 //   double % (darts thrown with a one-dart double finish left, that checked out).
 // - Cricket: marks per round (marks that counted per turn): overall, best and worst game.
@@ -12,7 +15,7 @@ import { getGame } from './registry.js';
 import { dartScore } from './dart.js';
 
 const blank = () => ({
-  played: 0, won: 0,
+  played: 0, won: 0, bestRound: 0,
   x01: { points: 0, darts: 0, bestOut: 0, outTries: 0, outHits: 0 },
   cricket: { marks: 0, turns: 0, games: [] }, // games: marks per round in each game
   darts: 0, triples: 0,
@@ -42,6 +45,8 @@ export function computeStats(history) {
     const perGame = new Map(); // cricket: name -> { marks, turns }
     for (const t of turns) {
       const p = get(t.thrower);
+      const faceValue = t.darts.filter((d) => !d.zone).reduce((sum, d) => sum + dartScore(d), 0);
+      p.bestRound = Math.max(p.bestRound, faceValue);
       if (match.gameId === 'x01') {
         const scoreBefore = t.before.scores[t.side];
         const scoreAfter = t.after.scores[t.side];

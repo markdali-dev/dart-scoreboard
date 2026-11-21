@@ -23,7 +23,7 @@ export function renderStats(ctx) {
   const names = [...rosterNames.filter((n) => stats.has(n)), ...[...stats.keys()].filter((n) => !rosterNames.includes(n)).sort()];
   const all = names.map((n) => [n, stats.get(n)]);
 
-  const record = all.filter(([, p]) => p.played).map(([n, p]) => [n, p.played, p.won, pct(p.won, p.played)]);
+  const record = all.filter(([, p]) => p.played).map(([n, p]) => [n, p.played, p.won, pct(p.won, p.played), p.bestRound || '–']);
   const x01 = all.filter(([, p]) => p.x01.darts).map(([n, p]) => [n, avg(p.x01.points * 3, p.x01.darts), p.x01.bestOut || '–', pct(p.x01.outHits, p.x01.outTries)]);
   const cricket = all.filter(([, p]) => p.cricket.turns).map(([n, p]) => {
     const g = p.cricket.games;
@@ -32,7 +32,7 @@ export function renderStats(ctx) {
   const darts = all.filter(([, p]) => p.darts).map(([n, p]) => [n, p.darts, pct(p.triples, p.darts)]);
 
   const body = record.length
-    ? table('Record', ['Played', 'Won', 'Win %'], record, 'All games. Team games count for each teammate.')
+    ? table('Record', ['Played', 'Won', 'Win %', 'Best rd'], record, 'All games. Team games count for each teammate. Best rd: most points thrown in one turn in any game, each dart at face value (T20 T20 T20 = 180).')
       + table('X01', ['Avg', 'Best out', 'Double %'], x01, 'Avg: points per 3 darts (busts score 0). Double %: darts thrown with a one-dart double finish left that checked out (Double out games).')
       + table('Cricket', ['Games', 'MPR', 'Best', 'Worst'], cricket, 'MPR: marks that counted per round, overall. Best and worst: single games.')
       + table('Darts', ['Thrown', 'Triple %'], darts, 'X01 and Cricket darts.')

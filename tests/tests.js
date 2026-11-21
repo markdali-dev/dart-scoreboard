@@ -1060,6 +1060,14 @@ test('Stats: record, X01 average, best checkout and double %', () => {
   eq([ann.x01.points, ann.x01.darts, ann.x01.bestOut], [101, 5, 41]);
   eq([ann.x01.outTries, ann.x01.outHits], [1, 1], 'one dart at a double finish (40), hit');
   eq([ann.darts, ann.triples], [5, 1]);
+  eq([ann.bestRound, bob.bestRound], [60, 0], 'best round: T20 0 0 = 60');
+});
+test('Stats: best round counts face value in any game, even a bust', () => {
+  try { getGame('cricket'); } catch { registerGame(cricket); }
+  const crick = darts(createMatch({ gameId: 'cricket', options: defaultOptions(cricket), sides: players('Ann', 'Bob') }), close20s);
+  const bust = darts(statsX01(), 'T20 T20 0 0 0 T20 1 D20'); // Ann's first turn: 120, then bust
+  eq(computeStats([bust]).get('Ann').bestRound, 120);
+  eq(computeStats([crick, bust]).get('Ann').bestRound, 171, 'Cricket T20 T19 T18 = 171');
 });
 test('Stats: a bust scores 0 in the average', () => {
   const st = computeStats([darts(statsX01(), 'T20 T20 0 0 0 T20 1 D20')]);
