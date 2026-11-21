@@ -930,3 +930,16 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .about div { background: var(--card); color: var(--card-text); border-radius: var(--radius-card); padding: 10px 14px; box-shadow: var(--shadow-card); }
 .about dt { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.7; }
 .about dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+
+/* Setup screen background: a faded dartboard corner with three darts landed in it, behind
+   the "Select a Game" row and rising behind the header. Setup screen only. */
+.app { isolation: isolate; }
+.game-section { position: relative; }
+.board-art {
+  position: absolute; z-index: -1; pointer-events: none;
+  top: -150px; right: calc(-1 * var(--gutter)); width: 375px; height: 340px;
+  color: var(--board-art);
+  -webkit-mask-image: linear-gradient(#000 62%, transparent 92%);
+          mask-image: linear-gradient(#000 62%, transparent 92%);
+}
+.board-art svg { display: block; width: 100%; height: 100%; }

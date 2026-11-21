@@ -124,3 +124,7 @@
   --gap: 8px;
   --gutter: 12px;
 }
+
+/* Setup screen dartboard art: cream on Dark, black on Light, very faint */
+:root { --board-art: rgba(243, 231, 201, 0.16); }
+:root[data-theme="light"] { --board-art: rgba(17, 17, 17, 0.11); }

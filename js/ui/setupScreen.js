@@ -1,6 +1,7 @@
 // Home tab: the setup screen.
 // Game picker -> option tiles -> players (and teams) -> throw order -> Start.
 
+import { boardArt } from './boardArt.js';
 import { gamesByGroup, getGame, defaultOptions } from '../core/registry.js';
 import { addPlayer, MAX_NAME } from '../core/roster.js';
 import {
@@ -38,8 +39,9 @@ export function renderSetup(ctx) {
     <main class="screen">
       ${state.current ? resumeBar(state.current) : ''}
 
-      <section class="section">
-        <h2>Game</h2>
+      <section class="section game-section">
+        ${boardArt}
+        <h2>Select a Game</h2>
         <button class="game-pick" data-act="toggle-games" aria-expanded="${!!ui.gamesOpen}">
           <span>${esc(game.name)}</span><span class="pick-group">${esc(game.group)} ▾</span>
         </button>
