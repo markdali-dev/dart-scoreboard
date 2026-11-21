@@ -731,3 +731,35 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 .match.has-target.n5 .card.thrower .card-left { display: flex; align-items: center; gap: 10px; }
 .match.has-target.n5 .card.thrower .slots { margin-top: 0; }
 .match.has-target.n5 .card.thrower .stats { display: none; }
+
+/* Halve-It bullseye, round 2 (Mark, 2026-11-21): on real phones the browser bars leave less
+   height, which tipped the target into the tiny strip. Now, whenever the space is too short
+   for Round/Next to sit under the bullseye, they move to its left and right and the bullseye
+   uses the full height, keeping TARGET and a big number. */
+@container (max-height: 190px) {
+  .bull-tile { flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; height: 100%; }
+  .bull-tile .disc { order: 2; height: min(100%, 170px); }
+  .bull-tile .disc-label { display: block; }
+  .bull-tile .disc-num { font-size: 56cqh; }
+  .bull-tile .disc-num.len-4 { font-size: 44cqh; }
+  .bull-tile .disc-num.len-long { font-size: 38cqh; }
+  .bull-foot { display: contents; }
+  .bull-foot span:first-child { order: 1; flex: 1; }
+  .bull-foot span:last-child { order: 3; flex: 1; text-align: right; }
+}
+/* TARGET only when the bullseye is big enough to hold it */
+@container (max-height: 74px) { .disc-label { display: none !important; } }
+
+/* Short screens (a phone with browser bars): slightly shorter keys in Halve-It for more target room */
+@media (max-height: 720px) {
+  .match.has-target .keypad .key { height: 50px; }
+  .match.has-target .keypad { padding-top: 8px; gap: 6px; }
+}
+/* Short screens in Halve-It: the slim one-line current-player card (as with 5 players),
+   so the bullseye gets the room it has on a desktop browser */
+@media (max-height: 720px) {
+  .match.has-target .card.thrower { padding-top: 6px; padding-bottom: 6px; }
+  .match.has-target .card.thrower .card-left { display: flex; align-items: center; gap: 10px; }
+  .match.has-target .card.thrower .slots { margin-top: 0; }
+  .match.has-target .card.thrower .stats { display: none; }
+}
