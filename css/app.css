@@ -877,3 +877,10 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
   .bull-tile.no-foot .disc,
   .bull-tile.no-foot:has(.ring-marker) .disc { height: min(calc(100cqh / 1.24), 300px); }
 }
+/* Initial dots (Around the Clock): a bit smaller than the animals (18% of the bullseye),
+   so the bullseye itself can be bigger. Still centred on the outer edge. */
+.bull-tile.no-foot .ring-marker:has(.dot), .bull-tile.no-foot .ring-marker.now:has(.dot) { width: 18%; }
+.bull-tile.no-foot:has(.dot) .disc { height: min(calc(100cqh / 1.18), calc(100cqw / 1.18), 300px); }
+@container (max-height: 190px) {
+  .bull-tile.no-foot:has(.dot) .disc { height: min(calc(100cqh / 1.18), 300px); }
+}

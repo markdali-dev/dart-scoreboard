@@ -150,8 +150,9 @@ function bullseyeTarget(hint) {
   </div>`;
 }
 
-// Board map (Hare and Hounds): each player's animal just outside the outer ring, at the
-// angle of the number they're on. Players on the same number stack outward.
+// Board map (Hare and Hounds, Around the Clock): each player's marker on the outer edge of
+// the outer ring, at the angle of the number they're on. A marker is an animal, or (kind
+// 'dot') a light dot with the player's initial.
 function ringMarkers(ring) {
   // Every animal is the same size and centred exactly on the outer edge of the outer ring
   // (49.5% of the bullseye's width from the centre). Players sharing a number sit side by
@@ -161,13 +162,21 @@ function ringMarkers(ring) {
   const seen = {};
   return ring.map((r) => {
     const k = seen[r.number] = (seen[r.number] ?? -1) + 1;
-    const spread = (k - (count[r.number] - 1) / 2) * 11; // degrees
+    const spread = (k - (count[r.number] - 1) / 2) * (r.kind === 'dot' ? 21 : 11); // degrees; dots side by side
     const distance = 49.5;
     const rad = ((r.angle + spread) * Math.PI) / 180;
     const x = 50 + distance * Math.cos(rad);
     const y = 50 + distance * Math.sin(rad);
-    return `<span class="ring-marker ${r.current ? 'now' : ''}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">${animalSvg(r.kind, r.color, 'animal')}</span>`;
+    return `<span class="ring-marker ${r.current ? 'now' : ''}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">${r.kind === 'dot' ? initialDot(r.initial) : animalSvg(r.kind, r.color, 'animal')}</span>`;
   }).join('');
+}
+
+// A light dot with a player's initial, drawn as SVG so the letter scales with the dot.
+function initialDot(initial) {
+  return `<svg class="animal dot" viewBox="0 0 40 40" aria-hidden="true">
+    <circle cx="20" cy="20" r="18.5" fill="#f3e7c9" stroke="#0b0b0b" stroke-width="2"/>
+    <text x="20" y="21" text-anchor="middle" dominant-baseline="central" font-size="23" font-weight="800" fill="#141414">${esc(initial)}</text>
+  </svg>`;
 }
 
 // Who in a side throws now (current side) or next time (other sides).

@@ -951,7 +951,14 @@ test('Around the Clock: finish on the bull; a triple near the end never skips it
 });
 test('Around the Clock: hint shows progress and next', () => {
   const s = cs(darts(atcMatch(), '1 2 0'));
-  eq(aroundtheclock.getHint(s.game, { side: 0 }), { bullseye: true, big: true, value: '3', help: 'Any 3', leftLabel: 'Done', round: '2/20', next: '4' });
+  const h = aroundtheclock.getHint(s.game, { side: 0 });
+  eq([h.value, h.help, h.round, h.next, h.noFoot], ['3', 'Any 3', '2/20', '4', true]);
+});
+test('Around the Clock: board map puts each initial at the number they are on', () => {
+  const s = cs(darts(atcMatch(), '1 2 0'));
+  const ring = aroundtheclock.getHint(s.game, { side: 1 }).ring;
+  // 3 is 10 steps clockwise of 20 (-90 + 180 = 90 deg); 1 is 1 step (-72 deg).
+  eq(ring.map((r) => [r.number, r.angle, r.kind, r.initial, r.current]), [[3, 90, 'dot', 'A', false], [1, -72, 'dot', 'B', true]]);
 });
 
 // ---------- report ----------

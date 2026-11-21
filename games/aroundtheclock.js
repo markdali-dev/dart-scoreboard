@@ -6,9 +6,13 @@
 //   A double or triple near the end never skips the bull.
 // - First to finish wins, but the round is played out so everyone gets the same turns;
 //   everyone who finishes in that round shares the win.
-// Screen: the bullseye target with the thrower's number, how far they are, and Next.
+// Screen: the bullseye target with the thrower's number, and a board map round it: a dot
+// with each player's initial at the number they're on (as in Hare and Hounds).
 
 const NUMBERS = [...Array(20)].map((_, i) => i + 1);
+// Clockwise order of the numbers from 20, for the board map's angles.
+const BOARD = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+const angleOf = (n) => BOARD.indexOf(n) * 18 - 90;
 
 export default {
   id: 'aroundtheclock',
@@ -39,6 +43,7 @@ export default {
 
   init(sides, options) {
     return {
+      initials: sides.map((s) => (s.members[0] ?? '?').trim().charAt(0).toUpperCase()),
       targets: options.bull ? [...NUMBERS, 25] : NUMBERS,
       rings: options.rings,
       pos: sides.map(() => 0),       // index into targets; targets.length = finished
@@ -110,12 +115,19 @@ export default {
     const ringWord = { any: 'Any', double: 'Double', triple: 'Triple' }[state.rings];
     return {
       bullseye: true,
-      big: true,
       value: label(t),
       help: t === 25 ? 'Either bull' : `${ringWord} ${t}`,
+      noFoot: true, // Mark: no Done/Next beside the target; the board map shows progress
       leftLabel: 'Done',
       round: `${p}/${state.targets.length}`,
       next: label(state.targets[p + 1]),
+      // Board map: each player's initial dot sits at the number they're on. On the bull,
+      // or finished, the dot waits at 20 (the top).
+      ring: state.pos.map((pp, i) => {
+        const n = state.targets[pp];
+        const number = n === undefined || n === 25 ? 20 : n;
+        return { number, angle: angleOf(number), kind: 'dot', initial: state.initials[i], current: i === side };
+      }),
     };
   },
 };
