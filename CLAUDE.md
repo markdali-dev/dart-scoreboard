@@ -178,8 +178,8 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 4. [x] Cricket and its variants. Done 2026-11-18: marks grid (numbers down the side, one column per player/team, / X Ⓧ, numbers everyone has closed greyed out), keypad shows only the numbers in play, green turn strip with the thrower's darts and marks per round (MPR). 5 players fit on a 375×667 screen. 71 tests pass.
 5. [x] Baseball and Assassin. Done 2026-11-18: Baseball with teams, one big key for the inning's number, extra innings for tied leaders only. Assassin with Random or Throw numbers (Number draw screen before the game), life dots, Assassin badge, knocked-out players dimmed and skipped. 89 tests pass; 5 players fit on a 375×667 screen.
 6. [x] Persistence: resume, history, dart log. Done 2026-11-18: the game in progress is saved after every dart; leaving or closing the app keeps it, and a green "Resume game" bar on Home brings it back exactly where it was. Only one unfinished game: starting a new one asks first, then discards it. Finished games go to History (newest first, up to 500) with players, game, options, result, date and the full dart log; tapping one shows its final board. Undo on the win screen takes a game back out of History. 97 tests pass.
-7. [x] Party games. Done 2026-11-21 for now: Knockout, Halve-It, Shanghai and Crackshot (Mark's addition), all tested by Mark. Parked by Mark 2026-11-21 (not building for now): Gotcha, Bermuda, Hare and Hounds, Mickey Mouse, Follow the Leader.
-8. Practice games, one at a time.
+7. Party games. Done: Knockout (2026-11-18), Halve-It, Shanghai and Crackshot (2026-11-21), all tested by Mark. Next: Hare and Hounds (Mark un-parked it 2026-11-21). Parked (not building for now): Gotcha, Bermuda, Mickey Mouse, Follow the Leader.
+8. Practice games, one at a time. Mark's choice (2026-11-21): Around the Clock, 121 Checkout, Catch 40 (confirm each one's rules first). Not building for now: Bob's 27, Chase the Dragon, 51 by 5s.
 9. Stats screens (after Mark defines the stats).
 10. Visual polish pass, offline check, install test on phone.
 
@@ -227,7 +227,7 @@ The visual direction is chosen (see Design). Build the theme variables for both 
 - Steps 1–6 done; step 7 (Party games) in progress. All committed and pushed to GitHub `dart-scoreboard` (main).
 - Playable: Cricket, X01, Baseball, Assassin (Core); Knockout, Halve-It, Shanghai and Crackshot (Party). Games resume after closing the app; finished games are in History.
 - Knockout: built, tested by Mark, then reworked to his chosen mockup (Option 2): a red "Score to beat" bar sized to its text, the thrower's running turn total, last-round dart boxes on other cards, life dots beside the score. Mark is happy with it.
-- Party games done for now (Knockout, Halve-It, Shanghai, Crackshot, all tested by Mark); the rest are parked. Next: step 8, Practice games. Mark is choosing which ones (plan list: Around the Clock, Bob's 27, Chase the Dragon, 51 by 5s; also suggested: 121 Checkout, Score training, Catch 40).
+- Party games: Knockout, Halve-It, Shanghai, Crackshot done and tested. Next: Hare and Hounds (confirm rules with Mark first). Then step 8 Practice games: Around the Clock, 121 Checkout, Catch 40.
 - Design system is recorded: PRODUCT.md (product truth), DESIGN.md + `.impeccable/design.json` ("The Board After Dark"). Keep DESIGN.md in step when a screen pattern changes.
 - Mark likes visual options shown as side-by-side mockups (a throwaway page in the git-ignored `scratch/` folder) before choosing.
 - How to run: `python serve.py` (this PC) or `python serve.py --lan` (phone on the same Wi-Fi). Tests: http://localhost:8000/tests/ (130 passing).
