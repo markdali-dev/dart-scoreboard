@@ -12,6 +12,7 @@ import { renderPlayers, playersActions, playersForms } from './ui/playersScreen.
 import { renderMatch, matchActions } from './ui/matchScreen.js';
 import { renderDraw, drawActions } from './ui/drawScreen.js';
 import { renderHistory, renderHistoryEntry, historyActions } from './ui/historyScreen.js';
+import { renderStats } from './ui/statsScreen.js';
 import { computeState } from './core/engine.js';
 import { recordMatch } from './core/saved.js';
 
@@ -113,7 +114,7 @@ function render() {
   const screens = {
     home: () => renderSetup(ctx),
     players: () => renderPlayers(ctx),
-    stats: () => comingSoon('Stats', 9),
+    stats: () => renderStats(ctx),
     history: () => renderHistory(ctx),
     settings: () => comingSoon('Settings', 10),
   };

@@ -21,6 +21,7 @@ import { zoneDart } from '../js/core/dart.js';
 import aroundtheclock from '../games/aroundtheclock.js';
 import checkout121 from '../games/checkout121.js';
 import catch40 from '../games/catch40.js';
+import { computeStats } from '../js/core/stats.js';
 
 // ---------- tiny test runner ----------
 const results = [];
@@ -1042,6 +1043,36 @@ test('Catch 40: the quick game ends after 80; most points wins', () => {
   eq(s.over, true); eq(s.result.winners, [0]); eq(s.result.kicker, '3 of 60 points');
 });
 test('Catch 40: header shows the target', () => eq(catch40.roundText(g40(c40Match())), 'Target 61'));
+
+// ---------- Stats ----------
+function statsX01(start = 101) {
+  try { getGame('x01'); } catch { registerGame(x01); }
+  return createMatch({ gameId: 'x01', options: { start, in: 'open', out: 'double', hints: true }, sides: players('Ann', 'Bob') });
+}
+test('Stats: record, X01 average, best checkout and double %', () => {
+  // Ann 101: T20 (41 left) 0 0 | Bob 0 0 0 | Ann 1 (40) D20 -> checkout 41 in 5 darts.
+  const m = darts(statsX01(), 'T20 0 0 0 0 0 1 D20');
+  eq(cs(m).over, true);
+  const st = computeStats([m]);
+  const ann = st.get('Ann'), bob = st.get('Bob');
+  eq([ann.played, ann.won, bob.played, bob.won], [1, 1, 1, 0]);
+  eq([ann.x01.points, ann.x01.darts, ann.x01.bestOut], [101, 5, 41]);
+  eq([ann.x01.outTries, ann.x01.outHits], [1, 1], 'one dart at a double finish (40), hit');
+  eq([ann.darts, ann.triples], [5, 1]);
+});
+test('Stats: a bust scores 0 in the average', () => {
+  const st = computeStats([darts(statsX01(), 'T20 T20 0 0 0 T20 1 D20')]);
+  eq([st.get('Ann').x01.points, st.get('Ann').x01.darts], [101, 5]);
+});
+test('Stats: Cricket marks per round, best and worst game', () => {
+  try { getGame('cricket'); } catch { registerGame(cricket); }
+  const m = darts(createMatch({ gameId: 'cricket', options: defaultOptions(cricket), sides: players('Ann', 'Bob') }), close20s);
+  const st = computeStats([m]);
+  const ann = st.get('Ann');
+  eq(cs(m).over, true);
+  eq([ann.cricket.turns, ann.cricket.marks], [3, 21]);
+  eq(ann.cricket.games, [7]);
+});
 
 // ---------- report ----------
 const failed = results.filter((r) => !r.ok);

@@ -46,6 +46,22 @@ export function computeState(match) {
   return state;
 }
 
+// Replays a match and returns every completed turn with the game state just before and
+// just after it: [{ side, thrower, round, darts, before, after }]. Used by Stats.
+export function replayTurns(match) {
+  const game = getGame(match.gameId);
+  let state = startState(game, match);
+  let before = state.game;
+  const turns = [];
+  for (const dart of match.darts) {
+    if (state.turn.darts.length === 0) before = state.game;
+    const done = state.turns.length;
+    state = step(game, match, state, dart);
+    if (state.turns.length > done) turns.push({ ...state.turns[state.turns.length - 1], before, after: state.game });
+  }
+  return turns;
+}
+
 // Returns a new match with one more dart. The old match is left unchanged.
 export function throwDart(match, dart) {
   if (!isValidDart(dart)) throw new Error(`Invalid dart ${JSON.stringify(dart)}`);

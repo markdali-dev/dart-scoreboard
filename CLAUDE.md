@@ -182,7 +182,7 @@ Standard published rules. Solo play supported. Confirm details with Mark before 
 6. [x] Persistence: resume, history, dart log. Done 2026-11-18: the game in progress is saved after every dart; leaving or closing the app keeps it, and a green "Resume game" bar on Home brings it back exactly where it was. Only one unfinished game: starting a new one asks first, then discards it. Finished games go to History (newest first, up to 500) with players, game, options, result, date and the full dart log; tapping one shows its final board. Undo on the win screen takes a game back out of History. 97 tests pass.
 7. [x] Party games. Done: Knockout (2026-11-18), Halve-It, Shanghai, Crackshot and Hare and Hounds (2026-11-21). Parked (not building for now): Gotcha, Bermuda, Mickey Mouse, Follow the Leader.
 8. [x] Practice games, one at a time. Mark's choice (2026-11-21): Around the Clock, 121 Checkout and Catch 40 (all built 2026-11-21). Not building for now: Bob's 27, Chase the Dragon, 51 by 5s.
-9. Stats screens (after Mark defines the stats).
+9. [~] Stats screen built 2026-11-21 as planned (Record, X01 avg/best out/double %, Cricket MPR overall/best/worst game, darts and triple %), worked out from History each time. Still to do: Settings screen, Mark's choice: Clear History (confirm first), Backup/restore to a file, About (version, web address, data stays on the phone). The Dark/Light switch stays on the setup screen.
 10. Visual polish pass, offline check, install test on phone.
 
 The visual direction is chosen (see Design). Build the theme variables for both Dark and Light in step 1 so every later screen uses them from the start.
