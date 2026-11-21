@@ -16,6 +16,14 @@ const HOUND_START = -2;               // 2 numbers behind 20 (12)
 // Position -> the number to aim at. Positions run -2..20 (20 = the final 20).
 export const numberAt = (pos) => BOARD[((pos % 20) + 20) % 20];
 
+// Animal icons (Mark, 2026-11-21): a red bunny for the hare, and each hound its own
+// colour, the same on its card and on the board map round the bullseye.
+export const HARE_COLOR = '#e0413b';
+export const HOUND_COLORS = ['#f5c542', '#ff8c42', '#f3e7c9', '#c39bff'];
+const animalFor = (i) => (i === 0
+  ? { kind: 'hare', color: HARE_COLOR }
+  : { kind: 'hound', color: HOUND_COLORS[(i - 1) % HOUND_COLORS.length] });
+
 export default {
   id: 'hareandhounds',
   name: 'Hare and Hounds',
@@ -78,7 +86,7 @@ export default {
     return state.pos.map((p, i) => ({
       main: i === 0 && p >= HOME ? 'Home' : numberAt(p),
       mainLabel: 'On',
-      badge: i === 0 ? 'Hare' : null,
+      animal: animalFor(i), // shown next to the name instead of a badge
       stats: [],
     }));
   },
@@ -91,12 +99,17 @@ export default {
     const nextPos = p + 1;
     return {
       bullseye: true,
-      big: true,
       value: String(numberAt(p)),
       help: hare ? 'You are the hare' : 'You are a hound',
       leftLabel: hare ? 'Lead' : 'Gap',
       round: String(gap),
       next: hare && nextPos >= HOME ? 'Home' : String(numberAt(nextPos)),
+      // Where everyone is on the board: each player's animal sits outside the outer ring
+      // at the angle of the number they're on (20 at the top, clockwise).
+      ring: state.pos.map((pp, i) => {
+        const number = numberAt(Math.min(pp, HOME - 1));
+        return { number, angle: BOARD.indexOf(number) * 18 - 90, ...animalFor(i), current: i === side };
+      }),
     };
   },
 };

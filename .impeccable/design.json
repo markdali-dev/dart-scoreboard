@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-21T14:54:30.549272+00:00",
+  "generatedAt": "2026-11-21T15:19:10.283326+00:00",
   "title": "Design System: Dart Scoreboard",
   "extensions": {
     "colorMeta": {
@@ -524,7 +524,7 @@
       },
       {
         "name": "The No Blue Rule",
-        "body": "Darks are true black and neutral greys. No navy, no blue-tinted greys, no per-player colours.",
+        "body": "Darks are true black and neutral greys. No navy, no blue-tinted greys, no per-player colours (one exception by Mark's request: the Hare and Hounds animals, a red bunny for the hare and a gold, orange, cream or lilac hound for each hound).",
         "section": "colors"
       },
       {

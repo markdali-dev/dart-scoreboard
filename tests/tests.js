@@ -893,8 +893,16 @@ test('Hare and Hounds: with several hounds, the first to catch wins', () => {
 test('Hare and Hounds: the bullseye shows your number, gap or lead, and next', () => {
   const m = darts(hareMatch(), '20 1 0');
   const s = cs(m);
-  eq(hareandhounds.getHint(s.game, { side: 1 }), { bullseye: true, big: true, value: '12', help: 'You are a hound', leftLabel: 'Gap', round: '4', next: '5' });
+  const h = hareandhounds.getHint(s.game, { side: 1 });
+  eq([h.value, h.leftLabel, h.round, h.next], ['12', 'Gap', '4', '5']);
   eq(hareandhounds.getHint(s.game, { side: 0 }).leftLabel, 'Lead');
+});
+test('Hare and Hounds: board map puts each animal at its number, 20 at the top', () => {
+  const s = cs(darts(hareMatch(), '20 1 0'));               // hare now on 18, hound on 12
+  const ring = hareandhounds.getHint(s.game, { side: 1 }).ring;
+  // 18 is 2 steps clockwise of 20 (-90 + 36 = -54 deg); 12 is 2 steps anticlockwise (234 deg = -126 deg).
+  eq(ring.map((r) => [r.number, r.kind, r.angle, r.current]), [[18, 'hare', -54, false], [12, 'hound', 234, true]]);
+  eq(ring[0].color, '#e0413b', 'the hare is red');
 });
 
 // ---------- report ----------

@@ -811,3 +811,34 @@ input:focus { outline: 2px solid var(--thrower-top); outline-offset: 0; }
 /* Bullseye screens: the player list never shrinks (no hidden scroll); the bullseye gives way instead */
 .match.has-target .cards { flex-shrink: 0; }
 .match.has-target .cards { overflow: visible; }
+
+/* ================= Hare and Hounds animals (Mark, 2026-11-21) ================= */
+/* Each player's animal before their name: red bunny for the hare, a coloured hound for each hound */
+.name-animal { display: inline-block; vertical-align: middle; margin-right: 8px; }
+.name-animal .animal { width: 38px; height: auto; display: block; }
+
+/* Board map: small animals round the outside of the bullseye at each player's number */
+.ring-marker { position: absolute; width: 17%; transform: translate(-50%, -50%); z-index: 2; pointer-events: none; }
+.ring-marker .animal { width: 100%; height: auto; display: block; }
+.ring-marker.now { width: 22%; z-index: 3; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55)); }
+/* Leave room round the bullseye for the animals (they sit outside the outer ring) */
+.bull-tile:has(.ring-marker) .disc { height: calc(80cqh - 34px - 44px); margin: 22px 0; }
+@container (max-height: 190px) {
+  .bull-tile:has(.ring-marker) .disc { height: min(calc(100% - 44px), 150px); margin: 0 26px; }
+}
+/* Hare and Hounds, round 2: animals sit ON the outer edge, so the bullseye only needs a
+   small margin and stays big; markers a bit larger; the name never wraps under its animal. */
+.ring-marker { width: 21%; }
+.ring-marker.now { width: 27%; }
+.bull-tile:has(.ring-marker) .disc { height: calc(80cqh - 34px - 22px); margin: 11px 0; }
+@container (max-height: 190px) {
+  .bull-tile:has(.ring-marker) .disc { height: min(calc(100% - 22px), 160px); margin: 0 24px; }
+}
+.card .name:has(.name-animal) { white-space: nowrap; flex-shrink: 0; }
+.match.has-target .card.thrower .name-animal .animal { width: 34px; }
+/* With the board map, the animals ride the outer ring, so TARGET moves just inside it
+   (into the dark band above the number) where they can't cover it. */
+.bull-tile:has(.ring-marker) .disc-label { top: 15%; font-size: 7.5cqh; }
+/* Slim green card with an animal: tighter dart boxes so nothing runs into the score */
+.match.has-target .card.thrower:has(.name-animal) .slot { min-width: 38px; padding: 3px 2px; font-size: 0.95rem; }
+.match.has-target .card.thrower:has(.name-animal) .slots { gap: 4px; }

@@ -3,7 +3,7 @@
 // fall back to the saved copy when offline.
 // When you add a new file the app needs, add it to FILES and bump VERSION.
 
-const VERSION = 'v23';
+const VERSION = 'v25';
 const CACHE = `dartscoreboard-${VERSION}`;
 const FILES = [
   './',
@@ -26,6 +26,7 @@ const FILES = [
   './js/ui/matchScreen.js',
   './js/ui/drawScreen.js',
   './js/ui/art.js',
+  './js/ui/animals.js',
   './js/ui/historyScreen.js',
   './js/core/saved.js',
   './games/index.js',

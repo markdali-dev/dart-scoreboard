@@ -7,6 +7,7 @@ import { makeDart, dartLabel, zoneDart } from '../core/dart.js';
 import { optionLabel } from '../core/setup.js';
 import { esc } from './html.js';
 import { ART } from './art.js';
+import { animalSvg } from './animals.js';
 
 // Header text for a game, e.g. "X01 · 501 · Open in · Double out".
 export function describeMatch(match) {
@@ -142,10 +143,27 @@ function bullseyeTarget(hint) {
         </svg>
         <span class="disc-label">Target</span>
         <span class="disc-num ${size}">${esc(hint.value)}</span>
+        ${hint.ring ? ringMarkers(hint.ring) : ''}
       </div>
       <div class="bull-foot"><span>${esc(hint.leftLabel ?? 'Round')} <b>${esc(hint.round)}</b></span><span>Next: <b>${esc(hint.next)}</b></span></div>
     </div>
   </div>`;
+}
+
+// Board map (Hare and Hounds): each player's animal just outside the outer ring, at the
+// angle of the number they're on. Players on the same number stack outward.
+function ringMarkers(ring) {
+  const seen = {};
+  return ring.map((r) => {
+    const stack = seen[r.number] = (seen[r.number] ?? -1) + 1;
+    // Distance from the centre in % of the bullseye's width: the outer ring's edge is at
+    // about 50%, so each animal sits on that edge; extra players on that number step out.
+    const distance = 52 + stack * 17;
+    const rad = (r.angle * Math.PI) / 180;
+    const x = 50 + distance * Math.cos(rad);
+    const y = 50 + distance * Math.sin(rad);
+    return `<span class="ring-marker ${r.current ? 'now' : ''}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">${animalSvg(r.kind, r.color, 'animal')}</span>`;
+  }).join('');
 }
 
 // Who in a side throws now (current side) or next time (other sides).
@@ -257,7 +275,7 @@ function card(side, i, sb, state, current, onDeck, game) {
   return `
     <div class="card ${cls} ${sb.out ? 'is-out' : ''}">
       <div class="card-left">
-        <div class="name">${esc(team ? side.name : side.members[0])}${livesBySide ? '' : lives}${isNext ? ' <span class="tag">Next</span>' : ''}${badge}${lastDarts}</div>
+        <div class="name">${sb.animal ? `<span class="name-animal" title="${sb.animal.kind === 'hare' ? 'Hare' : 'Hound'}">${animalSvg(sb.animal.kind, sb.animal.color, 'animal')}</span>` : ''}${esc(team ? side.name : side.members[0])}${livesBySide ? '' : lives}${isNext ? ' <span class="tag">Next</span>' : ''}${badge}${lastDarts}</div>
         ${members}
         ${slots}
         ${stats.length ? `<div class="stats">${stats.join(' · ')}</div>` : ''}
