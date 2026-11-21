@@ -1,7 +1,6 @@
 // Setup screen background (Mark's pick of 3 mockups, 2026-11-21): a faded corner of a
 // dartboard with three darts landed in it, drawn for this app. It sits behind the
-// "Select a Game" row: the darts lie along that row with their tips in the board, and the
-// board rises behind the header. One colour (cream in Dark, black in Light), very faint.
+// "Select a Game" row, rising behind the header and running behind the game bar. One colour (cream in Dark, black in Light), very faint.
 
 const BOARD = (() => {
   const spokes = Array.from({ length: 20 }, (_, i) => {
@@ -28,14 +27,16 @@ const DART = `
     <path d="M208 -2 L264 -30 M208 2 L264 30" stroke-width="2"/>
   </g>`;
 
-const dart = (x, y, angle) => `<g transform="translate(${x} ${y}) rotate(${angle}) scale(.5)">${DART}</g>`;
+const dart = (x, y, angle) => `<g transform="translate(${x} ${y}) rotate(${angle}) scale(.765)">${DART}</g>`;
 
-// viewBox y=150 is the top of the "Select a Game" row.
+// Mark preferred the larger mockup size (2026-11-21): the board's centre sits level with
+// the top of the "Select a Game" row (viewBox y=150) near the right edge, and the darts run
+// down-left behind the game bar and its description.
 export const boardArt = `<div class="board-art" aria-hidden="true">
-  <svg viewBox="0 0 375 340">
-    <g transform="translate(320 138)" opacity=".7">${BOARD}</g>
-    ${dart(330, 150, 188)}
-    ${dart(310, 169, 181)}
-    ${dart(342, 190, 174)}
+  <svg viewBox="0 0 375 440">
+    <g transform="translate(310 150) scale(1.37)">${BOARD}</g>
+    ${dart(249, 241, -142)}
+    ${dart(305, 154, -160)}
+    ${dart(216, 167, -125)}
   </svg>
 </div>`;
